@@ -34,7 +34,6 @@ export default function Register() {
 
   const submit: FormEventHandler = (e) => {
     e.preventDefault();
-
     post(route("register"));
   };
 
@@ -44,7 +43,6 @@ export default function Register() {
 
       <Box
         component="form"
-        id="form_"
         onSubmit={submit}
         noValidate
         sx={{
@@ -140,7 +138,7 @@ export default function Register() {
         <TextField
           fullWidth
           required
-          type="password_confirmation"
+          type="password"
           id="password_confirmation"
           label="Confirmar senha"
           name="password_confirmation"
