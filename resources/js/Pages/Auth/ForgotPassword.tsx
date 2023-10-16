@@ -1,51 +1,106 @@
-import GuestLayout from '@/Layouts/GuestLayout';
-import InputError from '@/Components/InputError';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import { Head, useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import GuestLayout from "@/Layouts/GuestLayout";
+import { Link, useForm } from "@inertiajs/react";
+import { FormEventHandler } from "react";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 
 export default function ForgotPassword({ status }: { status?: string }) {
-    const { data, setData, post, processing, errors } = useForm({
-        email: '',
-    });
+  const { data, setData, post, processing, errors } = useForm({
+    email: "",
+  });
 
-    const submit: FormEventHandler = (e) => {
-        e.preventDefault();
+  const submit: FormEventHandler = (e) => {
+    e.preventDefault();
+    post(route("password.email"));
+  };
 
-        post(route('password.email'));
-    };
+  return (
+    <>
+      <GuestLayout>
+        <Box
+          component="form"
+          id="form_"
+          onSubmit={submit}
+          noValidate
+          sx={{
+            mt: 1,
+            display: "flex",
+            flexDirection: "column",
+          }}
+          gap={2}
+        >
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            gap={2}
+          >
+            <Typography variant="h3" color={"primary"}>
+              Redefinir senha
+            </Typography>
+            <Typography variant="body1" fontWeight={400}>
+              Informe o email para qual deseja redefinir sua senha.
+            </Typography>
+          </Box>
+          <Box>
+            <Typography
+              variant="subtitle1"
+              color="primary"
+              ml={2}
+              fontWeight={400}
+            >
+              Email
+            </Typography>
+            <TextField
+              fullWidth
+              required
+              id="email"
+              name="email"
+              placeholder="example@example.com"
+              value={data.email}
+              error={errors.email ? true : false}
+              helperText={errors.email}
+              onChange={(e) => setData("email", e.target.value)}
+              InputLabelProps={{ shrink: false }}
+            />
+          </Box>
 
-    return (
-        <GuestLayout>
-            <Head title="Forgot Password" />
+          <Button
+            variant="contained"
+            type="submit"
+            disabled={processing}
+            sx={{
+              fontWeight: "bold",
+              fontSize: "16px",
+            }}
+          >
+            Enviar
+          </Button>
 
-            <div className="mb-4 text-sm text-gray-600">
-                Forgot your password? No problem. Just let us know your email address and we will email you a password
-                reset link that will allow you to choose a new one.
-            </div>
-
-            {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
-
-            <form onSubmit={submit}>
-                <TextInput
-                    id="email"
-                    type="email"
-                    name="email"
-                    value={data.email}
-                    className="mt-1 block w-full"
-                    isFocused={true}
-                    onChange={(e) => setData('email', e.target.value)}
-                />
-
-                <InputError message={errors.email} className="mt-2" />
-
-                <div className="flex items-center justify-end mt-4">
-                    <PrimaryButton className="ml-4" disabled={processing}>
-                        Email Password Reset Link
-                    </PrimaryButton>
-                </div>
-            </form>
-        </GuestLayout>
-    );
+          <Box>
+            <Link href={route("login")}>
+              <Typography
+                component={"span"}
+                variant="body1"
+                color="primary"
+                fontWeight={400}
+                ml={1}
+              >
+                Voltar ao login.
+              </Typography>
+            </Link>
+            {status && (
+              <div className="mb-4 font-medium text-sm text-green-600">
+                {status}
+              </div>
+            )}
+            <br />
+          </Box>
+        </Box>
+      </GuestLayout>
+    </>
+  );
 }

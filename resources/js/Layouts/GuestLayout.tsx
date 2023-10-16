@@ -1,19 +1,42 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import { Link } from '@inertiajs/react';
-import { PropsWithChildren } from 'react';
+import ApplicationLogo from "@/Components/ApplicationLogo";
+import { Link } from "@inertiajs/react";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import { PropsWithChildren } from "react";
+import logo from "../../assets/logo_big.png";
 
 export default function Guest({ children }: PropsWithChildren) {
-    return (
-        <div className="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <Link href="/">
-                    <ApplicationLogo className="w-20 h-20 fill-current text-gray-500" />
-                </Link>
-            </div>
-
-            <div className="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                {children}
-            </div>
-        </div>
-    );
+  return (
+    <>
+      <Grid container columns={20}>
+        <Grid item xs={12} md={11}>
+          <Box
+            display={"flex"}
+            flexDirection={"row"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            height={"100%"}
+          >
+            {children}
+          </Box>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          md={9}
+          sx={{ backgroundColor: "secondary.main", height: "100vh" }}
+        >
+          <Box
+            display={"flex"}
+            flexDirection={"row"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            height={"100%"}
+          >
+            <img src={logo} width={422} height={372} alt="" />
+          </Box>
+        </Grid>
+      </Grid>
+    </>
+  );
 }

@@ -21,6 +21,32 @@ Route::get('/', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
+
+    Route::get('/usuarios', function () {
+        return Inertia::render('Users');
+    })->name('users');
+
+    Route::get('/administracao', function () {
+        return Inertia::render('Administration');
+    })->name('administration');
+
+    Route::get('/transacoes', function () {
+        return Inertia::render('Transactions');
+    })->name('transactions');
+
+    Route::get('/eventos', function () {
+        return Inertia::render('Events');
+    })->name('events');
+
+    Route::get('/apostas', function () {
+        return Inertia::render('Bets');
+    })->name('bets');
+    
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

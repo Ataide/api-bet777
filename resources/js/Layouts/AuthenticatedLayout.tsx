@@ -1,128 +1,190 @@
-import { useState, PropsWithChildren, ReactNode } from 'react';
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import Dropdown from '@/Components/Dropdown';
-import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link } from '@inertiajs/react';
-import { User } from '@/types';
+import * as React from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
 
-export default function Authenticated({ user, header, children }: PropsWithChildren<{ user: User, header?: ReactNode }>) {
-    const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+import Divider from "@mui/material/Divider";
+import Drawer from "@mui/material/Drawer";
+import IconButton from "@mui/material/IconButton";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import MailIcon from "@mui/icons-material/Mail";
+import MenuIcon from "@mui/icons-material/Menu";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import { PropsWithChildren, ReactNode, useContext, useState } from "react";
+import { User } from "@/types";
+import Dropdown from "@/Components/Dropdown";
+import NavLink from "@/Components/NavLink";
+import AccountMenu from "../Components/AccountMenu";
+import BallotIcon from "@mui/icons-material/Ballot";
+// import NestedList from "@/Components/List/NestedList";
+// import { Pole } from "../Components/Icons/index";
+// import { FiberCable } from "../Components/Icons/index";
+import logo from "../../assets/logo_vertical.png";
+// import "./index.css";
+// import Logo from "@/Components/Layout/Logo";
+// import NavigationItem from "../Components/Layout/NavigationItem";
+import MapIcon from "@mui/icons-material/Map";
+import PoleIcon from "@mui/icons-material/IndeterminateCheckBox";
+import CableIcon from "@mui/icons-material/Route";
+import HomeIcon from "@mui/icons-material/Home";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import PendenciaIcon from "@mui/icons-material/BusinessCenter";
+import ReportProblemIcon from "@mui/icons-material/ReportProblem";
+import UserIcon from "@mui/icons-material/Group";
+import RouterIcon from "@mui/icons-material/Router";
+import Container from "@mui/material/Container";
+import { Link } from "@inertiajs/react";
+import ListSubheader from "@mui/material/ListSubheader";
 
-    return (
-        <div className="min-h-screen bg-gray-100">
-            <nav className="bg-white border-b border-gray-100">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-16">
-                        <div className="flex">
-                            <div className="shrink-0 flex items-center">
-                                <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
-                                </Link>
-                            </div>
+// import { MapContext } from "../MapContext";
 
-                            <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <NavLink href={route('dashboard')} active={route().current('dashboard')}>
-                                    Dashboard
-                                </NavLink>
-                            </div>
-                        </div>
+const drawerWidth = 290;
 
-                        <div className="hidden sm:flex sm:items-center sm:ml-6">
-                            <div className="ml-3 relative">
-                                <Dropdown>
-                                    <Dropdown.Trigger>
-                                        <span className="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
-                                            >
-                                                {user.name}
+export default function Authenticated({
+  user,
+  header,
+  children,
+  noPadding,
+}: PropsWithChildren<{ user: User; header?: ReactNode; noPadding?: boolean }>) {
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-                                                <svg
-                                                    className="ml-2 -mr-0.5 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </Dropdown.Trigger>
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
-                                    <Dropdown.Content>
-                                        <Dropdown.Link href={route('profile.edit')}>Profile</Dropdown.Link>
-                                        <Dropdown.Link href={route('logout')} method="post" as="button">
-                                            Log Out
-                                        </Dropdown.Link>
-                                    </Dropdown.Content>
-                                </Dropdown>
-                            </div>
-                        </div>
+  const drawer = (
+    <>
+      <Toolbar
+        sx={{
+          backgroundColor: "secondary.main",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <img src={logo} width={78} alt="" />
+      </Toolbar>
+      <Divider />
+      <Container>
+        <List>
+          <Typography variant="body1" fontWeight={400} py={2}>
+            Dashboard
+          </Typography>
+          <ListItem component={Link} href={route("dashboard")} disablePadding>
+            <ListItemButton selected={route().current("dashboard") ? true : false}>
+              <ListItemText primary={"Receita"} />
+            </ListItemButton>
+          </ListItem>
 
-                        <div className="-mr-2 flex items-center sm:hidden">
-                            <button
-                                onClick={() => setShowingNavigationDropdown((previousState) => !previousState)}
-                                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
-                            >
-                                <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                    <path
-                                        className={!showingNavigationDropdown ? 'inline-flex' : 'hidden'}
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        className={showingNavigationDropdown ? 'inline-flex' : 'hidden'}
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+          <ListItem component={Link} href={route("users")} disablePadding>
+            <ListItemButton selected={route().current("users") ? true : false}>
+              <ListItemText primary={"Usuários"} />
+            </ListItemButton>
+          </ListItem>
 
-                <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}>
-                    <div className="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
-                            Dashboard
-                        </ResponsiveNavLink>
-                    </div>
+          <ListItem component={Link} href={route("administration")} disablePadding>
+            <ListItemButton selected={route().current("administration") ? true : false}>
+              <ListItemText primary={"Administração"} />
+            </ListItemButton>
+          </ListItem>
 
-                    <div className="pt-4 pb-1 border-t border-gray-200">
-                        <div className="px-4">
-                            <div className="font-medium text-base text-gray-800">
-                                {user.name}
-                            </div>
-                            <div className="font-medium text-sm text-gray-500">{user.email}</div>
-                        </div>
+          <ListItem component={Link} href={route("transactions")} disablePadding>
+            <ListItemButton selected={route().current("transactions") ? true : false}>
+              <ListItemText primary={"Transações"} />
+            </ListItemButton>
+          </ListItem>
+          <Typography variant="body1" fontWeight={400} py={2}>
+            Jogos
+          </Typography>
+          <ListItem component={Link} href={route("events")} disablePadding>
+            <ListItemButton selected={route().current("events") ? true : false}>
+              <ListItemText primary={"Eventos"} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem component={Link} href={route("bets")} disablePadding>
+            <ListItemButton selected={route().current("bets") ? true : false}>
+              <ListItemText primary={"Apostas"} />
+            </ListItemButton>
+          </ListItem>
+        </List>
+      </Container>
+    </>
+  );
 
-                        <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('profile.edit')}>Profile</ResponsiveNavLink>
-                            <ResponsiveNavLink method="post" href={route('logout')} as="button">
-                                Log Out
-                            </ResponsiveNavLink>
-                        </div>
-                    </div>
-                </div>
-            </nav>
+  return (
+    <Box sx={{ display: "flex" }}>
+      <AppBar
+        position="fixed"
+        color="secondary"
+        sx={{
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          ml: { sm: `${drawerWidth}px` },
+        }}
+      >
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { sm: "none" } }}
+          >
+            <MenuIcon />
+          </IconButton>
 
-            {header && (
-                <header className="bg-white shadow">
-                    <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">{header}</div>
-                </header>
-            )}
+          <span> </span>
 
-            <main>{children}</main>
-        </div>
-    );
+          <AccountMenu name={user.name} />
+        </Toolbar>
+      </AppBar>
+      <Box component="nav" sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }} aria-label="mailbox folders">
+        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+          sx={{
+            display: { xs: "block", sm: "none" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: "none", sm: "block" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+              backgroundColor: "secondary.main",
+            },
+          }}
+          open
+        >
+          {drawer}
+        </Drawer>
+      </Box>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: noPadding ? 0 : 5,
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+        }}
+      >
+        <Toolbar />
+        {children}
+      </Box>
+    </Box>
+  );
 }

@@ -2,29 +2,42 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import { PageProps } from "@/types";
 import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import Profit from "@/Components/Indicators/Profit";
+import Deposits from "@/Components/Indicators/Deposits";
+import Grid from "@mui/material/Grid";
+import Withdraw from "@/Components/Indicators/Withdraw";
+import { TotalIncomeBarChart } from "../Components/Charts/TotalIncomeBarChart";
+import TotalIncome from "@/Components/Indicators/TotalIncome";
+import DayliIncome from "@/Components/Indicators/DayliIncome";
 
 export default function Dashboard({ auth }: PageProps) {
-    return (
-        <AuthenticatedLayout
-            user={auth.user}
-            header={
-                <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    Dashboard
-                </h2>
-            }
-        >
-            <Head title="Dashboard" />
-
-            <div className="py-12">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="p-6 text-gray-900">
-                            You're logged in!
-                        </div>
-                        <Button variant="contained">Hello world</Button>
-                    </div>
-                </div>
-            </div>
-        </AuthenticatedLayout>
-    );
+  return (
+    <AuthenticatedLayout user={auth.user}>
+      <Box>
+        <Typography variant="h5" mb={2}>
+          RECEITA
+        </Typography>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={4}>
+            <Profit />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Deposits />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Withdraw />
+          </Grid>
+          <Grid item xs={12} md={8}>
+            <TotalIncome />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <DayliIncome />
+          </Grid>
+        </Grid>
+      </Box>
+    </AuthenticatedLayout>
+  );
 }

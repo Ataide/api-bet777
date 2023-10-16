@@ -1,97 +1,131 @@
-import { useEffect, FormEventHandler } from 'react';
-import Checkbox from '@/Components/Checkbox';
-import GuestLayout from '@/Layouts/GuestLayout';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { useEffect, FormEventHandler } from "react";
+import Checkbox from "@/Components/Checkbox";
+import GuestLayout from "@/Layouts/GuestLayout";
+import InputError from "@/Components/InputError";
+import InputLabel from "@/Components/InputLabel";
+import PrimaryButton from "@/Components/PrimaryButton";
+import TextInput from "@/Components/TextInput";
+import { Head, Link, useForm } from "@inertiajs/react";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 
-export default function Login({ status, canResetPassword }: { status?: string, canResetPassword: boolean }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
-        email: '',
-        password: '',
-        remember: false,
-    });
+export default function Login({
+  status,
+  canResetPassword,
+}: {
+  status?: string;
+  canResetPassword: boolean;
+}) {
+  const { data, setData, post, processing, errors, reset } = useForm({
+    email: "",
+    password: "",
+    remember: false,
+  });
 
-    useEffect(() => {
-        return () => {
-            reset('password');
-        };
-    }, []);
-
-    const submit: FormEventHandler = (e) => {
-        e.preventDefault();
-
-        post(route('login'));
+  useEffect(() => {
+    return () => {
+      reset("password");
     };
+  }, []);
 
-    return (
-        <GuestLayout>
-            <Head title="Log in" />
+  const submit: FormEventHandler = (e) => {
+    e.preventDefault();
 
-            {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
+    post(route("login"));
+  };
 
-            <form onSubmit={submit}>
-                <div>
-                    <InputLabel htmlFor="email" value="Email" />
-
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        isFocused={true}
-                        onChange={(e) => setData('email', e.target.value)}
-                    />
-
-                    <InputError message={errors.email} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="current-password"
-                        onChange={(e) => setData('password', e.target.value)}
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div className="block mt-4">
-                    <label className="flex items-center">
-                        <Checkbox
-                            name="remember"
-                            checked={data.remember}
-                            onChange={(e) => setData('remember', e.target.checked)}
-                        />
-                        <span className="ml-2 text-sm text-gray-600">Remember me</span>
-                    </label>
-                </div>
-
-                <div className="flex items-center justify-end mt-4">
-                    {canResetPassword && (
-                        <Link
-                            href={route('password.request')}
-                            className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        >
-                            Forgot your password?
-                        </Link>
-                    )}
-
-                    <PrimaryButton className="ml-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
-                </div>
-            </form>
-        </GuestLayout>
-    );
+  return (
+    <GuestLayout>
+      <Head title="Entrar" />
+      <Box
+        component="form"
+        id="form_"
+        onSubmit={submit}
+        noValidate
+        sx={{
+          mt: 1,
+          display: "flex",
+          flexDirection: "column",
+        }}
+        gap={1}
+      >
+        <Box
+          display={"flex"}
+          flexDirection={"column"}
+          justifyContent={"center"}
+          alignItems={"center"}
+        >
+          <Typography variant="h3" color={"primary"}>
+            Entre na sua conta
+          </Typography>
+          <Typography variant="body1" fontWeight={400}>
+            Não tem conta?
+            <Link href={route("register")}>
+              <Typography
+                component={"span"}
+                variant="body1"
+                color="primary"
+                fontWeight={400}
+                ml={1}
+              >
+                cadastre-se
+              </Typography>
+            </Link>
+          </Typography>
+        </Box>
+        <TextField
+          fullWidth
+          required
+          id="email"
+          label="Usuário/E-mail"
+          name="email"
+          value={data.email}
+          error={errors.email ? true : false}
+          helperText={errors.email}
+          onChange={(e) => setData("email", e.target.value)}
+        />
+        <TextField
+          fullWidth
+          required
+          type="password"
+          id="password"
+          label="Senha"
+          name="password"
+          value={data.password}
+          error={errors.password ? true : false}
+          helperText={errors.password}
+          onChange={(e) => setData("password", e.target.value)}
+        />
+        <Box textAlign={"end"}>
+          <Link href={route("password.request")}>
+            <Typography
+              component={"span"}
+              variant="body1"
+              color="primary"
+              fontWeight={400}
+              ml={1}
+            >
+              Esqueci minha senha
+            </Typography>
+          </Link>
+          <br />
+        </Box>
+        <Button
+          variant="contained"
+          type="submit"
+          disabled={processing}
+          sx={{
+            width: 165,
+            margin: "0 auto",
+            fontWeight: "bold",
+            fontSize: "16px",
+          }}
+        >
+          Entrar
+        </Button>
+      </Box>
+    </GuestLayout>
+  );
 }
