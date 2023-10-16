@@ -16,6 +16,7 @@ import DayliIncome from "@/Components/Indicators/DayliIncome";
 export default function Dashboard({ auth }: PageProps) {
   return (
     <AuthenticatedLayout user={auth.user}>
+       <Head title="Receita" />
       <Box>
         <Typography variant="h5" mb={2}>
           RECEITA

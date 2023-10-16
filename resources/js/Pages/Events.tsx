@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 export default function Events({ auth }: PageProps) {
   return (
     <AuthenticatedLayout user={auth.user}>
-      <Head title="Usuários" />
+      <Head title="Eventos" />
       <Typography variant="body1">Eventos</Typography>
     </AuthenticatedLayout>
   );

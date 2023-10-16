@@ -71,7 +71,9 @@ export default function AccountMenu({ name }: AccountMenuProps) {
           paper: {
             elevation: 1,
             sx: {
-              width: "450px",
+              width: "250px",
+              py: 2,
+              backgroundColor: "#2e2e2e",
               overflow: "visible",
               filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
               mt: 1.5,
@@ -81,21 +83,14 @@ export default function AccountMenu({ name }: AccountMenuProps) {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <Typography className="p-1  text-center text-orange-800">{name}</Typography>
         <MenuItem onClick={handleClose}>
           <Link href={route("profile.edit")} className="flex items-center">
-            <ListItemIcon>
-              <Avatar />w
-            </ListItemIcon>
-            Profile
+            Conta
           </Link>
         </MenuItem>
 
         <MenuItem onClick={handleClose}>
           <Link href={route("logout")} method="post" className="flex items-center">
-            <ListItemIcon>
-              <Logout fontSize="small" />
-            </ListItemIcon>
             Logout
           </Link>
         </MenuItem>

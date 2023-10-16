@@ -98,8 +98,10 @@ export default function Register() {
           required
           InputProps={{
             startAdornment: (
-              <InputAdornment position="start" sx={{ color: "#fff" }}>
-                +55
+              <InputAdornment position="start">
+                <Typography variant="body1" fontWeight={400}>
+                  +55
+                </Typography>
               </InputAdornment>
             ),
           }}
@@ -164,12 +166,7 @@ export default function Register() {
         <Typography variant="body1" textAlign={"center"}>
           Já possui uma conta?
           <Link href={route("login")}>
-            <Typography
-              component={"span"}
-              variant="body1"
-              color="primary"
-              ml={1}
-            >
+            <Typography component={"span"} variant="body1" color="primary" ml={1}>
               Faça login aqui
             </Typography>
           </Link>

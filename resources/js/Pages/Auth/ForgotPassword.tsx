@@ -1,5 +1,5 @@
 import GuestLayout from "@/Layouts/GuestLayout";
-import { Link, useForm } from "@inertiajs/react";
+import { Head, Link, useForm } from "@inertiajs/react";
 import { FormEventHandler } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -19,6 +19,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
   return (
     <>
       <GuestLayout>
+        <Head title="Recuperação de senha" />
         <Box
           component="form"
           id="form_"
@@ -31,13 +32,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
           }}
           gap={2}
         >
-          <Box
-            display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"center"}
-            alignItems={"center"}
-            gap={2}
-          >
+          <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"} gap={2}>
             <Typography variant="h3" color={"primary"}>
               Redefinir senha
             </Typography>
@@ -46,12 +41,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
             </Typography>
           </Box>
           <Box>
-            <Typography
-              variant="subtitle1"
-              color="primary"
-              ml={2}
-              fontWeight={400}
-            >
+            <Typography variant="subtitle1" color="primary" ml={2} fontWeight={400}>
               Email
             </Typography>
             <TextField
@@ -82,21 +72,11 @@ export default function ForgotPassword({ status }: { status?: string }) {
 
           <Box>
             <Link href={route("login")}>
-              <Typography
-                component={"span"}
-                variant="body1"
-                color="primary"
-                fontWeight={400}
-                ml={1}
-              >
+              <Typography component={"span"} variant="body1" color="primary" fontWeight={400} ml={1}>
                 Voltar ao login.
               </Typography>
             </Link>
-            {status && (
-              <div className="mb-4 font-medium text-sm text-green-600">
-                {status}
-              </div>
-            )}
+            {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
             <br />
           </Box>
         </Box>
