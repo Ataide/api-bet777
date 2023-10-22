@@ -22,7 +22,7 @@ class ProfileFactory extends Factory
             'cpf'            => fake()->unixTime(),
             'phone'          => fake()->phoneNumber(),
             'pix_key'        => '',
-            'account_status' => 'active',
+            'account_status' => fake()->randomElement(['Ativo' , 'Novo' , 'Inativo']),
         ];
     }
 }

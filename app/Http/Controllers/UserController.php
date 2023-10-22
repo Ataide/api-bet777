@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
 use Inertia\Inertia;
@@ -15,11 +16,17 @@ class UserController extends Controller
     public function index()
     {
         $per_page = Request::input('per_page') ?? 5;
-    
-        $users = User::query()->when(Request::input('search'), function ($query, $search) {
-            $query->where('name', 'like', '%' . $search . '%')
-                ->OrWhere('email', 'like', '%' . $search . '%');
-        })->with('profile')->paginate($per_page);
+
+        $users = User::query()
+            ->when(Request::input('search'), function (Builder $query, $search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->OrWhere('email', 'like', '%' . $search . '%');
+            })
+            ->when(Request::input('status'), function (Builder $query, $status) {
+                $query->whereRelation('profile', 'account_status', $status);
+            })
+            ->with('profile')->paginate($per_page);
+
         return Inertia::render('Users', ['users' => $users]);
     }
 

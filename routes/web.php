@@ -22,7 +22,6 @@ Route::get('/', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
@@ -30,10 +29,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/usuarios', [UserController::class, 'index'])->name('users');
     Route::post('/usuarios/fromModal', [UserController::class, 'storeFromModal'])->name('users.storeFromModal');
 
-
-    Route::get('/administracao', function () {
-        return Inertia::render('Administration');
-    })->name('administration');
+    Route::get('/administracao', [UserController::class, 'index'])->name('administration');
+    #TODO: Create a route for modal actions.
 
     Route::get('/transacoes', function () {
         return Inertia::render('Transactions');
@@ -47,10 +44,9 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('Bets');
     })->name('bets');
     
-
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

@@ -43,7 +43,7 @@ export default function TableTabList() {
                   <Chip color="default" size="small" label={"100"} sx={{ ml: 1 }} />
                 </div>
               }
-              value="1"
+              value=""
             />
             <Tab
               label={
@@ -52,7 +52,7 @@ export default function TableTabList() {
                   <Chip color="success" size="small" label={"100"} sx={{ ml: 1 }} />
                 </div>
               }
-              value="2"
+              value="Ativo"
             />
             <Tab
               label={
@@ -61,7 +61,7 @@ export default function TableTabList() {
                   <Chip color="warning" size="small" label={"100"} sx={{ ml: 1 }} />
                 </div>
               }
-              value="3"
+              value="Novo"
             />
             <Tab
               label={
@@ -70,12 +70,19 @@ export default function TableTabList() {
                   <Chip color="error" size="small" label={"100"} sx={{ ml: 1 }} />
                 </div>
               }
-              value="4"
+              value="Inativo"
             />
           </TabList>
         </Box>
       </TabContext>
-      <Box ml={2} flex={1} display={"flex"} flexDirection={"row"} justifyContent={"space-between"} alignItems={"center"}>
+      <Box
+        ml={2}
+        flex={1}
+        display={"flex"}
+        flexDirection={"row"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+      >
         <TextField
           InputProps={{
             startAdornment: (

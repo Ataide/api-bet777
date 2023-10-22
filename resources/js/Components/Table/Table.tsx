@@ -17,6 +17,7 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function DataTable({ users }: { users?: any }) {
   const columns: GridColDef[] = [
@@ -27,9 +28,43 @@ export default function DataTable({ users }: { users?: any }) {
       flex: 1,
       valueGetter: (params: GridValueGetterParams) => `${params.row.name || ""} ${params.row.lastName || ""}`,
     },
-    { field: "phone", headerName: "Telefone", type: "number", flex: 1 },
+    {
+      field: "profile.phone",
+      headerName: "Telefone",
+      type: "number",
+      headerAlign: "left",
+      align: "left",
+      flex: 1,
+      valueGetter: (params: GridValueGetterParams) => params.row.profile.phone,
+    },
     { field: "email", headerName: "E-mail", flex: 1 },
-    { field: "status", headerName: "Status", flex: 1 },
+    {
+      field: "profile.account_status",
+      headerName: "Status",
+      width: 120,
+      valueGetter: (params: GridValueGetterParams) => params.row.profile.account_status,
+      renderCell: (params) => {
+        switch (params.row.profile.account_status) {
+          case "Ativo":
+            return (
+              <Typography variant="body1" sx={{ color: "success.main" }}>
+                Ativo
+              </Typography>
+            );
+          case "Inativo":
+            return (
+              <Typography variant="body1" color="error">
+                Inativo
+              </Typography>
+            );
+          case "Novo":
+            return <Typography sx={{ color: "warning.main" }}>Novo</Typography>;
+
+          default:
+            return <Typography variant="body1">{params.row.profile.account_status}</Typography>;
+        }
+      },
+    },
     {
       field: "",
       headerName: "Ações",
@@ -45,6 +80,9 @@ export default function DataTable({ users }: { users?: any }) {
             <IconButton aria-label="edit" sx={{ mr: 1 }} onClick={handleClickOpen}>
               <ModeEditOutlineIcon sx={{ color: "#ffffff" }} />
             </IconButton>
+            <IconButton aria-label="edit" sx={{ mr: 1 }} onClick={handleClickOpenDelete}>
+              <DeleteIcon sx={{ color: "#ffffff" }} />
+            </IconButton>
             <IconButton aria-label="more-options" sx={{ mr: 1 }} onClick={onClick}>
               <MoreVertIcon sx={{ color: "#ffffff" }} />
             </IconButton>
@@ -56,6 +94,7 @@ export default function DataTable({ users }: { users?: any }) {
   ];
 
   const [open, setOpen] = React.useState(false);
+  const [openDelete, setOpenDelete] = React.useState(false);
   const [editing, setEditing] = React.useState(false);
   const { errors } = usePage().props;
 
@@ -68,10 +107,22 @@ export default function DataTable({ users }: { users?: any }) {
     setOpen(false);
   };
 
+  const handleClickOpenDelete = () => {
+    setOpenDelete(true);
+  };
+
+  const handleCloseDelete = () => {
+    setOpenDelete(false);
+  };
+
   const { data, setData, post, processing } = useForm({
     id: 2,
     email: "ataide.bastos@gmail.com",
     name: "Ataide",
+    birthdate: "",
+    cpf: "",
+    phone: "",
+    pix_key: "",
   });
 
   const submit: React.FormEventHandler = (e) => {
@@ -113,7 +164,14 @@ export default function DataTable({ users }: { users?: any }) {
           checkboxSelection
         />
       </Paper>
-      <Dialog open={open} onClose={handleClose} PaperProps={{ sx: { backgroundColor: "#2e2e2e" } }} maxWidth={"md"} fullWidth>
+
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        PaperProps={{ sx: { backgroundColor: "#2e2e2e" } }}
+        maxWidth={"md"}
+        fullWidth
+      >
         <DialogTitle>Gerenciar Conta</DialogTitle>
         <IconButton
           aria-label="close"
@@ -138,9 +196,9 @@ export default function DataTable({ users }: { users?: any }) {
               display: "flex",
               flexDirection: "row",
             }}
-            gap={1}
+            gap={2}
           >
-            <Box display="flex" flexDirection="row" gap={2} width={"100%"}>
+            <Box display="flex" flexDirection="column" gap={2} width={"100%"}>
               <Box width={"100%"}>
                 <Typography variant="subtitle2" color="white" fontWeight={600}>
                   Nome
@@ -159,6 +217,65 @@ export default function DataTable({ users }: { users?: any }) {
                   InputLabelProps={{ shrink: false }}
                 />
               </Box>
+
+              <Box width={"100%"}>
+                <Typography variant="subtitle2" color="white" fontWeight={600}>
+                  CPF
+                </Typography>
+                <TextField
+                  fullWidth
+                  required
+                  disabled={!editing}
+                  id="birthdate"
+                  name="birthdate"
+                  placeholder="22/04/1986"
+                  value={data.birthdate}
+                  error={errors.birthdate ? true : false}
+                  helperText={errors.birthdate}
+                  onChange={(e) => setData("birthdate", e.target.value)}
+                  InputLabelProps={{ shrink: false }}
+                />
+              </Box>
+
+              <Box width={"100%"}>
+                <Typography variant="subtitle2" color="white" fontWeight={600}>
+                  Data de nascimento
+                </Typography>
+                <TextField
+                  fullWidth
+                  required
+                  disabled={!editing}
+                  id="cpf"
+                  name="cpf"
+                  placeholder="1234567890"
+                  value={data.cpf}
+                  error={errors.cpf ? true : false}
+                  helperText={errors.cpf}
+                  onChange={(e) => setData("cpf", e.target.value)}
+                  InputLabelProps={{ shrink: false }}
+                />
+              </Box>
+
+              <Box width={"100%"}>
+                <Typography variant="subtitle2" color="white" fontWeight={600}>
+                  Telefone
+                </Typography>
+                <TextField
+                  fullWidth
+                  required
+                  disabled={!editing}
+                  id="cpf"
+                  name="cpf"
+                  placeholder="1234567890"
+                  value={data.cpf}
+                  error={errors.cpf ? true : false}
+                  helperText={errors.cpf}
+                  onChange={(e) => setData("cpf", e.target.value)}
+                  InputLabelProps={{ shrink: false }}
+                />
+              </Box>
+            </Box>
+            <Box display="flex" flexDirection="column" gap={2} width={"100%"}>
               <Box width={"100%"}>
                 <Typography variant="subtitle2" color="white" fontWeight={600}>
                   Email
@@ -177,9 +294,46 @@ export default function DataTable({ users }: { users?: any }) {
                   InputLabelProps={{ shrink: false }}
                 />
               </Box>
+              <Box width={"100%"}>
+                <Typography variant="subtitle2" color="white" fontWeight={600}>
+                  Usuário
+                </Typography>
+                <TextField
+                  fullWidth
+                  required
+                  disabled={!editing}
+                  id="name"
+                  name="name"
+                  placeholder="example@example.com"
+                  value={data.name}
+                  error={errors.name ? true : false}
+                  helperText={errors.name}
+                  onChange={(e) => setData("name", e.target.value)}
+                  InputLabelProps={{ shrink: false }}
+                />
+              </Box>
+              <Box width={"100%"}>
+                <Typography variant="subtitle2" color="white" fontWeight={600}>
+                  Chave Pix
+                </Typography>
+                <TextField
+                  fullWidth
+                  required
+                  disabled={!editing}
+                  id="pix_key"
+                  name="pix_key"
+                  placeholder="example@example.com"
+                  value={data.pix_key}
+                  error={errors.pix_key ? true : false}
+                  helperText={errors.pix_key}
+                  onChange={(e) => setData("pix_key", e.target.value)}
+                  InputLabelProps={{ shrink: false }}
+                />
+              </Box>
             </Box>
           </Box>
         </DialogContent>
+
         <DialogActions sx={{ display: "flex", p: 3 }}>
           {!editing && (
             <>
@@ -216,6 +370,43 @@ export default function DataTable({ users }: { users?: any }) {
               </Button>
             </>
           )}
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openDelete}
+        onClose={handleCloseDelete}
+        PaperProps={{ sx: { backgroundColor: "#2e2e2e" } }}
+        maxWidth={"sm"}
+        fullWidth
+      >
+        <DialogTitle>Deletar contas</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseDelete}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.primary.main,
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent>
+          <Typography variant="body1" fontWeight={400}>
+            Tem certeza que desenha deletar <strong>4 contas</strong> selecionadas?
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ display: "flex", p: 3 }}>
+          <>
+            <Button variant="contained" color="error">
+              Deletar
+            </Button>
+            <Button variant="outlined" onClick={handleCloseDelete}>
+              Cancelar
+            </Button>
+          </>
         </DialogActions>
       </Dialog>
     </>
