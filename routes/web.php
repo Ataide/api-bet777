@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -26,9 +27,9 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
-    Route::get('/usuarios', function () {
-        return Inertia::render('Users');
-    })->name('users');
+    Route::get('/usuarios', [UserController::class, 'index'])->name('users');
+    Route::post('/usuarios/fromModal', [UserController::class, 'storeFromModal'])->name('users.storeFromModal');
+
 
     Route::get('/administracao', function () {
         return Inertia::render('Administration');

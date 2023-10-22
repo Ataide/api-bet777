@@ -1,4 +1,5 @@
 import { createTheme } from "@mui/material";
+import type {} from "@mui/x-data-grid/themeAugmentation";
 
 // A custom theme for this app
 const theme = createTheme({
@@ -40,6 +41,35 @@ const theme = createTheme({
   },
 
   components: {
+    MuiTabs: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          "& .MuiButtonBase-root": {
+            color: theme.palette.common.white,
+            textTransform: "none",
+          },
+        }),
+      },
+    },
+    MuiDataGrid: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          borderStyle: "none",
+          ".MuiDataGrid-withBorderColor": {
+            borderColor: "#969796",
+          },
+          ".MuiDataGrid-columnHeadersInner": {
+            backgroundColor: "#2E2E2E",
+          },
+          ".MuiCheckbox-root": {
+            color: theme.palette.primary.main,
+          },
+          // ".MuiDataGrid-row": {
+          //   height: "90px !important",
+          // },
+        }),
+      },
+    },
     MuiTypography: {
       variants: [
         {
@@ -132,15 +162,7 @@ const theme = createTheme({
         },
       },
     },
-    MuiTabs: {
-      styleOverrides: {
-        root: {
-          "& .MuiButtonBase-root": {
-            textTransform: "none",
-          },
-        },
-      },
-    },
+
     MuiFormLabel: {
       styleOverrides: {
         root: {
@@ -152,6 +174,13 @@ const theme = createTheme({
     },
     MuiInputBase: {
       styleOverrides: {
+        input: {
+          "&.Mui-disabled": {
+            textFillColor: "#fff",
+            borderRadius: "10px",
+            backgroundColor: "#1B1C1B",
+          },
+        },
         root: {
           fontSize: "13px",
           "& input::placeholder": {
@@ -179,6 +208,14 @@ const theme = createTheme({
             ".MuiOutlinedInput-notchedOutline": {
               border: "1px solid #7AFF59",
             },
+          }),
+          ...(ownerState.color === "secondary" && {
+            backgroundColor: "#2E2E2E",
+            color: "#fff",
+            borderRadius: "10px !important",
+            // ".MuiOutlinedInput-notchedOutline": {
+            //   border: "1px solid #7AFF59",
+            // },
           }),
         }),
       },
