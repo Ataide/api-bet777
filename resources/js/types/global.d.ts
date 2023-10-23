@@ -20,3 +20,18 @@ declare module "@mui/material/Paper" {
     indicator: true;
   }
 }
+
+// declare module '@inertiajs/core' {
+//   interface PageProps extends Page<PageProps> {
+//       auth: {
+//           status: number | null
+//           user: {
+//               id: number
+//               name: string
+//           }
+//       }
+//       route: {
+//           name: string
+//       }
+//   }
+// }

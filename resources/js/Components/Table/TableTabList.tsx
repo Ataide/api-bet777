@@ -6,41 +6,50 @@ import TabPanel from "@mui/lab/TabPanel";
 import Chip from "@mui/material/Chip";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-import { useState } from "react";
+import { ReactEventHandler, useState } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
+import { PageProps } from "@/types";
 
-export default function TableTabList() {
-  const [value, setValue] = useState("1");
+interface ITabListProps {
+  resource?: string;
+}
+export default function TableTabList({ resource }: ITabListProps) {
+  const { users } = usePage<PageProps>().props;
+  const [selectedTab, setTabSelected] = useState("");
   const [search, setSearch] = useState<string>();
 
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
-    router.get("/usuarios", { search: search, status: newValue }, { preserveState: true });
+  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+    setTabSelected(newValue);
+    if (resource) {
+      router.get(resource, { search: search, status: newValue }, { preserveState: true });
+    }
   };
 
-  function ItemTabsWithInfo({ label, value }: { label: string; value?: number }) {
-    return (
-      <>
-        {label}
-        <Chip label={value} />
-      </>
-    );
-  }
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setSearch(event.target.value);
+    if (resource) {
+      router.get(resource, { search: event.target.value, status: selectedTab }, { preserveState: true });
+    }
+  };
 
   return (
-    <Box display={"flex"}>
-      <TabContext value={value}>
+    <Box display={"flex"} alignItems={"center"}>
+      <TabContext value={selectedTab}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <TabList onChange={handleChange} aria-label="lab API tabs example">
+          <TabList onChange={handleTabChange} aria-label="lab API tabs example">
             <Tab
               label={
                 <div>
                   {"Todos"}
-                  <Chip color="default" size="small" label={"100"} sx={{ ml: 1 }} />
+                  <Chip
+                    sx={{ background: "white", color: "black", ml: 1, borderRadius: "5px" }}
+                    size="small"
+                    label={users.total_users}
+                  />
                 </div>
               }
               value=""
@@ -49,7 +58,7 @@ export default function TableTabList() {
               label={
                 <div>
                   {"Ativo"}
-                  <Chip color="success" size="small" label={"100"} sx={{ ml: 1 }} />
+                  <Chip color="success" size="small" label={users.total_actives} sx={{ ml: 1, borderRadius: "5px" }} />
                 </div>
               }
               value="Ativo"
@@ -58,7 +67,7 @@ export default function TableTabList() {
               label={
                 <div>
                   {"Novos"}
-                  <Chip color="warning" size="small" label={"100"} sx={{ ml: 1 }} />
+                  <Chip color="warning" size="small" label={users.total_recents} sx={{ ml: 1, borderRadius: "5px" }} />
                 </div>
               }
               value="Novo"
@@ -67,7 +76,7 @@ export default function TableTabList() {
               label={
                 <div>
                   {"Inativos"}
-                  <Chip color="error" size="small" label={"100"} sx={{ ml: 1 }} />
+                  <Chip color="error" size="small" label={users.total_inactives} sx={{ ml: 1, borderRadius: "5px" }} />
                 </div>
               }
               value="Inativo"
@@ -100,10 +109,7 @@ export default function TableTabList() {
           placeholder="Buscar"
           name="search"
           value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            router.get("/usuarios", { search: e.target.value, status: value }, { preserveState: true });
-          }}
+          onChange={handleSearchChange}
         />
         <IconButton aria-label="delete" sx={{ mr: 2 }}>
           <DeleteIcon sx={{ color: "#ffffff" }} />

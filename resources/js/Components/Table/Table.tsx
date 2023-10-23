@@ -19,7 +19,7 @@ import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-export default function DataTable({ users }: { users?: any }) {
+export default function DataTable({ users, resource }: { users?: any; resource?: string }) {
   const columns: GridColDef[] = [
     {
       field: "fullName",
@@ -142,7 +142,7 @@ export default function DataTable({ users }: { users?: any }) {
   return (
     <>
       <Paper elevation={5} variant="indicator">
-        <TableTabList />
+        <TableTabList resource={resource} />
         <DataGrid
           disableRowSelectionOnClick
           disableColumnSelector

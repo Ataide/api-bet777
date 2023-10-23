@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
 use Inertia\Inertia;
 
-class UserController extends Controller
+class AdministrationController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -43,16 +42,6 @@ class UserController extends Controller
         $with_totals = $totals_groups->merge($users);
             
         return Inertia::render('Administration', ['users' => $with_totals]);
-    }
-
-    public function storeFromModal(Request $request)
-    {
-        Request::validate([
-            'name' => ['required', 'max:100'],
-            
-        ]);
-
-        return Redirect::back()->with('success', 'User created.');
     }
 
     /**

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdministrationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
@@ -29,7 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/usuarios', [UserController::class, 'index'])->name('users');
     Route::post('/usuarios/fromModal', [UserController::class, 'storeFromModal'])->name('users.storeFromModal');
 
-    Route::get('/administracao', [UserController::class, 'index'])->name('administration');
+    Route::get('/administracao', [AdministrationController::class, 'index'])->name('administration');
     #TODO: Create a route for modal actions.
 
     Route::get('/transacoes', function () {
