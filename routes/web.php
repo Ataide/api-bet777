@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdministrationController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -33,9 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/administracao', [AdministrationController::class, 'index'])->name('administration');
     #TODO: Create a route for modal actions.
 
-    Route::get('/transacoes', function () {
-        return Inertia::render('Transactions');
-    })->name('transactions');
+    Route::get('/transacoes', [TransactionController::class, 'index'])->name('transactions');
 
     Route::get('/eventos', function () {
         return Inertia::render('Events');

@@ -42,7 +42,7 @@ class UserController extends Controller
         
         $with_totals = $totals_groups->merge($users);
             
-        return Inertia::render('Administration', ['users' => $with_totals]);
+        return Inertia::render('Users', ['users' => $with_totals]);
     }
 
     public function storeFromModal(Request $request)

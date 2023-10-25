@@ -23,38 +23,8 @@ export default function Users({ auth, users }: PageProps) {
           ADMINISTRAÇÃO / DONO
         </Typography>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={12}>
-            <Paper elevation={5} variant="indicator">
-              <Box p={4}>
-                <Grid container columns={14}>
-                  <Grid item xs={4}>
-                    <Box display={"flex"} height={40} alignItems={"center"}>
-                      <Typography variant="body1">Nathan</Typography>
-                    </Box>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Box display={"flex"} height={40} alignItems={"center"}>
-                      <Typography variant="body1">88 99356-8477</Typography>
-                    </Box>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Box display={"flex"} height={40} alignItems={"center"}>
-                      <Typography variant="body1">nathan@example.com</Typography>
-                    </Box>
-                  </Grid>
-                  <Grid item xs={2}>
-                    <Box display={"flex"} flexDirection="row" alignItems={"center"} justifyContent={"space-between"}>
-                      <Typography variant="body1" sx={{ color: "success.main" }}>
-                        Ativo
-                      </Typography>
-                      <IconButton aria-label="edit" sx={{ mr: 1 }} onClick={() => {}}>
-                        <ModeEditOutlineIcon sx={{ color: "#ffffff" }} />
-                      </IconButton>
-                    </Box>
-                  </Grid>
-                </Grid>
-              </Box>
-            </Paper>
+          <Grid item xs={12}>
+            <Header />
           </Grid>
           <Grid item xs={12}>
             <DataTable users={users} resource="/administracao" />
@@ -62,5 +32,41 @@ export default function Users({ auth, users }: PageProps) {
         </Grid>
       </Box>
     </AuthenticatedLayout>
+  );
+}
+
+function Header() {
+  return (
+    <Paper elevation={5} variant="indicator">
+      <Box p={4}>
+        <Grid container columns={14}>
+          <Grid item xs={4}>
+            <Box display={"flex"} height={40} alignItems={"center"}>
+              <Typography variant="body1">Nathan</Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={4}>
+            <Box display={"flex"} height={40} alignItems={"center"}>
+              <Typography variant="body1">88 99356-8477</Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={4}>
+            <Box display={"flex"} height={40} alignItems={"center"}>
+              <Typography variant="body1">nathan@example.com</Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={2}>
+            <Box display={"flex"} flexDirection="row" alignItems={"center"} justifyContent={"space-between"}>
+              <Typography variant="body1" sx={{ color: "success.main" }}>
+                Ativo
+              </Typography>
+              <IconButton aria-label="edit" sx={{ mr: 1 }} onClick={() => {}}>
+                <ModeEditOutlineIcon sx={{ color: "#ffffff" }} />
+              </IconButton>
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
+    </Paper>
   );
 }

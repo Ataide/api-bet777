@@ -3,7 +3,6 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Models\Profile;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -41,7 +40,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'password'          => 'hashed',
     ];
     
     public function profile()
@@ -49,5 +48,8 @@ class User extends Authenticatable
         return $this->hasOne(Profile::class);
     }
 
-
+    public function transactions()
+    {
+        return $this->hasMAny(Transaction::class);
+    }
 }
