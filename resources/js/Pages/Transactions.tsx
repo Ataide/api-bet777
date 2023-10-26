@@ -1,3 +1,4 @@
+import DataTableDetails from "@/Components/Table/Transations/Details/DetailsTable";
 import DataTable from "@/Components/Table/Transations/Table";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { PageProps } from "@/types";
@@ -16,11 +17,11 @@ export default function Transactions({ auth, transactions }: PageProps) {
           TRANSAÇÕES
         </Typography>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
+          <Grid item xs={7}>
             <DataTable transactions={transactions} />
           </Grid>
-          <Grid item xs={12}>
-            <DataTable transactions={transactions} />
+          <Grid item xs={5}>
+            <DataTableDetails transactions={transactions} />
           </Grid>
         </Grid>
       </Box>

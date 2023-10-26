@@ -13,11 +13,12 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { router, usePage } from "@inertiajs/react";
 import { PageProps } from "@/types";
+import { DatePicker } from "@mui/x-date-pickers";
 
 interface ITabListProps {
   resource?: string;
 }
-export default function TableTabList({ resource }: ITabListProps) {
+export default function DetailsTableTabList({ resource }: ITabListProps) {
   const { transactions } = usePage<PageProps>().props;
   const [selectedTab, setTabSelected] = useState("");
   const [search, setSearch] = useState<string>();
@@ -44,12 +45,17 @@ export default function TableTabList({ resource }: ITabListProps) {
             <Tab
               label={
                 <div>
-                  {"Todos"}
-                  <Chip
-                    sx={{ background: "white", color: "black", ml: 1, borderRadius: "5px" }}
-                    size="small"
-                    label={12}
-                  />
+                  {"Depósitos"}
+                  <Chip color="primary" sx={{ ml: 1, borderRadius: "5px" }} size="small" label={12} />
+                </div>
+              }
+              value=""
+            />
+            <Tab
+              label={
+                <div>
+                  {"Saques"}
+                  <Chip sx={{ ml: 1, borderRadius: "5px" }} color="error" size="small" label={12} />
                 </div>
               }
               value=""
@@ -58,7 +64,7 @@ export default function TableTabList({ resource }: ITabListProps) {
         </Box>
       </TabContext>
       <Box mr={4} flex={1} display={"flex"} flexDirection={"row"} justifyContent={"end"} alignItems={"center"}>
-        <TextField
+        {/* <TextField
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -76,6 +82,17 @@ export default function TableTabList({ resource }: ITabListProps) {
           name="search"
           value={search}
           onChange={handleSearchChange}
+        /> */}
+        <DatePicker
+          sx={{
+            width: "207px",
+            backgroundColor: "#2E2E2E",
+            color: "#fff",
+            borderRadius: "10px !important",
+            "& .MuiIconButton-root": {
+              color: "primary.main",
+            },
+          }}
         />
       </Box>
     </Box>

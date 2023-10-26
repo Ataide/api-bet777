@@ -12,14 +12,13 @@ class TransactionController extends Controller
     {
         $user = Auth::user();
 
-        $transactions = Transaction::with('user')
+        $transactions = Transaction::selectRaw("(select name from users u where u.id = user_id) as name")
+     
             ->selectRaw("SUM(deposit) as total_deposits")
             ->selectRaw("SUM(withdraw) as total_withdraws")
-            ->selectRaw("(select name from users u where u.id = user_id) as name")
             ->groupBy('name')
-            ->paginate(5)
-            ->all();
-           
+            ->paginate(5);
+          
         return Inertia::render(
             'Transactions',
             [
