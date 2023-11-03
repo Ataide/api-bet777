@@ -24,9 +24,9 @@ import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import moment from "moment";
+import { PageProps } from "@/types";
 
 export default function DataTable({ games, resource }: { games?: any; resource?: string }) {
-  console.log(games);
   const columns: GridColDef[] = [
     {
       field: "home",
@@ -113,7 +113,8 @@ export default function DataTable({ games, resource }: { games?: any; resource?:
   const [open, setOpen] = React.useState(false);
   const [openDelete, setOpenDelete] = React.useState(false);
   const [editing, setEditing] = React.useState(false);
-  const { errors } = usePage().props;
+  const { errors, event } = usePage<PageProps>().props;
+  console.log(usePage().props);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -134,7 +135,7 @@ export default function DataTable({ games, resource }: { games?: any; resource?:
   };
 
   const { data, setData, post, processing } = useForm({
-    event_id: games[0].event_id,
+    event_id: event.id,
     home: "",
     home_odd: "0",
     visitor: "",
