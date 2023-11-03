@@ -99,8 +99,8 @@ export default function Authenticated({
           <Typography variant="body1" fontWeight={400} py={2}>
             Jogos
           </Typography>
-          <ListItem component={Link} href={route("events")} disablePadding>
-            <ListItemButton selected={route().current("events") ? true : false}>
+          <ListItem component={Link} href={route("events.index")} disablePadding>
+            <ListItemButton selected={route().current("events.index") ? true : false}>
               <ListItemText primary={"Eventos"} />
             </ListItemButton>
           </ListItem>

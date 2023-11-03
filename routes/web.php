@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AdministrationController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\GameController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
@@ -36,9 +38,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/transacoes', [TransactionController::class, 'index'])->name('transactions');
 
-    Route::get('/eventos', function () {
-        return Inertia::render('Events');
-    })->name('events');
+    Route::get('/eventos', [EventController::class, 'index'])->name('events.index');
+    Route::get('/eventos/{id}', [EventController::class, 'show'])->name('events.show');
+    Route::post('/eventos/fromModal', [EventController::class, 'storeFromModal'])->name('events.storeFromModal');
+
+    Route::post('/games/fromModal', [GameController::class, 'storeFromModal'])->name('games.storeFromModal');
 
     Route::get('/apostas', function () {
         return Inertia::render('Bets');

@@ -22,5 +22,7 @@ class DatabaseSeeder extends Seeder
                 'email' => 'test@example.com',
             ]);
         }
+
+        \App\Models\Event::factory(1)->hasGames(5)->create();
     }
 }
