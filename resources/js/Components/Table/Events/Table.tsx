@@ -26,7 +26,6 @@ import MenuItem from "@mui/material/MenuItem";
 import moment from "moment";
 
 export default function DataTable({ events, resource }: { events?: any; resource?: string }) {
-  console.log(events);
   const columns: GridColDef[] = [
     {
       field: "title",

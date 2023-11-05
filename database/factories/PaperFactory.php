@@ -6,9 +6,9 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Transaction>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Paper>
  */
-class TransactionFactory extends Factory
+class PaperFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,10 +18,11 @@ class TransactionFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id'  => User::factory(),
-            'type'     => fake()->randomElement(['deposit', 'withdraw']),
-            'deposit'  => 120,
-            'withdraw' => 62
+            'user_id' => User::factory(),
+            'rate'    => 5.00,
+            'quantity' => 3,
+            'profit' => 20.00,
+            'result' => 0,
         ];
     }
 }

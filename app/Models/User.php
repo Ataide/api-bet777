@@ -52,4 +52,14 @@ class User extends Authenticatable
     {
         return $this->hasMAny(Transaction::class);
     }
+
+    public function bet()
+    {
+        return $this->hasMany(Bet::class);
+    }
+
+    public function papers()
+    {
+        return $this->hasMany(Paper::class);
+    }
 }

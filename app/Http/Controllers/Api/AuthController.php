@@ -56,4 +56,15 @@ class AuthController extends Controller
             'token' => $token->plainTextToken,
         ], 201);
     }
+
+    public function logout(Request $request)
+    {
+        Auth::guard('web')->logout();
+
+        $user = $request->user();
+
+        $user->tokens()->delete();
+
+        return response()->noContent();
+    }
 }

@@ -2,6 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\Bet;
+use App\Models\Event;
+use App\Models\Game;
+use App\Models\Paper;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -34,5 +39,31 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    /**
+     * Configure the model factory.
+     */
+    public function configure(): static
+    {
+        return $this->afterMaking(function (User $user) {
+            // ...
+        })->afterCreating(function (User $user) {
+            $event = Event::factory()->create();
+
+            $gameToEvent = Game::factory()
+                                ->for($event)
+                                ->create();
+                                
+            $paperForBets = Paper::factory()
+                                ->for($user)
+                                ->create();
+                            
+            $bets = Bet::factory() ->count(5) ->for($user) ->create();
+
+            $paperForBets->bets()->attach($bets);
+
+            // ...
+        });
     }
 }

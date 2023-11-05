@@ -3,6 +3,10 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Game;
+use App\Models\Profile;
+use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,17 +16,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\User::factory(15)->has(\App\Models\Profile::factory())->has(\App\Models\Transaction::factory(rand(10, 20)))->create();
+        // User::factory(15)
+        //     ->has(Profile::factory())
+        //     ->has(Transaction::factory(rand(10, 20)))->create();
 
-        if (!\App\Models\User::where('email', '=', 'test@example.com')->first()) {
-            \App\Models\User::factory()
-            ->has(\App\Models\Profile::factory())
-            ->has(\App\Models\Transaction::factory(10))->create([
-                'name'  => 'Test User',
-                'email' => 'test@example.com',
-            ]);
+        if (!User::where('email', '=', 'test@example.com')->first()) {
+            $testUser = User::factory()
+                            ->has(Profile::factory())
+                            ->has(Transaction::factory(1))->create([
+                                'name'  => 'Test User',
+                                'email' => 'test@example.com',
+                            ]);
         }
 
-        \App\Models\Event::factory(1)->hasGames(5)->create();
+        // \App\Models\Event::factory(1)->has(Game::factory(5)->hasBet(3))->create();
     }
 }

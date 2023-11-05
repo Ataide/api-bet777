@@ -14,14 +14,19 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('event_id');
 
-            $table->string('home')->default('');
-            $table->decimal('home_odd');
-            $table->string('home_icon')->nullable();
-            $table->string('visitor');
-            $table->decimal('visitor_odd');
-            $table->string('visitor_icon')->nullable();
-            $table->decimal('x_odd');
-            $table->dateTime('start_date')->nullable();
+            $table->string('home_name');
+            $table->string('away_name');
+            $table->float('home_rate', 5, 2);
+            $table->float('draw_rate', 5, 2);
+            $table->float('away_rate', 5, 2);
+            $table->integer('home_score')->nullable();
+            $table->integer('away_score')->nullable();
+            $table->dateTime('time_close_bet');
+            $table->dateTime('time_start')->nullable();
+            $table->dateTime('time_end')->nullable();
+            $table->integer('done')->default(0); //0 is not done, 1 is done
+            $table->integer('result')->nullable();
+            
             $table->timestamps();
 
             $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');

@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreGameRequest;
-use App\Http\Requests\UpdateGameRequest;
-use App\Models\Game;
-use Redirect;
+use App\Http\Requests\StoreBetRequest;
+use App\Http\Requests\UpdateBetRequest;
+use App\Models\Bet;
 
-class GameController extends Controller
+class BetController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,10 +14,6 @@ class GameController extends Controller
     public function index()
     {
         //
-    }
-
-    public function getLastGames()
-    {
     }
 
     /**
@@ -32,24 +27,15 @@ class GameController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreGameRequest $request)
+    public function store(StoreBetRequest $request)
     {
         //
-    }
-
-    public function storeFromModal(StoreGameRequest $request)
-    {
-        $request->validated();
-
-        Game::create($request->validated());
-
-        return Redirect::back()->with('success', 'User created.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Game $game)
+    public function show(Bet $bet)
     {
         //
     }
@@ -57,7 +43,7 @@ class GameController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Game $game)
+    public function edit(Bet $bet)
     {
         //
     }
@@ -65,7 +51,7 @@ class GameController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateGameRequest $request, Game $game)
+    public function update(UpdateBetRequest $request, Bet $bet)
     {
         //
     }
@@ -73,7 +59,7 @@ class GameController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Game $game)
+    public function destroy(Bet $bet)
     {
         //
     }
