@@ -16,6 +16,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call([
+            SportSeeder::class
+        ]);
         // User::factory(15)
         //     ->has(Profile::factory())
         //     ->has(Transaction::factory(rand(10, 20)))->create();

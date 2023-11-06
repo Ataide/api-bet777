@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\UserController;
 use App\Models\Bet;
 use App\Models\Paper;
 use Illuminate\Http\Request;
@@ -25,11 +26,12 @@ Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
     // $paper = Paper::with('bets')->where('user_id', '=', $request->user()->id)->get();
     // $bets = Bet::with('game')->where('user_id', '=', $request->user()->id)->get();
 
-    return $request->user()->papers()->with('bets')->get();
+    return $request->user()->load('sports');
 });
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/logout', [AuthController::class, 'logout'])->name('user.logout');
 
     //Rotas dps evetnos.
     Route::get('/eventos', [EventController::class, 'api_index'])->name('events.list');
+    Route::post('/favorite-sport', [UserController::class, 'favoriteSport'])->name('user.favorite');
 });

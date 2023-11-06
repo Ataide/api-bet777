@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
@@ -55,6 +56,26 @@ class UserController extends Controller
         return Redirect::back()->with('success', 'User created.');
     }
 
+    public function favoriteSport(Request $request)
+    {
+        $sport_id = Request::validate([
+            'sport_id' => ['required', 'exists:sports,id'],
+        ]);
+
+        $user = Auth::user();
+
+        $sport_exists = $user->sports()->where('sport_id', $sport_id)->count();
+        
+        if ($sport_exists > 0) {
+            $user->sports()->detach([$sport_id]);
+
+            return response()->json(['message' => 'Sport removed to User favorite sports']);
+        }
+
+        $user->sports()->attach([$sport_id]);
+
+        return response()->json(['message' => 'Sport added to User favorite sports']);
+    }
     /**
      * Show the form for creating a new resource.
      */

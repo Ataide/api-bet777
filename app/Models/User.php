@@ -62,4 +62,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Paper::class);
     }
+
+    public function sports()
+    {
+        return $this->belongsToMany(Sport::class);
+    }
 }

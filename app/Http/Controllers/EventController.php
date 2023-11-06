@@ -30,7 +30,7 @@ class EventController extends Controller
     public function api_index()
     {
         $events = Event::with('games')->paginate(5);
-
+        
         response()->json($events);
         ;
     }

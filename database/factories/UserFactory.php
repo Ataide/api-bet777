@@ -63,6 +63,8 @@ class UserFactory extends Factory
 
             $paperForBets->bets()->attach($bets);
 
+            $user->sports()->attach([1]);
+
             // ...
         });
     }
