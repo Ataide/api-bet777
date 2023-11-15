@@ -7,10 +7,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+
+    const ACTIVE   = 'active';
+    const PENDING  = 'pending';
+    const INACTIVE = 'inactive';
 
     /**
      * The attributes that are mass assignable.
@@ -19,6 +24,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'status',
+        'type',
         'email',
         'password',
     ];
@@ -58,13 +65,69 @@ class User extends Authenticatable
         return $this->hasMany(Bet::class);
     }
 
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class);
+    }
+
     public function papers()
     {
         return $this->hasMany(Paper::class);
     }
 
-    public function sports()
+    public function favorites()
     {
         return $this->belongsToMany(Sport::class);
+    }
+
+    public function checkIfHaveFunds($amount)
+    {
+        return $this->wallet->amount >= $amount;
+    }
+
+    public function takeOutWallet($amount)
+    {
+        $current_value = $this->wallet->amount;
+
+        $this->wallet()->update(['amount' => $current_value - $amount]);
+    }
+    public function createDepositTransaction($amount)
+    {
+        try {
+            $transactions           = new Transaction();
+            $transactions->user_id  = $this->id;
+            $transactions->type     = 'deposit';
+            $transactions->deposit  = $amount;
+            $transactions->withdraw = 0;
+            $transactions->save();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function createWithdrawTransaction($amount)
+    {
+        try {
+            $transactions           = new Transaction();
+            $transactions->user_id  = $this->id;
+            $transactions->type     = 'withdraw';
+            $transactions->deposit  = 0;
+            $transactions->withdraw = $amount;
+            $transactions->save();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+    public function activeAccount()
+    {
+        $this->update(['status' => User::ACTIVE]);
+    }
+    public function inactiveAccount()
+    {
+        $this->update(['status' => User::INACTIVE]);
+    }
+    public function isAdmin()
+    {
+        return $this->status === ('admin' || 'superadmin');
     }
 }

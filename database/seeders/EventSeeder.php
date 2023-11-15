@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Event;
 use Illuminate\Database\Seeder;
 
 class EventSeeder extends Seeder
@@ -12,6 +12,10 @@ class EventSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        Event::factory()->count(3)->sequence(
+            ['sport' => 'Futebol', 'sport_id' => 1],
+            ['sport' => 'Vôlei', 'sport_id' => 2],
+            ['sport' => 'Basquete', 'sport_id' => 3],
+        )->create();
     }
 }

@@ -18,11 +18,13 @@ class PaperFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
-            'rate'    => 5.00,
+            'user_id'  => User::factory(),
+            'rate'     => 5.00,
             'quantity' => 3,
-            'profit' => 20.00,
-            'result' => 0,
+            'amount'   => 3.00,
+            'profit'   => 15.00,
+            'result'   => 0,
+            'status'   => -1
         ];
     }
 }

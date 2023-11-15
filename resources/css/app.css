@@ -5,6 +5,10 @@
   color-scheme: dark;
 }
 
+#nprogress .bar {
+  z-index: 9101!important;
+}
+
 html,
 body {
   width: 100%;

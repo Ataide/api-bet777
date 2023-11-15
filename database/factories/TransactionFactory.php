@@ -17,11 +17,14 @@ class TransactionFactory extends Factory
      */
     public function definition(): array
     {
+        $typeSelected = fake()->randomElement(['deposit', 'withdraw']);
+
         return [
-            'user_id'  => User::factory(),
-            'type'     => fake()->randomElement(['deposit', 'withdraw']),
-            'deposit'  => 120,
-            'withdraw' => 62
+            'user_id'    => User::pluck('id')->random(),
+            'type'       => $typeSelected,
+            'deposit'    => $typeSelected === 'deposit' ? fake()->randomFloat(2, 100, 7000) : 0,
+            'withdraw'   => $typeSelected === 'withdraw' ? fake()->randomFloat(2, 100, 3000) : 0,
+            'created_at' => fake()->dateTimeThisYear()
         ];
     }
 }

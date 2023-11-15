@@ -21,7 +21,7 @@ class ProfileFactory extends Factory
             'user_id'        => User::factory(),
             'cpf'            => fake()->unixTime(),
             'phone'          => fake()->phoneNumber(),
-            'pix_key'        => '',
+            'pix_key'        => fake()->swiftBicNumber(),
             'account_status' => fake()->randomElement(['Ativo' , 'Novo' , 'Inativo']),
         ];
     }

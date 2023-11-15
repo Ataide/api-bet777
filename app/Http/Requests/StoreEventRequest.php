@@ -24,6 +24,7 @@ class StoreEventRequest extends FormRequest
         return [
             'title'    => ['required', 'string'],
             'sport'    => ['required', 'string'],
+            'sport_id' => ['required', 'exists:sports,id'],
             'end_date' => ['required', 'date']
         ];
     }

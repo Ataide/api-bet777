@@ -2,7 +2,20 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import { ProfitBarChart } from "../Charts/MiniCharts/ProfitBarChart";
+import { usePage } from "@inertiajs/react";
+import { PageProps } from "@/types";
+import { formatter } from "@/helper";
 export default function Profit() {
+  const { dashboard } = usePage<PageProps>().props;
+
+  const getTotal = () => {
+    const values = Object.values(dashboard).map((date: any) =>
+      date.reduce((n: any, { withdraw, deposit }: any) => n + (deposit - withdraw), 0)
+    );
+    const total = values.reduce((n: any, profit: number) => n + profit, 0);
+    return formatter.format(total);
+  };
+
   return (
     <>
       <Paper elevation={5} variant="indicator">
@@ -11,7 +24,9 @@ export default function Profit() {
           <Typography variant="body2" color={"primary"}>
             +2.6%
           </Typography>
-          <Typography variant="h5">R$ 1.300</Typography>
+          <Typography variant="h5" color={getTotal().includes("-") ? "error" : "primary"}>
+            {getTotal()}
+          </Typography>
           <Box>
             <ProfitBarChart />
           </Box>

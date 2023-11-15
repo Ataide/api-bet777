@@ -17,7 +17,7 @@ class SportFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => 'Outros',
+            'name' => fake()->randomElement(['Futebol', 'Vôlei', 'Boxe', 'Basquete', 'Tenis', 'Beisebol', 'Futebol Americano']),
         ];
     }
 }

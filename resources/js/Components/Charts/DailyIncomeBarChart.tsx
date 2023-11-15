@@ -4,6 +4,8 @@ import { Bar } from "react-chartjs-2";
 import type { ChartData, ChartArea } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import Grow from "@mui/material/Grow";
+import { usePage } from "@inertiajs/react";
+import { PageProps } from "@/types";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -47,32 +49,6 @@ export const options = {
   },
 };
 
-const labels = [""];
-
-export const data = {
-  labels,
-  datasets: [
-    {
-      label: "Saques",
-      data: [40],
-      barPercentage: 0.5,
-      borderRadius: 15,
-    },
-    {
-      label: "Depósitos",
-      data: [100],
-      barPercentage: 0.5,
-      borderRadius: 15,
-    },
-    {
-      label: "Lucro",
-      data: [60],
-      barPercentage: 0.5,
-      borderRadius: 15,
-    },
-  ],
-};
-
 function createGradient(ctx: CanvasRenderingContext2D, area: ChartArea, color: string) {
   const gradient = ctx.createLinearGradient(0, area.bottom, 0, area.top);
 
@@ -84,6 +60,47 @@ function createGradient(ctx: CanvasRenderingContext2D, area: ChartArea, color: s
 }
 
 export function DailyIncomeBarChart() {
+  const { today } = usePage<PageProps>().props;
+  const getDataProfitToDatasets = () => {
+    const total = Object.values(today).map((date: any) =>
+      date.reduce((n: any, { withdraw, deposit }: any) => n + (deposit - withdraw), 0)
+    );
+    return total[0] + total[1];
+  };
+  const getDataDepositsToDatasets = () => {
+    return today.deposit?.reduce((n: any, { deposit }: any) => n + deposit, 0);
+  };
+
+  const getDataWithdrawsToDatasets = () => {
+    return today.withdraw?.reduce((n: any, { withdraw }: any) => n + withdraw, 0);
+  };
+
+  const labels = [""];
+
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: "Saques",
+        data: [getDataWithdrawsToDatasets()],
+        barPercentage: 0.5,
+        borderRadius: 15,
+      },
+      {
+        label: "Depósitos",
+        data: [getDataDepositsToDatasets()],
+        barPercentage: 0.5,
+        borderRadius: 15,
+      },
+      {
+        label: "Lucro",
+        data: [getDataProfitToDatasets()],
+        barPercentage: 0.5,
+        borderRadius: 15,
+      },
+    ],
+  };
+
   const chartRef = useRef<ChartJS<"bar">>(null);
 
   const [chartData, setChartData] = useState<ChartData<"bar">>({

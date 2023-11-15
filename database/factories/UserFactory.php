@@ -3,10 +3,10 @@
 namespace Database\Factories;
 
 use App\Models\Bet;
-use App\Models\Event;
 use App\Models\Game;
 use App\Models\Paper;
 use App\Models\User;
+use App\Models\Wallet;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -26,8 +26,11 @@ class UserFactory extends Factory
             'name'              => fake()->name(),
             'email'             => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
+            'status'            => User::ACTIVE,
+            'type'              => 'user',
             'password'          => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token'    => Str::random(10),
+            'created_at'        => fake()->dateTimeThisMonth(),
         ];
     }
     
@@ -49,21 +52,17 @@ class UserFactory extends Factory
         return $this->afterMaking(function (User $user) {
             // ...
         })->afterCreating(function (User $user) {
-            $event = Event::factory()->create();
+            Wallet::factory()->for($user)->create();
 
-            $gameToEvent = Game::factory()
-                                ->for($event)
-                                ->create();
+            $game = Game::all()->random();
                                 
-            $paperForBets = Paper::factory()
-                                ->for($user)
-                                ->create();
+            $paperForBets = Paper::factory()->for($user)->create();
                             
-            $bets = Bet::factory() ->count(5) ->for($user) ->create();
+            $bets = Bet::factory()->count(5)->for($user)->for($game)->create();
 
             $paperForBets->bets()->attach($bets);
-
-            $user->sports()->attach([1]);
+            
+            $user->favorites()->attach([1]);
 
             // ...
         });

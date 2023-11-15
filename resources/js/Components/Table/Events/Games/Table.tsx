@@ -16,6 +16,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import GameAddDialog from "@/Components/Dialog/Game.add";
 import moment from "moment";
+import Box from "@mui/material/Box";
 
 export default function DataTable({ games, resource }: { games?: any; resource?: string }) {
   const columns: GridColDef[] = [
@@ -34,8 +35,8 @@ export default function DataTable({ games, resource }: { games?: any; resource?:
       align: "left",
       width: 420,
       valueGetter: (params: GridValueGetterParams) =>
-        `${params.row.home_rate || "unknown"}  | ${params.row.draw_rate || "unknown"} |  ${
-          params.row.away_rate || "unknown"
+        `${params.row.home_rate.toFixed(2) || "unknown"}  | ${params.row.draw_rate.toFixed(2) || "unknown"} |  ${
+          params.row.away_rate.toFixed(2) || "unknown"
         }`,
     },
     {
@@ -91,31 +92,40 @@ export default function DataTable({ games, resource }: { games?: any; resource?:
     setOpenDelete(false);
   };
 
+  console.log(games);
+
   return (
     <>
       <Paper elevation={5} variant="indicator">
         <TableTabList resource={resource} clickOpenNewEvent={handleClickOpen} />
-
-        <DataGrid
-          disableRowSelectionOnClick
-          // onRowClick={(e) => router.get("/eventos/" + e.row.id)}
-          disableColumnSelector
-          rows={games}
-          // rowCount={events.total}
-          paginationMode="server"
-          columns={columns}
-          density={"comfortable"}
-          // initialState={{
-          //   pagination: {
-          //     paginationModel: { page: events.current_page - 1, pageSize: events.per_page },
-          //   },
-          // }}
-          // onPaginationModelChange={(model, details) => {
-          //   router.get("/eventos", { page: model.page + 1, per_page: model.pageSize }, { preserveState: true });
-          // }}
-          // pageSizeOptions={[5, 10]}
-          checkboxSelection
-        />
+        {games.length === 0 ? (
+          <Box padding={10}>
+            <Typography variant="body1" color="gray" textAlign={"center"}>
+              Não há dados
+            </Typography>
+          </Box>
+        ) : (
+          <DataGrid
+            disableRowSelectionOnClick
+            // onRowClick={(e) => router.get("/eventos/" + e.row.id)}
+            disableColumnSelector
+            rows={games}
+            // rowCount={events.total}
+            paginationMode="server"
+            columns={columns}
+            density={"comfortable"}
+            // initialState={{
+            //   pagination: {
+            //     paginationModel: { page: events.current_page - 1, pageSize: events.per_page },
+            //   },
+            // }}
+            // onPaginationModelChange={(model, details) => {
+            //   router.get("/eventos", { page: model.page + 1, per_page: model.pageSize }, { preserveState: true });
+            // }}
+            // pageSizeOptions={[5, 10]}
+            checkboxSelection
+          />
+        )}
       </Paper>
 
       <GameAddDialog open={open} handleClose={handleClose} />

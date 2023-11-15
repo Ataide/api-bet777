@@ -17,8 +17,9 @@ class EventFactory extends Factory
     public function definition(): array
     {
         return [
-            'title'    => "Brasileirão",
-            'sport'    => "Futebol",
+            'title'    => fake()->randomElement(['Campeonato A', 'Campeonato B', 'Campeonato C', 'Campeonato D', 'Campeonato E', 'Campeonato F', 'Campeonato G']),
+            'sport'    => fake()->randomElement(['Futebol', 'Vôlei', 'Boxe', 'Basquete', 'Tenis', 'Beisebol', 'Futebol Americano']),
+            'sport_id' => rand(1, 4),
             'end_date' => fake()->dateTimeThisMonth()
 
         ];

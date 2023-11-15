@@ -14,7 +14,6 @@ import Typography from "@mui/material/Typography";
 import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
 
 export default function Users({ auth, users }: PageProps) {
-  console.log(users);
   return (
     <AuthenticatedLayout user={auth.user}>
       <Head title="Administração" />

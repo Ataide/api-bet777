@@ -24,6 +24,10 @@ import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import moment from "moment";
+import { formatRelative, format, subDays } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import formatDistanceToNow from "date-fns/formatDistanceToNow";
+import { PageProps } from "@/types";
 
 export default function DataTable({ events, resource }: { events?: any; resource?: string }) {
   const columns: GridColDef[] = [
@@ -31,56 +35,50 @@ export default function DataTable({ events, resource }: { events?: any; resource
       field: "title",
       headerName: "Nome",
       sortable: false,
+      filterable: false,
       flex: 1,
-      // valueGetter: (params: GridValueGetterParams) => `${params.row.name || ""} ${params.row.lastName || ""}`,
     },
     {
       field: "sport",
       headerName: "Esporte",
       headerAlign: "left",
       align: "left",
+      sortable: false,
+      filterable: false,
       flex: 1,
-      // valueGetter: (params: GridValueGetterParams) => params.row.profile.phone,
     },
     {
       field: "games.count",
       headerName: "Jogos",
       width: 120,
+      sortable: false,
+      filterable: false,
       valueGetter: (params: GridValueGetterParams) => params.row.games.length,
-      // renderCell: (params) => {
-      //   switch (params.row.profile.account_status) {
-      //     case "Ativo":
-      //       return (
-      //         <Typography variant="body1" sx={{ color: "success.main" }}>
-      //           Ativo
-      //         </Typography>
-      //       );
-      //     case "Inativo":
-      //       return (
-      //         <Typography variant="body1" color="error">
-      //           Inativo
-      //         </Typography>
-      //       );
-      //     case "Novo":
-      //       return <Typography sx={{ color: "warning.main" }}>Novo</Typography>;
-
-      //     default:
-      //       return <Typography variant="body1">{params.row.profile.account_status}</Typography>;
-      //   }
-      // },
     },
     {
       field: "created_at",
       headerName: "Criado em",
       headerAlign: "left",
-      align: "left",
+      align: "right",
+      sortable: false,
+      filterable: false,
       flex: 1,
-      // valueGetter: (params: GridValueGetterParams) => params.row.profile.phone,
+      valueGetter: (params: GridValueGetterParams) => params.row.games.length,
+      renderCell: (params) => {
+        return (
+          <Typography variant="body1" color="error">
+            {formatDistanceToNow(new Date(2023, 10, 11), { locale: ptBR })}
+          </Typography>
+        );
+      },
+
+      // formatRelative(subDays(new Date(), 3), new Date(), { locale: ptBR }),
     },
     {
       field: "",
       headerName: "Ações",
       sortable: false,
+      filterable: false,
       renderCell: (params) => {
         const onClick = (e: any) => {
           const currentRow = params.row;
@@ -89,10 +87,26 @@ export default function DataTable({ events, resource }: { events?: any; resource
 
         return (
           <Stack direction="row">
-            <IconButton aria-label="edit" sx={{ mr: 1 }} onClick={handleClickOpen}>
+            <IconButton
+              aria-label="edit"
+              sx={{ mr: 1 }}
+              onClick={(e) => {
+                e.preventDefault();
+                setEditing(true);
+                setData(params.row);
+                handleClickOpen();
+              }}
+            >
               <ModeEditOutlineIcon sx={{ color: "#ffffff" }} />
             </IconButton>
-            <IconButton aria-label="edit" sx={{ mr: 1 }} onClick={handleClickOpenDelete}>
+            <IconButton
+              aria-label="edit"
+              sx={{ mr: 1 }}
+              onClick={() => {
+                setData(params.row);
+                handleClickOpenDelete();
+              }}
+            >
               <DeleteIcon sx={{ color: "#ffffff" }} />
             </IconButton>
             <IconButton aria-label="more-options" sx={{ mr: 1 }} onClick={onClick}>
@@ -101,16 +115,23 @@ export default function DataTable({ events, resource }: { events?: any; resource
           </Stack>
         );
       },
-      width: 120,
+      width: 200,
     },
   ];
 
   const [open, setOpen] = React.useState(false);
   const [openDelete, setOpenDelete] = React.useState(false);
   const [editing, setEditing] = React.useState(false);
-  const { errors } = usePage().props;
+
+  const { errors, sports } = usePage<PageProps>().props;
 
   const handleClickOpen = () => {
+    setOpen(true);
+    setEditing(false);
+  };
+
+  const handleClickNewOpen = () => {
+    reset();
     setOpen(true);
     setEditing(true);
   };
@@ -128,34 +149,60 @@ export default function DataTable({ events, resource }: { events?: any; resource
     setOpenDelete(false);
   };
 
-  const { data, setData, post, processing } = useForm({
+  const { data, setData, reset, post, processing } = useForm({
+    id: 0,
     title: "",
     sport: "",
+    sport_id: 0,
     end_date: "",
   });
 
   const submit: React.FormEventHandler = (e) => {
     e.preventDefault();
-    router.post(route("events.storeFromModal"), data, {
-      preserveState: true,
+    const sport_name = sports.find((ea) => ea.id === data.sport_id).name;
+    setData("sport", sport_name);
+    setTimeout(() => {
+      router.post(
+        route("events.storeFromModal"),
+        { ...data, sport: sport_name },
+        {
+          preserveState: true,
+          onSuccess: (page) => {
+            // setSending(false);
+            setOpen(false);
+          },
+          onError: (errors) => {
+            console.log(errors);
+          },
+        }
+      );
+    }, 500);
+  };
+
+  function handleClickConfirmationDelete(): void {
+    router.delete(route("events.destroy", { id: data.id }), {
       onSuccess: (page) => {
-        // setSending(false);
-        setOpen(false);
-      },
-      onError: (errors) => {
-        console.log(errors);
+        handleCloseDelete();
       },
     });
-  };
+  }
 
   return (
     <>
       <Paper elevation={5} variant="indicator">
-        <TableTabList resource={resource} clickOpenNewEvent={handleClickOpen} />
+        <TableTabList resource={resource} clickOpenNewEvent={handleClickNewOpen} />
 
         <DataGrid
           disableRowSelectionOnClick
-          onRowClick={(e) => router.get("/eventos/" + e.row.id)}
+          disableColumnMenu
+          onRowSelectionModelChange={(row) => {
+            console.log(row);
+          }}
+          onRowClick={(e, event: any) => {
+            if (event.target.nodeName === "DIV") {
+              router.get("/eventos/" + e.row.id);
+            }
+          }}
           disableColumnSelector
           rows={events.data}
           rowCount={events.total}
@@ -232,6 +279,7 @@ export default function DataTable({ events, resource }: { events?: any; resource
                   Data final do evento ( o evento se encerrara automaticamente)
                 </Typography>
                 <DatePicker
+                  value={new Date(data.end_date)}
                   onChange={(e) => setData("end_date", moment(e as any).format("YYYY-MM-DD H:mm:ss"))}
                   sx={{
                     width: "100%",
@@ -254,14 +302,21 @@ export default function DataTable({ events, resource }: { events?: any; resource
                 <FormControl fullWidth>
                   <Select
                     sx={{ backgroundColor: "#1B1C1B", color: "#fff" }}
-                    value={data.sport}
+                    value={data.sport_id}
                     placeholder="Selecione um esporte"
-                    onChange={(e) => setData("sport", e.target.value)}
+                    onChange={(e) => {
+                      setData("sport_id", +e.target.value);
+                    }}
                   >
-                    <MenuItem value={"Selecione um esporte"}>Selecione um esporte</MenuItem>
-                    <MenuItem value={"Futebol"}>Futebol</MenuItem>
+                    {sports &&
+                      sports.map((sport, index) => (
+                        <MenuItem key={index} value={sport.id}>
+                          {sport.name}
+                        </MenuItem>
+                      ))}
+                    {/* <MenuItem value={"Selecione um esporte"}>Selecione um esporte</MenuItem>
                     <MenuItem value={"Vôlei"}>Vôlei</MenuItem>
-                    <MenuItem value={"Basquete"}>Basquete</MenuItem>
+                    <MenuItem value={"Basquete"}>Basquete</MenuItem> */}
                   </Select>
                 </FormControl>
               </Box>
@@ -323,12 +378,12 @@ export default function DataTable({ events, resource }: { events?: any; resource
         </IconButton>
         <DialogContent>
           <Typography variant="body1" fontWeight={400}>
-            Tem certeza que desenha deletar <strong>4 contas</strong> selecionadas?
+            Tem certeza que desenha deletar esse evento?
           </Typography>
         </DialogContent>
         <DialogActions sx={{ display: "flex", p: 3 }}>
           <>
-            <Button variant="contained" color="error">
+            <Button variant="contained" color="error" onClick={handleClickConfirmationDelete}>
               Deletar
             </Button>
             <Button variant="outlined" onClick={handleCloseDelete}>

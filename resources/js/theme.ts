@@ -61,8 +61,18 @@ const theme = createTheme({
           ".MuiDataGrid-columnHeadersInner": {
             backgroundColor: "#2E2E2E",
           },
+          ".MuiDataGrid-row:hover": {
+            cursor: "pointer",
+            backgroundColor: "#353535",
+          },
           ".MuiCheckbox-root": {
             color: theme.palette.primary.main,
+          },
+          "& .MuiDataGrid-cell:focus": {
+            outline: "none",
+          },
+          "& .MuiDataGrid-cell:focus-within": {
+            outline: "none",
           },
           // ".MuiDataGrid-row": {
           //   height: "90px !important",
@@ -81,6 +91,7 @@ const theme = createTheme({
         },
       ],
     },
+
     MuiPaper: {
       variants: [
         {
@@ -182,11 +193,19 @@ const theme = createTheme({
           },
         },
         root: {
+          fontWeight: 400,
           fontSize: "13px",
           "& input::placeholder": {
             fontSize: "13px",
           },
           borderRadius: "10px !important",
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          fontWeight: 400,
         },
       },
     },

@@ -18,6 +18,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { toast } from "react-toastify";
 
 export default function DataTable({ users, resource }: { users?: any; resource?: string }) {
   const columns: GridColDef[] = [
@@ -31,16 +32,18 @@ export default function DataTable({ users, resource }: { users?: any; resource?:
     {
       field: "profile.phone",
       headerName: "Telefone",
+      sortable: false,
       type: "number",
       headerAlign: "left",
       align: "left",
       flex: 1,
       valueGetter: (params: GridValueGetterParams) => params.row.profile.phone,
     },
-    { field: "email", headerName: "E-mail", flex: 1 },
+    { field: "email", sortable: false, headerName: "E-mail", flex: 1 },
     {
       field: "profile.account_status",
       headerName: "Status",
+      sortable: false,
       width: 120,
       valueGetter: (params: GridValueGetterParams) => params.row.profile.account_status,
       renderCell: (params) => {
@@ -69,6 +72,7 @@ export default function DataTable({ users, resource }: { users?: any; resource?:
       field: "",
       headerName: "Ações",
       sortable: false,
+
       renderCell: (params) => {
         const onClick = (e: any) => {
           const currentRow = params.row;
@@ -77,7 +81,7 @@ export default function DataTable({ users, resource }: { users?: any; resource?:
 
         return (
           <Stack direction="row">
-            <IconButton aria-label="edit" sx={{ mr: 1 }} onClick={handleClickOpen}>
+            <IconButton aria-label="edit" sx={{ mr: 1 }} onClick={() => handleClickOpen(params.row)}>
               <ModeEditOutlineIcon sx={{ color: "#ffffff" }} />
             </IconButton>
             <IconButton aria-label="edit" sx={{ mr: 1 }} onClick={handleClickOpenDelete}>
@@ -89,7 +93,7 @@ export default function DataTable({ users, resource }: { users?: any; resource?:
           </Stack>
         );
       },
-      width: 120,
+      width: 160,
     },
   ];
 
@@ -98,7 +102,9 @@ export default function DataTable({ users, resource }: { users?: any; resource?:
   const [editing, setEditing] = React.useState(false);
   const { errors } = usePage().props;
 
-  const handleClickOpen = () => {
+  const handleClickOpen = (_user: any) => {
+    //? #TODO melhorar esse parte.
+    setData({ ..._user.profile, ..._user });
     setOpen(true);
   };
 
@@ -116,10 +122,10 @@ export default function DataTable({ users, resource }: { users?: any; resource?:
   };
 
   const { data, setData, post, processing } = useForm({
-    id: 2,
-    email: "ataide.bastos@gmail.com",
-    name: "Ataide",
-    birthdate: "",
+    id: 0,
+    email: "",
+    name: "",
+    birthday: "",
     cpf: "",
     phone: "",
     pix_key: "",
@@ -127,11 +133,15 @@ export default function DataTable({ users, resource }: { users?: any; resource?:
 
   const submit: React.FormEventHandler = (e) => {
     e.preventDefault();
-    router.post(route("users.storeFromModal"), data, {
+    // console.log(data);
+
+    router.put(route("administration.update", data.id), data, {
       preserveState: true,
       onSuccess: (page) => {
-        // setSending(false);
+        toast.success("Update Success");
+        setEditing(false);
         setOpen(false);
+        console.log(page);
       },
       onError: (errors) => {
         // setSending(false);
@@ -141,28 +151,38 @@ export default function DataTable({ users, resource }: { users?: any; resource?:
 
   return (
     <>
-      <Paper elevation={5} variant="indicator">
+      <Paper elevation={5} variant="indicator" sx={{ maxWidth: "100%" }}>
         <TableTabList resource={resource} />
-        <DataGrid
-          disableRowSelectionOnClick
-          disableColumnSelector
-          rows={users.data}
-          rowCount={users.total}
-          paginationMode="server"
-          columns={columns}
-          density={"comfortable"}
-          initialState={{
-            pagination: {
-              paginationModel: { page: users.current_page - 1, pageSize: users.per_page },
-            },
-          }}
-          onPaginationModelChange={(model, details) => {
-            console.log(model, details);
-            router.get("/usuarios", { page: model.page + 1, per_page: model.pageSize }, { preserveState: true });
-          }}
-          pageSizeOptions={[5, 10]}
-          checkboxSelection
-        />
+        {users.data.length === 0 ? (
+          <Box padding={10}>
+            <Typography variant="body1" color="gray" textAlign={"center"}>
+              Não há dados
+            </Typography>
+          </Box>
+        ) : (
+          <DataGrid
+            disableRowSelectionOnClick
+            disableColumnSelector
+            rows={users.data}
+            rowCount={users.total}
+            paginationMode="server"
+            columns={columns}
+            density={"comfortable"}
+            disableColumnFilter={true}
+            disableColumnMenu={true}
+            initialState={{
+              pagination: {
+                paginationModel: { page: users.current_page - 1, pageSize: users.per_page },
+              },
+            }}
+            onPaginationModelChange={(model, details) => {
+              console.log(model, details);
+              router.get("/usuarios", { page: model.page + 1, per_page: model.pageSize }, { preserveState: true });
+            }}
+            pageSizeOptions={[5, 10]}
+            checkboxSelection
+          />
+        )}
       </Paper>
 
       <Dialog
@@ -226,13 +246,13 @@ export default function DataTable({ users, resource }: { users?: any; resource?:
                   fullWidth
                   required
                   disabled={!editing}
-                  id="birthdate"
-                  name="birthdate"
+                  id="cpf"
+                  name="cpf"
                   placeholder="22/04/1986"
-                  value={data.birthdate}
-                  error={errors.birthdate ? true : false}
-                  helperText={errors.birthdate}
-                  onChange={(e) => setData("birthdate", e.target.value)}
+                  value={data.cpf}
+                  error={errors.cpf ? true : false}
+                  helperText={errors.cpf}
+                  onChange={(e) => setData("cpf", e.target.value)}
                   InputLabelProps={{ shrink: false }}
                 />
               </Box>
@@ -245,13 +265,13 @@ export default function DataTable({ users, resource }: { users?: any; resource?:
                   fullWidth
                   required
                   disabled={!editing}
-                  id="cpf"
-                  name="cpf"
+                  id="birthday"
+                  name="birthday"
                   placeholder="1234567890"
-                  value={data.cpf}
-                  error={errors.cpf ? true : false}
-                  helperText={errors.cpf}
-                  onChange={(e) => setData("cpf", e.target.value)}
+                  value={data.birthday}
+                  error={errors.birthday ? true : false}
+                  helperText={errors.birthday}
+                  onChange={(e) => setData("birthday", e.target.value)}
                   InputLabelProps={{ shrink: false }}
                 />
               </Box>
@@ -264,13 +284,13 @@ export default function DataTable({ users, resource }: { users?: any; resource?:
                   fullWidth
                   required
                   disabled={!editing}
-                  id="cpf"
-                  name="cpf"
+                  id="phone"
+                  name="phone"
                   placeholder="1234567890"
-                  value={data.cpf}
-                  error={errors.cpf ? true : false}
-                  helperText={errors.cpf}
-                  onChange={(e) => setData("cpf", e.target.value)}
+                  value={data.phone}
+                  error={errors.phone ? true : false}
+                  helperText={errors.phone}
+                  onChange={(e) => setData("phone", e.target.value)}
                   InputLabelProps={{ shrink: false }}
                 />
               </Box>

@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { usePage } from "@inertiajs/react";
+import { PageProps } from "@/types";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 export const options = {
@@ -25,30 +27,6 @@ export const options = {
   },
 };
 
-const labels = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez", "Jan"];
-
-export const data = {
-  labels,
-  datasets: [
-    {
-      label: "Lucro",
-      data: [70, 50, 100, 300, 150, 160, 160, 175, 160, 185, 180, 190, 200],
-      backgroundColor: "#7AFF59",
-    },
-    {
-      label: "Depósitos",
-      data: [80, 70, 20, 300, 150, 160, 160, 175, 160, 185, 180, 190, 200],
-      backgroundColor: "#DDB62B",
-    },
-    {
-      label: "Saques",
-      data: [100, 120, 240, 300, 150, 160, 160, 175, 160, 185, 180, 190, 200],
-      backgroundColor: "#288AE5",
-      borderRadius: 10,
-    },
-  ],
-};
-
 // function createGradient(ctx: CanvasRenderingContext2D, area: ChartArea) {
 //   const gradient = ctx.createLinearGradient(0, area.bottom, 0, area.top);
 
@@ -60,6 +38,58 @@ export const data = {
 // }
 
 export function TotalIncomeBarChart() {
+  const { incomes } = usePage<PageProps>().props;
+
+  const getLastDaysLabels = () => {
+    return Object.keys(incomes);
+  };
+
+  const getDataProfitToDatasets = () => {
+    return Object.values(incomes).map((date: any) =>
+      date.reduce((n: any, { withdraw, deposit }: any) => n + (deposit - withdraw), 0)
+    );
+  };
+
+  const getDataDepositsToDatasets = () => {
+    return Object.values(incomes).map((date: any) =>
+      date
+        .filter((trasaction: any) => trasaction.type === "deposit")
+        .reduce((n: any, { deposit }: any) => n + deposit, 0)
+    );
+  };
+
+  const getDataWithdrawToDatasets = () => {
+    return Object.values(incomes).map((date: any) =>
+      date
+        .filter((trasaction: any) => trasaction.type === "withdraw")
+        .reduce((n: any, { withdraw }: any) => n + withdraw, 0)
+    );
+  };
+
+  const labels = getLastDaysLabels();
+
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: "Lucro",
+        data: getDataProfitToDatasets(),
+        backgroundColor: "#7AFF59",
+      },
+      {
+        label: "Depósitos",
+        data: getDataDepositsToDatasets(),
+        backgroundColor: "#DDB62B",
+      },
+      {
+        label: "Saques",
+        data: getDataWithdrawToDatasets(),
+        backgroundColor: "#288AE5",
+        borderRadius: 10,
+      },
+    ],
+  };
+
   // const chartRef = useRef<ChartJS<"bar">>(null);
   // const [chartData, setChartData] = useState<ChartData<"bar">>({
   //   datasets: [...data.datasets],

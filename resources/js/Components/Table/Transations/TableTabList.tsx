@@ -31,11 +31,11 @@ export default function TableTabList({ resource }: ITabListProps) {
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSearch(event.target.value);
-    if (resource) {
-      router.get(resource, { search: event.target.value, status: selectedTab }, { preserveState: true });
-    }
+
+    router.get("", { search: event.target.value }, { preserveState: true });
   };
 
+  console.log(transactions);
   return (
     <Box display={"flex"} alignItems={"center"}>
       <TabContext value={selectedTab}>
@@ -48,7 +48,7 @@ export default function TableTabList({ resource }: ITabListProps) {
                   <Chip
                     sx={{ background: "white", color: "black", ml: 1, borderRadius: "5px" }}
                     size="small"
-                    label={12}
+                    label={transactions.total || 0}
                   />
                 </div>
               }

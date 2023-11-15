@@ -4,22 +4,20 @@ import Paper from "@mui/material/Paper";
 
 import { router, useForm, usePage } from "@inertiajs/react";
 import DetailsTableTabList from "./DetailsTableTabList";
+import { PageProps } from "@/types";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { format } from "date-fns";
 
 export default function DataTableDetails({ transactions, resource }: { transactions?: any; resource?: string }) {
-  const details = [
-    { id: 1, date: new Date().toISOString(), amount: 120 },
-    { id: 2, date: new Date().toISOString(), amount: 120 },
-    { id: 3, date: new Date().toISOString(), amount: 120 },
-    { id: 4, date: new Date().toISOString(), amount: 120 },
-    { id: 5, date: new Date().toISOString(), amount: 120 },
-  ];
-
   const columns: GridColDef[] = [
     {
-      field: "date",
+      field: "created_at",
       headerName: "Data",
       sortable: false,
       flex: 1,
+      valueGetter: (params: GridValueGetterParams) =>
+        "R$ " + format(new Date(params.row.created_at), "dd/MM/yyyy hh:mm"),
     },
     {
       field: "amount",
@@ -28,43 +26,44 @@ export default function DataTableDetails({ transactions, resource }: { transacti
       headerAlign: "left",
       align: "left",
       flex: 1,
-      valueGetter: (params: GridValueGetterParams) => "R$ " + params.row.amount,
+      valueGetter: (params: GridValueGetterParams) => "R$ " + (params.row.withdraw + params.row.deposit).toFixed(2),
     },
-    // {
-    //   field: "total_withdraws",
-    //   headerName: "Saque",
-    //   type: "number",
-    //   headerAlign: "left",
-    //   align: "left",
-    //   flex: 1,
-    //   // valueGetter: (params: GridValueGetterParams) => params.row.,
-    // },
   ];
+
+  const { transactionDetails } = usePage<PageProps>().props;
 
   return (
     <>
       <Paper elevation={5} variant="indicator">
         <DetailsTableTabList />
-        <DataGrid
-          disableRowSelectionOnClick
-          disableColumnSelector
-          rows={details}
-          rowCount={transactions.total}
-          paginationMode="server"
-          columns={columns}
-          density={"comfortable"}
-          initialState={{
-            pagination: {
-              paginationModel: { page: transactions.current_page - 1, pageSize: transactions.per_page },
-            },
-          }}
-          onPaginationModelChange={(model, details) => {
-            console.log(model, details);
-            router.get("/transacoes", { page: model.page + 1, per_page: model.pageSize }, { preserveState: true });
-          }}
-          pageSizeOptions={[5, 10]}
-          checkboxSelection
-        />
+        {transactionDetails && transactionDetails.data.length === 0 ? (
+          <Box padding={10}>
+            <Typography variant="body1" color="gray" textAlign={"center"}>
+              Não há dados
+            </Typography>
+          </Box>
+        ) : (
+          <DataGrid
+            disableRowSelectionOnClick
+            disableColumnSelector
+            rows={transactionDetails.data}
+            rowCount={transactionDetails.total}
+            paginationMode="server"
+            columns={columns}
+            density={"comfortable"}
+            initialState={{
+              pagination: {
+                paginationModel: { page: transactionDetails.current_page - 1, pageSize: transactionDetails.per_page },
+              },
+            }}
+            onPaginationModelChange={(model, details) => {
+              console.log(model, details);
+              router.get("/transacoes", { page: model.page + 1, per_page: model.pageSize }, { preserveState: true });
+            }}
+            pageSizeOptions={[5, 10]}
+            checkboxSelection={false}
+          />
+        )}
       </Paper>
     </>
   );

@@ -12,11 +12,17 @@ class Event extends Model
     protected $fillable = [
         'title',
         'sport',
+        'sport_id',
         'end_date',
     ];
 
     public function games()
     {
         return $this->hasMany(Game::class);
+    }
+
+    public function sport()
+    {
+        return $this->belongsTo(Sport::class);
     }
 }

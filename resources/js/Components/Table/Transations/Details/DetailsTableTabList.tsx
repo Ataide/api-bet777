@@ -6,7 +6,7 @@ import TabPanel from "@mui/lab/TabPanel";
 import Chip from "@mui/material/Chip";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-import { ReactEventHandler, useState } from "react";
+import { ReactEventHandler, useEffect, useState } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import IconButton from "@mui/material/IconButton";
@@ -19,23 +19,27 @@ interface ITabListProps {
   resource?: string;
 }
 export default function DetailsTableTabList({ resource }: ITabListProps) {
-  const { transactions } = usePage<PageProps>().props;
-  const [selectedTab, setTabSelected] = useState("");
+  const { transactionDetails } = usePage<PageProps>().props;
+  const [selectedTab, setTabSelected] = useState("withdraw");
   const [search, setSearch] = useState<string>();
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
     setTabSelected(newValue);
-    if (resource) {
-      router.get(resource, { search: search, status: newValue }, { preserveState: true });
-    }
+    router.get("", { search: search, type: newValue }, { preserveState: true });
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSearch(event.target.value);
-    if (resource) {
-      router.get(resource, { search: event.target.value, status: selectedTab }, { preserveState: true });
-    }
+
+    router.get(
+      route("transactions.details"),
+      { search: event.target.value, status: selectedTab },
+      { preserveState: true }
+    );
   };
+  useEffect(() => {
+    setTabSelected("deposit");
+  }, []);
 
   return (
     <Box display={"flex"} alignItems={"center"}>
@@ -46,19 +50,33 @@ export default function DetailsTableTabList({ resource }: ITabListProps) {
               label={
                 <div>
                   {"Depósitos"}
-                  <Chip color="primary" sx={{ ml: 1, borderRadius: "5px" }} size="small" label={12} />
+                  <Chip
+                    color="primary"
+                    sx={{ ml: 1, borderRadius: "5px" }}
+                    size="small"
+                    label={transactionDetails.data
+                      .filter((trasaction: any) => trasaction.type === "deposit")
+                      .reduce((n: any, { deposit }: any) => n + 1, 0)}
+                  />
                 </div>
               }
-              value=""
+              value="deposit"
             />
             <Tab
               label={
                 <div>
                   {"Saques"}
-                  <Chip sx={{ ml: 1, borderRadius: "5px" }} color="error" size="small" label={12} />
+                  <Chip
+                    sx={{ ml: 1, borderRadius: "5px" }}
+                    color="error"
+                    size="small"
+                    label={transactionDetails.data
+                      .filter((trasaction: any) => trasaction.type === "withdraw")
+                      .reduce((n: any, { deposit }: any) => n + 1, 0)}
+                  />
                 </div>
               }
-              value=""
+              value="withdraw"
             />
           </TabList>
         </Box>

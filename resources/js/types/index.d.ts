@@ -9,6 +9,12 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
   auth: {
     user: User;
   };
+  dashboard: any[];
+  incomes: any[];
+  sports: any[];
+  today: { deposit: any[]; withdraw: any[] };
+  transactions: any;
+  transactionDetails?: any;
   users?: any;
   events?: any;
   event?: any;

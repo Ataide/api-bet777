@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Sport;
+use App\Models\Transaction;
 use App\Models\User;
 use Auth;
 use Illuminate\Database\Eloquent\Builder;
@@ -48,33 +50,75 @@ class UserController extends Controller
 
     public function storeFromModal(Request $request)
     {
-        Request::validate([
-            'name' => ['required', 'max:100'],
-            
-        ]);
+        // $request->user()->fill($request->validated());
 
+        // // if ($request->user()->isDirty('email')) {
+        // //     $request->user()->email_verified_at = null;
+        // // }
+
+        // $request->user()->save();
+
+        Request::validate([
+            'user_id' => ['required', 'exists:users,id'],
+            'name'    => ['required', 'string', 'max:255'],
+            'cpf'     => ['required', 'string', 'max:255'],
+            'phone'   => ['required', 'string', 'max:255'],
+            'pix_key' => ['required', 'string', 'max:255'],
+            'email'   => ['required', 'string'],
+        ]);
+        
+        // $user = Auth::user();
+
+        // $user->update([
+        //     'name'  => $request->name,
+        //     'email' => $request->email,
+        // ]);
+        
+        // $user->profile()->update([
+        //     'cpf'     => $request->cpf,
+        //     'phone'   => $request->phone,
+        //     'pix_key' => $request->pix_key,
+        // ]);
+        
         return Redirect::back()->with('success', 'User created.');
     }
 
     public function favoriteSport(Request $request)
     {
-        $sport_id = Request::validate([
-            'sport_id' => ['required', 'exists:sports,id'],
+        $sport_name = Request::validate([
+            'sport_name' => ['required', 'exists:sports,name'],
         ]);
 
         $user = Auth::user();
 
-        $sport_exists = $user->sports()->where('sport_id', $sport_id)->count();
-        
-        if ($sport_exists > 0) {
-            $user->sports()->detach([$sport_id]);
+        $sport_exists = $user->favorites()->where('name', $sport_name)->first();
+       
+        if (!is_null($sport_exists)) {
+            $user->favorites()->detach([$sport_exists->id]);
 
             return response()->json(['message' => 'Sport removed to User favorite sports']);
         }
+        $sport = Sport::where('name', $sport_name)->first();
 
-        $user->sports()->attach([$sport_id]);
+        $user->favorites()->attach([$sport->id]);
 
         return response()->json(['message' => 'Sport added to User favorite sports']);
+    }
+
+    public function transactions(Request $request)
+    {
+        $user = Auth::user();
+
+        $transactions = Transaction::query()
+        ->when(Request::input('type'), function (Builder $query, $search) {
+            $query->where('type', $search);
+        })->where('user_id', $user->id)->orderBy('id', 'desc')
+        // ->when(Request::input('status'), function (Builder $query, $status) {
+        //     $query->whereRelation('profile', 'account_status', $status);
+        // })
+        ->get();
+
+        return response()->json($transactions);
     }
     /**
      * Show the form for creating a new resource.

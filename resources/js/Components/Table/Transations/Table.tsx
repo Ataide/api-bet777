@@ -1,13 +1,18 @@
 import * as React from "react";
-import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRowId, GridValueGetterParams } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
 import TableTabList from "./TableTabList";
 
 import { router, useForm, usePage } from "@inertiajs/react";
 
 export default function DataTable({ transactions, resource }: { transactions?: any; resource?: string }) {
-  console.log(transactions);
   const columns: GridColDef[] = [
+    {
+      field: "user_id",
+      headerName: "ID",
+      sortable: false,
+      flex: 1,
+    },
     {
       field: "name",
       headerName: "Nome",
@@ -34,12 +39,14 @@ export default function DataTable({ transactions, resource }: { transactions?: a
     },
   ];
 
+  const [selectionModel, setSelectionModel] = React.useState<GridRowId[]>([]);
+
   return (
     <>
       <Paper elevation={5} variant="indicator">
         <TableTabList />
         <DataGrid
-          getRowId={(row) => row.name}
+          getRowId={(row) => row.user_id}
           disableRowSelectionOnClick
           disableColumnSelector
           rows={transactions.data}
@@ -58,6 +65,19 @@ export default function DataTable({ transactions, resource }: { transactions?: a
           }}
           pageSizeOptions={[5, 10]}
           checkboxSelection
+          rowSelectionModel={selectionModel}
+          onRowSelectionModelChange={(selection) => {
+            if (selection.length > 1) {
+              const selectionSet = new Set(selectionModel);
+              const result = selection.filter((s) => !selectionSet.has(s));
+              router.get(route("transactions", { id: result[0] }), {}, { preserveState: true });
+              setSelectionModel(result);
+            } else {
+              console.log(selection);
+              router.get(route("transactions", { id: selection[0] }), {}, { preserveState: true });
+              setSelectionModel(selection);
+            }
+          }}
         />
       </Paper>
     </>

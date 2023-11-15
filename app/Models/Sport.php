@@ -9,8 +9,17 @@ class Sport extends Model
 {
     use HasFactory;
 
+    protected $hidden = [
+        'pivot'
+    ];
+
     public function users()
     {
         return $this->belongsToMany(User::class);
+    }
+    
+    public function events()
+    {
+        return $this->HasMany(Event::class);
     }
 }

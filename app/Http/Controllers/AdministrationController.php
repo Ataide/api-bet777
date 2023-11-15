@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Request;
 use Inertia\Inertia;
+use Redirect;
 
 class AdministrationController extends Controller
 {
@@ -79,9 +80,33 @@ class AdministrationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(\Illuminate\Http\Request $request, string $id)
     {
-        //
+        $validated = $request->validate([
+            'id'       => ['required', 'integer', 'exists:users,id'],
+            'name'     => ['required', 'string', 'max:255'],
+            'birthday' => ['required', 'string', 'max:255'],
+            'cpf'      => ['required', 'string', 'max:255'],
+            'phone'    => ['required', 'string', 'max:255'],
+            'pix_key'  => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'string'],
+        ]);
+        
+        $user = User::find($id);
+
+        $user->update([
+            'name'  => $validated['name'],
+            'email' => $validated['email'],
+        ]);
+        
+        $user->profile()->update([
+            'cpf'      => $validated['cpf'],
+            'phone'    => $validated['phone'],
+            'birthday' => $validated['birthday'],
+            'pix_key'  => $validated['pix_key'],
+        ]);
+        
+        return Redirect::back()->with('success', 'User created.');
     }
 
     /**

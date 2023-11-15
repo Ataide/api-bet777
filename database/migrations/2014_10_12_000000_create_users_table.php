@@ -14,6 +14,8 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->enum('type', ['user', 'admin', 'superadmin'])->default('user');
+            $table->enum('status', ['pending', 'active', 'inactive'])->default('pending');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

@@ -12,8 +12,11 @@ class Paper extends Model
     protected $fillable = [
         'user_id',
         'quantity',
+        'amount',
         'rate',
-        'profit'
+        'profit',
+        'status',
+        'result'
     ];
 
     public function user()

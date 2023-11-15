@@ -19,7 +19,7 @@ class GameFactory extends Factory
     {
         return [
             'event_id'       => Event::factory(),
-            'home_name'      => fake()->randomElements(['Flamengo', 'Palmeiras', 'Santos', 'Corinthians'], 1)[0],
+            'home_name'      => fake()->randomElement(['Flamengo', 'Palmeiras', 'Santos', 'Corinthians']),
             'away_name'      => fake()->randomElements(['Atletico Mineiro', 'Fortaleza', 'São Paulo', 'Vasco'], 1)[0],
             'home_rate'      => fake()->randomFloat(2, 1, 6),
             'draw_rate'      => fake()->randomFloat(2, 1, 6),

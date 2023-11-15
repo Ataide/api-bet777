@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Models\Event;
+use App\Models\Sport;
+use Auth;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Inertia\Inertia;
 use Redirect;
+use Request;
 
 class EventController extends Controller
 {
@@ -17,11 +21,13 @@ class EventController extends Controller
     {
         $events = Event::with('games')->paginate(5);
 
+        $sports = Sport::all();
+
         return Inertia::render(
             'Events',
             [
                 'events' => $events,
-                // 'deposits'     => $deposits,
+                'sports' => $sports,
                 // 'withdraws'    => $withdraws
             ]
         );
@@ -29,10 +35,29 @@ class EventController extends Controller
 
     public function api_index()
     {
-        $events = Event::with('games')->paginate(5);
+        $events = Event::with('games')
+            ->when(Request::input('sportId'), function (Builder $query, $search) {
+                $query->where('sport_id', $search);
+            })->get();
         
-        response()->json($events);
+        return response()->json($events);
+    }
+
+    public function favorites()
+    {
+        $user      = Auth::user();
+        $favorites = $user->favorites;
+
+        $favoritesNames = $favorites->map(function ($favorite) {
+            return collect($favorite->toArray())
+                ->only('name')
+                ->all();
+        });
+        
+        $events = Event::with('games')->whereIn('sport', $favoritesNames)->get();
         ;
+        
+        return response()->json($events);
     }
 
     /**
@@ -59,6 +84,14 @@ class EventController extends Controller
     {
         $request->validated();
 
+        if ($request->id) {
+            $event = Event::find($request->id);
+            $event->fill($request->validated());
+            $event->save();
+
+            return Redirect::back()->with('success', 'User created.');
+        }
+        
         Event::create($request->validated());
 
         return Redirect::back()->with('success', 'User created.');
@@ -102,6 +135,8 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
-        //
+        $event->delete();
+
+        return Redirect::back()->with('success', 'Event  removed.');
     }
 }
