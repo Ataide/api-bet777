@@ -19,8 +19,9 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker/DatePicker";
 interface ITabListProps {
   resource?: string;
   clickOpenNewEvent?: () => void;
+  handleCLickOpenFinalization: () => void;
 }
-export default function TableTabList({ resource, clickOpenNewEvent }: ITabListProps) {
+export default function TableTabList({ resource, clickOpenNewEvent, handleCLickOpenFinalization }: ITabListProps) {
   const { games } = usePage<PageProps>().props;
   const [selectedTab, setTabSelected] = useState("");
   const [search, setSearch] = useState<string>();
@@ -97,7 +98,7 @@ export default function TableTabList({ resource, clickOpenNewEvent }: ITabListPr
             },
           }}
         />
-        <Button variant={"outlined"} color="primary">
+        <Button variant={"outlined"} color="primary" onClick={handleCLickOpenFinalization}>
           Encerrar eventos
         </Button>
         <IconButton aria-label="delete" sx={{ mr: 2 }}>

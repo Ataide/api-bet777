@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Game extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     const DONE     = 1;
     const NOT_DONE = 0;
@@ -38,16 +40,8 @@ class Game extends Model
         'time_start',
         'time_end',
         'done',
+        'hot',
         'result',
-        //
-        'home',
-        'home_odd',
-        'home_icon',
-        'visitor',
-        'visitor_odd',
-        'visitor_icon',
-        'x_odd',
-        'start_date'
     ];
 
     /**
@@ -60,6 +54,12 @@ class Game extends Model
         'updated_at',
     ];
 
+    protected $cast = [
+        'hot' => 'boolean',
+    ];
+
+    
+
     public function event()
     {
         return $this->belongsTo(Event::class);
@@ -68,5 +68,51 @@ class Game extends Model
     public function bet()
     {
         return $this->hasMany(Bet::class);
+    }
+
+    public function finalizate($home_score = null, $away_score = null)
+    {
+        $result = $home_score === $away_score ? Game::DRAW : ($home_score > $away_score ? Game::HOME_WIN : Game::AWAY_WIN);
+       
+        $this->update([
+            'home_score' => $home_score,
+            'away_score' => $away_score,
+            'done'       => Game::DONE,
+            'result'     => $result,
+            'time_end'   => Carbon::now()
+        ]);
+
+        $this->bet->map(function ($b) {
+            $isVictory = $b->game->result === $b->bet_choice;
+            
+            if (!$isVictory) {
+                $b->update([
+                    'game_result' => Bet::LOSE,
+                ]);
+
+                $b->papers->map(function ($paper) {
+                    $paper->closePaperWithLose();
+                });
+            } else {
+                $b->update([
+                    'game_result' => Bet::WIN,
+                ]);
+
+                $b->papers->map(function ($paper) {
+                    $paper->updatePaperWithBetWin();
+                });
+            }
+        });
+    }
+    public function gameIsDone()
+    {
+        return $this->done;
+    }
+
+    public function switchToHotGame()
+    {
+        $currentValue = $this->hot;
+        
+        return $this->update(['hot' => !$currentValue]);
     }
 }

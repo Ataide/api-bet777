@@ -25,16 +25,16 @@ export default function DetailsTableTabList({ resource }: ITabListProps) {
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
     setTabSelected(newValue);
-    router.get("", { search: search, type: newValue }, { preserveState: true });
+    router.get("", { search: search, type: newValue }, { preserveState: true, only: ["transactionDetails"] });
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSearch(event.target.value);
 
     router.get(
-      route("transactions.details"),
+      route("transactions"),
       { search: event.target.value, status: selectedTab },
-      { preserveState: true }
+      { preserveState: true, only: ["transactionDetails"] }
     );
   };
   useEffect(() => {

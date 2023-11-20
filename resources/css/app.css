@@ -2,30 +2,32 @@
 @tailwind components;
 @tailwind utilities; */
 :root {
-  color-scheme: dark;
+    color-scheme: dark;
+}
+
+.super-hidden {
+    display: none !important;
 }
 
 #nprogress .bar {
-  z-index: 9101!important;
+    z-index: 9101 !important;
 }
 
 html,
 body {
-  width: 100%;
-  height: 100%;
-  margin:0px;
-  background-color: #2e2e2e;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    background-color: #2e2e2e;
 }
 
 a {
-  color: inherit; /* blue colors for links too */
-  text-decoration: inherit; /* no underline */
+    color: inherit; /* blue colors for links too */
+    text-decoration: inherit; /* no underline */
 }
 
-// #TUDO - Ver como transformar 
+// #TUDO - Ver como transformar
 
 input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0px 1000px yellow inset !important;
+    -webkit-box-shadow: 0 0 0px 1000px yellow inset !important;
 }
-
-

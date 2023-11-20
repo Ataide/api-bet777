@@ -7,7 +7,7 @@ use App\Http\Requests\UpdateEventRequest;
 use App\Models\Event;
 use App\Models\Sport;
 use Auth;
-use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Inertia\Inertia;
 use Redirect;
 use Request;
@@ -35,11 +35,21 @@ class EventController extends Controller
 
     public function api_index()
     {
-        $events = Event::with('games')
+        $events = Event::with(['games' => function ($query) {
+            $query->where('done', 0);
+        }])
             ->when(Request::input('sportId'), function (Builder $query, $search) {
                 $query->where('sport_id', $search);
             })->get();
-        
+
+        return response()->json($events);
+    }
+    public function apiHotEvents()
+    {
+        $events = Event::with(['games' => function ($query) {
+            $query->where('done', 0)->where('hot', 1);
+        }])->get();
+
         return response()->json($events);
     }
 
@@ -54,7 +64,9 @@ class EventController extends Controller
                 ->all();
         });
         
-        $events = Event::with('games')->whereIn('sport', $favoritesNames)->get();
+        $events = Event::with(['games' => function ($query) {
+            $query->where('done', 0);
+        }])->whereIn('sport', $favoritesNames)->get();
         ;
         
         return response()->json($events);
@@ -108,7 +120,7 @@ class EventController extends Controller
             'Games',
             [
                 'event' => $event,
-                'games' => $event->games,
+                'games' => $event->games()->orderBy('time_close_bet')->get(),
                 // 'withdraws'    => $withdraws
             ]
         );

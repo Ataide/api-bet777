@@ -6,6 +6,7 @@ use App\Models\Sport;
 use App\Models\Transaction;
 use App\Models\User;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
@@ -20,21 +21,37 @@ class UserController extends Controller
     {
         $per_page = Request::input('per_page') ?? 5;
 
-        $actives = User::whereRelation('profile', 'account_status', 'Ativo')->count();
+        $activesWheres   = ['last_login_at', '>=', Carbon::now()->subDays(7)->toDateString()];
+        $recentsWheres   = ['created_at', '>=', Carbon::now()->subDays(7)->toDateString()];
+        $inactivesWheres = ['last_login_at', '<=', Carbon::now()->subDays(7)->toDateString()];
 
-        $recents = User::whereRelation('profile', 'account_status', 'Novo')->count();
+        $actives = User::whereDate(...$activesWheres)->where('type', 'user')->count();
 
-        $inactives = User::whereRelation('profile', 'account_status', 'Inativo')->count();
+        $recents = User::whereDate(...$recentsWheres)->where('type', 'user')->count();
 
-        $total = User::count();
+        $inactives = User::whereDate(...$inactivesWheres)->where('type', 'user')->count();
 
-        $users = User::query()
+        $total = User::where(['type' => 'user'])->count();
+
+        $users = User::query()->where((['type' => 'user']))
             ->when(Request::input('search'), function (Builder $query, $search) {
                 $query->where('name', 'like', '%' . $search . '%')
                     ->OrWhere('email', 'like', '%' . $search . '%');
             })
             ->when(Request::input('status'), function (Builder $query, $status) {
-                $query->whereRelation('profile', 'account_status', $status);
+                $activesWheres   = ['last_login_at', '>=', Carbon::now()->subDays(7)->toDateString()];
+                $recentsWheres   = ['created_at', '>=', Carbon::now()->subDays(7)->toDateString()];
+                $inactivesWheres = ['last_login_at', '<=', Carbon::now()->subDays(7)->toDateString()];
+
+                if ($status === 'Ativo') {
+                    $query->whereDate(...$activesWheres);
+                }
+                if ($status === 'Novo') {
+                    $query->whereDate(...$recentsWheres);
+                }
+                if ($status === 'Inativo') {
+                    $query->whereDate(...$inactivesWheres);
+                }
             })
             ->with('profile')
             ->paginate($per_page);
@@ -163,8 +180,10 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
-        //
+        $user->delete();
+
+        return Redirect::back()->with('success', 'Usuário removido com sucesso.');
     }
 }

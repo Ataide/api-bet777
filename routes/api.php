@@ -26,6 +26,8 @@ Route::post('/login', [AuthController::class, 'login'])->name('user.login');
 
 Route::get('/eventos', [EventController::class, 'api_index'])->name('events.list');
 
+Route::get('/events/hot', [EventController::class, 'apiHotEvents'])->name('events.list.hot');
+
 Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
     // $paper = Paper::with('bets')->where('user_id', '=', $request->user()->id)->get();
     // $bets = Bet::with('game')->where('user_id', '=', $request->user()->id)->get();

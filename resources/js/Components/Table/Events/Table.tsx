@@ -172,7 +172,7 @@ export default function DataTable({ events, resource }: { events?: any; resource
             setOpen(false);
           },
           onError: (errors) => {
-            console.log(errors);
+            //console.log(errors);
           },
         }
       );
@@ -196,7 +196,7 @@ export default function DataTable({ events, resource }: { events?: any; resource
           disableRowSelectionOnClick
           disableColumnMenu
           onRowSelectionModelChange={(row) => {
-            console.log(row);
+            //console.log(row);
           }}
           onRowClick={(e, event: any) => {
             if (event.target.nodeName === "DIV") {

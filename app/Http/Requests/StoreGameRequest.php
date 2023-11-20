@@ -32,6 +32,7 @@ class StoreGameRequest extends FormRequest
             'time_close_bet' => ['after:' . Carbon::now()],
             'time_start'     => 'after:time_close_bet',
             'time_end'       => 'after:time_start',
+            'time_game'      => ['required', 'string'],
           
         ];
     }

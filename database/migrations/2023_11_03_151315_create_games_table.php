@@ -24,10 +24,12 @@ return new class extends Migration {
             $table->dateTime('time_close_bet');
             $table->dateTime('time_start')->nullable();
             $table->dateTime('time_end')->nullable();
-            $table->integer('done')->default(0); //0 is not done, 1 is done
+            $table->integer('done')->default(0);
+            $table->boolean('hot')->default(0); //check if that game will be show in hotest games.
             $table->integer('result')->nullable();
             
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
         });

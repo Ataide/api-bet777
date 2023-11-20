@@ -14,6 +14,7 @@ import Button from "@mui/material/Button";
 import { PageProps } from "@/types";
 import CloseIcon from "@mui/icons-material/Close";
 import { useEffect } from "react";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 
 export default function GameAddDialog({ open, handleClose }: { open: boolean; handleClose: () => void }) {
   const { event } = usePage<PageProps>().props;
@@ -26,14 +27,25 @@ export default function GameAddDialog({ open, handleClose }: { open: boolean; ha
     draw_rate: "",
     away_rate: "",
     time_close_bet: "",
+    time_game: "",
   });
 
   const submit: React.FormEventHandler = (e) => {
     e.preventDefault();
-    post(route("games.storeFromModal"));
-    handleClose();
-    reset();
+    post(route("games.storeFromModal"), {
+      onSuccess: () => {
+        reset();
+        handleClose();
+      },
+    });
   };
+
+  useEffect(() => {
+    if (errors) {
+      setData((data) => ({ ...data, time_close_bet: "" }));
+      setData((data) => ({ ...data, time_game: "" }));
+    }
+  }, [errors]);
 
   return (
     <Dialog
@@ -114,7 +126,8 @@ export default function GameAddDialog({ open, handleClose }: { open: boolean; ha
                 Data do Jogo
               </Typography>
               <DatePicker
-                onChange={(e) => setData("time_close_bet", moment(e as any).format("YYYY-MM-DD H:mm:ss"))}
+                value={new Date(data.time_close_bet)}
+                onChange={(e) => setData("time_close_bet", moment(e as any).format("YYYY-MM-DD"))}
                 sx={{
                   width: "100%",
                   backgroundColor: "#1B1C1B",
@@ -158,6 +171,35 @@ export default function GameAddDialog({ open, handleClose }: { open: boolean; ha
                 onChange={(e) => setData("draw_rate", e.target.value)}
                 InputLabelProps={{ shrink: false }}
               />
+            </Box>
+            <Box width={"100%"} minHeight={"110px"}>
+              <Typography variant="caption" color="white" fontWeight={600}>
+                Horário do Jogo
+              </Typography>
+              <TimePicker
+                sx={{
+                  width: "100%",
+                  backgroundColor: "#1B1C1B",
+                  color: "#fff",
+                  borderRadius: "10px !important",
+                  "& .MuiIconButton-root": {
+                    color: "primary.main",
+                  },
+                }}
+                value={data.time_game}
+                onChange={(newValue) => setData("time_game", moment(newValue).format("HH:mm:ss"))}
+                onAccept={(newValue) => {
+                  setData("time_close_bet", data.time_close_bet + " " + moment(newValue as any).format("HH:mm:ss"));
+                }}
+              />
+
+              {errors.time_game && (
+                <Box ml={2}>
+                  <Typography variant="caption" color="error" fontWeight={600}>
+                    {errors.time_game}
+                  </Typography>
+                </Box>
+              )}
             </Box>
           </Box>
 

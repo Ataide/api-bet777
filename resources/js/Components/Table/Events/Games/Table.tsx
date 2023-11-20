@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRowId, GridValueGetterParams } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
 import TableTabList from "./TableTabList";
 import Stack from "@mui/material/Stack";
@@ -17,23 +17,63 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import GameAddDialog from "@/Components/Dialog/Game.add";
 import moment from "moment";
 import Box from "@mui/material/Box";
+import { useEffect, useState } from "react";
+import { UnFire, Fired } from "@/Components/Icons";
+import GameFinalizationDialog from "@/Components/Dialog/game.finalization";
+import { IGame } from "@/types";
+import { router } from "@inertiajs/react";
+import { toast } from "react-toastify";
 
 export default function DataTable({ games, resource }: { games?: any; resource?: string }) {
   const columns: GridColDef[] = [
     {
-      field: "home_name",
+      field: "times",
       headerName: "Times",
       sortable: false,
+      align: "left",
       flex: 1,
-      valueGetter: (params: GridValueGetterParams) =>
-        `${params.row.home_name || "unknown"}  vs ${params.row.away_name || "unknown"}`,
+      renderCell: (params) => {
+        //console.log(params);
+        const [selected, setSelected] = useState(false);
+        const handleSwitchHotAction = () => {
+          router.post(
+            route("games.hot", { game: params.row }),
+            {},
+            {
+              onSuccess: (page) => {
+                toast.success("asd");
+              },
+            }
+          );
+        };
+        return (
+          <Box display={"flex"} gap={1} alignItems={"center"}>
+            {params.row.home_name || "unknown"}
+            <Typography variant="body1" color="primary">
+              vs
+            </Typography>
+            {params.row.away_name || "unknown"}
+
+            {!params.row.done && (
+              <IconButton
+                onClick={() => {
+                  handleSwitchHotAction();
+                  setSelected(!selected);
+                }}
+              >
+                {!params.row.hot ? <UnFire /> : <Fired />}
+              </IconButton>
+            )}
+          </Box>
+        );
+      },
     },
     {
-      field: "home_odds",
+      field: "odds",
       headerName: "Odds",
       headerAlign: "left",
       align: "left",
-      width: 420,
+      width: 190,
       valueGetter: (params: GridValueGetterParams) =>
         `${params.row.home_rate.toFixed(2) || "unknown"}  | ${params.row.draw_rate.toFixed(2) || "unknown"} |  ${
           params.row.away_rate.toFixed(2) || "unknown"
@@ -42,29 +82,54 @@ export default function DataTable({ games, resource }: { games?: any; resource?:
     {
       field: "time_close_bet",
       headerName: "Data do Jogo",
-      width: 420,
+      width: 220,
       valueGetter: (params: GridValueGetterParams) => moment(params.row.time_close_bet).format("DD/MM/yyyy HH:mm"),
+    },
+    {
+      field: "result",
+      headerName: "Resultado",
+      align: "center",
+      headerAlign: "center",
+      width: 120,
+      valueGetter: (params: GridValueGetterParams) =>
+        params.row.done ? params.row.home_score + " - " + params.row.away_score : "",
+    },
+    {
+      field: "time_end",
+      headerName: "Encerrado em",
+      align: "center",
+      headerAlign: "center",
+      width: 420,
+      valueGetter: (params: GridValueGetterParams) => moment(params.row.time_end).format("DD/MM/yyyy HH:mm"),
+      renderCell: (params) => {
+        return (
+          <Stack direction="column" textAlign={"center"}>
+            {params.row.time_end && (
+              <>
+                <Typography variant="body2" color="error">
+                  {moment(params.row.time_end).format("DD/MM/yyyy")}
+                </Typography>
+                <Typography variant="body2" color="error">
+                  {moment(params.row.time_end).format("HH:mm")}
+                </Typography>
+              </>
+            )}
+          </Stack>
+        );
+      },
     },
     {
       field: "",
       headerName: "Ações",
       sortable: false,
       renderCell: (params) => {
-        const onClick = (e: any) => {
-          const currentRow = params.row;
-          return alert(JSON.stringify(currentRow, null, 4));
-        };
-
         return (
           <Stack direction="row">
             <IconButton aria-label="edit" sx={{ mr: 1 }} onClick={handleClickOpen}>
               <ModeEditOutlineIcon sx={{ color: "#ffffff" }} />
             </IconButton>
-            <IconButton aria-label="edit" sx={{ mr: 1 }} onClick={handleClickOpenDelete}>
+            <IconButton aria-label="edit" sx={{ mr: 1 }} onClick={() => handleClickOpenDelete(params.row)}>
               <DeleteIcon sx={{ color: "#ffffff" }} />
-            </IconButton>
-            <IconButton aria-label="more-options" sx={{ mr: 1 }} onClick={onClick}>
-              <MoreVertIcon sx={{ color: "#ffffff" }} />
             </IconButton>
           </Stack>
         );
@@ -75,29 +140,61 @@ export default function DataTable({ games, resource }: { games?: any; resource?:
 
   const [open, setOpen] = React.useState(false);
   const [openDelete, setOpenDelete] = React.useState(false);
+  const [selectionModel, setSelectionModel] = React.useState<GridRowId[]>([]);
+  const [openFinalization, setOpenFinalization] = useState<boolean>(false);
+  const [gameselected, setGameSelected] = useState<IGame | null>(null);
 
   const handleClickOpen = () => {
     setOpen(true);
+  };
+
+  const handleCLickOpenFinalization = () => {
+    setOpenFinalization(true);
   };
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  const handleClickOpenDelete = () => {
+  const handleClickOpenDelete = (game: IGame) => {
     setOpenDelete(true);
+    setGameSelected(() => game);
   };
 
   const handleCloseDelete = () => {
     setOpenDelete(false);
+    setGameSelected(null);
   };
 
-  console.log(games);
+  const handleCloseFinalization = () => {
+    setOpenFinalization(false);
+  };
+
+  const handleDeleteAction = (game: IGame) => {
+    router.delete(route("games.destroy", { game: game }), {
+      onSuccess: (page) => {
+        toast.success("Jogo deleteado com sucesso.");
+        handleCloseDelete();
+      },
+      onError: (error) => {
+        toast.error("Falha ao deletar o jogo.");
+      },
+    });
+  };
+
+  useEffect(() => {
+    const selected = games.find((g: IGame) => g.id === selectionModel[0]);
+    setGameSelected(() => selected);
+  }, [selectionModel]);
 
   return (
     <>
       <Paper elevation={5} variant="indicator">
-        <TableTabList resource={resource} clickOpenNewEvent={handleClickOpen} />
+        <TableTabList
+          resource={resource}
+          clickOpenNewEvent={handleClickOpen}
+          handleCLickOpenFinalization={handleCLickOpenFinalization}
+        />
         {games.length === 0 ? (
           <Box padding={10}>
             <Typography variant="body1" color="gray" textAlign={"center"}>
@@ -106,29 +203,45 @@ export default function DataTable({ games, resource }: { games?: any; resource?:
           </Box>
         ) : (
           <DataGrid
+            getRowId={(row) => row.id}
             disableRowSelectionOnClick
-            // onRowClick={(e) => router.get("/eventos/" + e.row.id)}
             disableColumnSelector
             rows={games}
-            // rowCount={events.total}
             paginationMode="server"
             columns={columns}
             density={"comfortable"}
-            // initialState={{
-            //   pagination: {
-            //     paginationModel: { page: events.current_page - 1, pageSize: events.per_page },
-            //   },
-            // }}
-            // onPaginationModelChange={(model, details) => {
-            //   router.get("/eventos", { page: model.page + 1, per_page: model.pageSize }, { preserveState: true });
-            // }}
-            // pageSizeOptions={[5, 10]}
             checkboxSelection
+            rowSelectionModel={selectionModel}
+            onRowSelectionModelChange={(selection) => {
+              if (selection.length > 1) {
+                const selectionSet = new Set(selectionModel);
+                const result = selection.filter((s) => !selectionSet.has(s));
+
+                // router.visit(route("transactions", { id: result[0] }), {
+                //   method: "get",
+                //   only: ["transactionDetails"],
+                //   preserveState: true,
+                // });
+                // router.get(route("transactions", { id: result[0] }), {}, { preserveState: true, replace: true });
+                setSelectionModel(result);
+              } else {
+                // router.visit(route("transactions", { id: selection[0] }), {
+                //   method: "get",
+                //   only: ["transactionDetails"],
+                //   preserveState: true,
+                // });
+                // router.get(route("transactions", { id: selection[0] }), {}, { preserveState: true, replace: true });
+                setSelectionModel(selection);
+              }
+            }}
           />
         )}
       </Paper>
 
       <GameAddDialog open={open} handleClose={handleClose} />
+      {gameselected && (
+        <GameFinalizationDialog open={openFinalization} handleClose={handleCloseFinalization} game={gameselected} />
+      )}
 
       <Dialog
         open={openDelete}
@@ -152,14 +265,16 @@ export default function DataTable({ games, resource }: { games?: any; resource?:
         </IconButton>
         <DialogContent>
           <Typography variant="body1" fontWeight={400}>
-            Tem certeza que desenha deletar <strong>4 contas</strong> selecionadas?
+            Tem certeza que desenha deletar o jogo {gameselected?.home_name + " vs " + gameselected?.away_name}?
           </Typography>
         </DialogContent>
         <DialogActions sx={{ display: "flex", p: 3 }}>
           <>
-            <Button variant="contained" color="error">
-              Deletar
-            </Button>
+            {gameselected && (
+              <Button variant="contained" color="error" onClick={() => handleDeleteAction(gameselected)}>
+                Deletar
+              </Button>
+            )}
             <Button variant="outlined" onClick={handleCloseDelete}>
               Cancelar
             </Button>

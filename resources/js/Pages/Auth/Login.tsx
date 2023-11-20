@@ -10,17 +10,14 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import { toast } from "react-toastify";
+import Alert from "@mui/material/Alert";
 
-export default function Login({
-  status,
-  canResetPassword,
-}: {
-  status?: string;
-  canResetPassword: boolean;
-}) {
+export default function Login({ status, canResetPassword }: { status?: string; canResetPassword: boolean }) {
   const { data, setData, post, processing, errors, reset } = useForm({
     email: "",
     password: "",
+    status: "",
     remember: false,
   });
 
@@ -32,8 +29,11 @@ export default function Login({
 
   const submit: FormEventHandler = (e) => {
     e.preventDefault();
-
-    post(route("login"));
+    post(route("login"), {
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
   };
 
   return (
@@ -45,31 +45,21 @@ export default function Login({
         onSubmit={submit}
         noValidate
         sx={{
+          maxWidth: "375px",
           mt: 1,
           display: "flex",
           flexDirection: "column",
         }}
         gap={1}
       >
-        <Box
-          display={"flex"}
-          flexDirection={"column"}
-          justifyContent={"center"}
-          alignItems={"center"}
-        >
+        <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"}>
           <Typography variant="h3" color={"primary"}>
             Entre na sua conta
           </Typography>
           <Typography variant="body1" fontWeight={400}>
             Não tem conta?
             <Link href={route("register")}>
-              <Typography
-                component={"span"}
-                variant="body1"
-                color="primary"
-                fontWeight={400}
-                ml={1}
-              >
+              <Typography component={"span"} variant="body1" color="primary" fontWeight={400} ml={1}>
                 cadastre-se
               </Typography>
             </Link>
@@ -100,18 +90,13 @@ export default function Login({
         />
         <Box textAlign={"end"}>
           <Link href={route("password.request")}>
-            <Typography
-              component={"span"}
-              variant="body1"
-              color="primary"
-              fontWeight={400}
-              ml={1}
-            >
+            <Typography component={"span"} variant="body1" color="primary" fontWeight={400} ml={1}>
               Esqueci minha senha
             </Typography>
           </Link>
           <br />
         </Box>
+        {errors.status && <Alert severity="warning">{errors.status}</Alert>}
         <Button
           variant="contained"
           type="submit"

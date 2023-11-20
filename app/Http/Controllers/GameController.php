@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreGameRequest;
+use App\Http\Requests\UpdateGameFinalizateRequest;
 use App\Http\Requests\UpdateGameRequest;
 use App\Models\Game;
+use Illuminate\Http\Request;
 use Redirect;
 
 class GameController extends Controller
@@ -67,7 +69,6 @@ class GameController extends Controller
      */
     public function update(UpdateGameRequest $request, Game $game)
     {
-        //
     }
 
     /**
@@ -75,6 +76,27 @@ class GameController extends Controller
      */
     public function destroy(Game $game)
     {
-        //
+        $game->delete();
+
+        return Redirect::back()->with(['message' => 'Operação realizada com sucesso.']);
+    }
+
+    public function finalizate(UpdateGameFinalizateRequest $request, Game $game)
+    {
+        if ($game->gameIsDone()) {
+            return Redirect::back()->withErrors(['message' => 'Operação não foi realizada. O Jogo já foi finalizado.']);
+        }
+
+        $result = $request->validated();
+
+        $game->finalizate(...$result);
+
+        return Redirect::back()->with(['message', 'Jogo Finalizado com sucesso.']);
+    }
+    public function hot(Request $request, Game $game)
+    {
+        $game->switchToHotGame();
+
+        return Redirect::back()->with(['message' => 'Operação não foi realizada. O Jogo já foi adicionado aos jogos em destaques.']);
     }
 }

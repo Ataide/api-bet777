@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Request;
 use Inertia\Inertia;
 use Redirect;
+use Spatie\Permission\Models\Role;
 
 class AdministrationController extends Controller
 {
@@ -17,23 +19,44 @@ class AdministrationController extends Controller
     {
         $per_page = Request::input('per_page') ?? 5;
 
-        $actives = User::whereRelation('profile', 'account_status', 'Ativo')->count();
+        $superuser = User::where('type', 'superadmin')->first();
+        
+        $activesWheres   = ['last_login_at', '>=', Carbon::now()->subDays(7)->toDateString()];
+        $recentsWheres   = ['created_at', '>=', Carbon::now()->subDays(7)->toDateString()];
+        $inactivesWheres = ['last_login_at', '<=', Carbon::now()->subDays(7)->toDateString()];
 
-        $recents = User::whereRelation('profile', 'account_status', 'Novo')->count();
+        $actives = User::whereDate(...$activesWheres)->where(['status' => User::ACTIVE, 'type' => 'admin'])->count();
 
-        $inactives = User::whereRelation('profile', 'account_status', 'Inativo')->count();
+        $recents = User::whereDate(...$recentsWheres)->where(['status' => User::ACTIVE, 'type' => 'admin'])->count();
 
-        $total = User::count();
+        $inactives = User::whereDate(...$inactivesWheres)->where(['status' => User::ACTIVE, 'type' => 'admin'])->count();
 
-        $users = User::query()
+        // get all admin users where account status is pending.
+        $pendings = User::where(['status' => User::PENDING, 'type' => 'admin'])->with('profile')->get();
+
+        $total = User::where(['status' => User::ACTIVE, 'type' => 'admin'])->count();
+
+        $users = User::query()->where(['type' => 'admin', 'status' => User::ACTIVE])
             ->when(Request::input('search'), function (Builder $query, $search) {
                 $query->where('name', 'like', '%' . $search . '%')
                     ->OrWhere('email', 'like', '%' . $search . '%');
             })
             ->when(Request::input('status'), function (Builder $query, $status) {
-                $query->whereRelation('profile', 'account_status', $status);
+                $activesWheres   = ['last_login_at', '>=', Carbon::now()->subDays(7)->toDateString()];
+                $recentsWheres   = ['created_at', '>=', Carbon::now()->subDays(7)->toDateString()];
+                $inactivesWheres = ['last_login_at', '<=', Carbon::now()->subDays(7)->toDateString()];
+
+                if ($status === 'Ativo') {
+                    $query->whereDate(...$activesWheres);
+                }
+                if ($status === 'Novo') {
+                    $query->whereDate(...$recentsWheres);
+                }
+                if ($status === 'Inativo') {
+                    $query->whereDate(...$inactivesWheres);
+                }
             })
-            ->with('profile')
+            ->with(['profile', 'roles'])
             ->paginate($per_page);
 
         $totals_groups = collect(
@@ -42,7 +65,11 @@ class AdministrationController extends Controller
         
         $with_totals = $totals_groups->merge($users);
             
-        return Inertia::render('Administration', ['users' => $with_totals]);
+        return Inertia::render('Administration', [
+            'admins'    => $with_totals,
+            'superuser' => $superuser,
+            'pendings'  => $pendings
+        ]);
     }
 
     /**
@@ -106,14 +133,40 @@ class AdministrationController extends Controller
             'pix_key'  => $validated['pix_key'],
         ]);
         
-        return Redirect::back()->with('success', 'User created.');
+        return Redirect::back()->with('success', 'Usuário atualizado.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
-        //
+        $user->delete();
+
+        return Redirect::back()->with('success', 'Usuário removido com sucesso.');
+    }
+
+    public function aproveAdminUser(string $id)
+    {
+        $user = User::find($id);
+
+        $user->aproveUserToBeAdmin();
+
+        return Redirect::back()->with('success', 'Usuário aprovado.');
+    }
+
+    public function addPermission(Request $request, User $user)
+    {
+        $roles = Request::input('roles');
+        $user->syncRoles([]);
+
+        if (isset($roles)) {
+            foreach ($roles as $roleName) {
+                $role = Role::findByName($roleName);
+                $user->assignRole($role);
+            }
+        }
+
+        return Redirect::back()->with('success', 'Usuário aprovado.');
     }
 }

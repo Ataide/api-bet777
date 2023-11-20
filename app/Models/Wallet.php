@@ -20,4 +20,18 @@ class Wallet extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function updateAmountInBets(\App\Models\Paper  $paper)
+    {
+        $amountInPaper = $paper->amount;
+        $amountInBets  = $this->bet_total;
+
+        $this->update(['bet_total' => $amountInBets - $amountInPaper]);
+    }
+
+    public function updateWalletAmount($amount)
+    {
+        $currentAmount = $this->amount;
+        $this->update(['amount' => $currentAmount + $amount]);
+    }
 }

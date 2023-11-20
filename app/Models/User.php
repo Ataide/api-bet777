@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -11,7 +12,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes;
 
     const ACTIVE   = 'active';
     const PENDING  = 'pending';
@@ -28,6 +29,8 @@ class User extends Authenticatable
         'type',
         'email',
         'password',
+        'last_login_at',
+        'last_login_ip'
     ];
 
     /**
@@ -38,6 +41,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'last_login_ip'
     ];
 
     /**
@@ -89,7 +93,14 @@ class User extends Authenticatable
     {
         $current_value = $this->wallet->amount;
 
-        $this->wallet()->update(['amount' => $current_value - $amount]);
+        $this->wallet->update(['amount' => $current_value - $amount]);
+    }
+
+    public function updateWalletAmountInBets($amount)
+    {
+        $current_value = $this->wallet->bet_total;
+
+        $this->wallet->update(['bet_total' => $current_value + $amount]);
     }
     public function createDepositTransaction($amount)
     {
@@ -128,6 +139,13 @@ class User extends Authenticatable
     }
     public function isAdmin()
     {
-        return $this->status === ('admin' || 'superadmin');
+        return $this->status === ('superadmin');
+    }
+
+    public function aproveUserToBeAdmin()
+    {
+        $this->profile()->update(['account_status' => "Novo"]);
+
+        return $this->update(['status' => User::ACTIVE]);
     }
 }

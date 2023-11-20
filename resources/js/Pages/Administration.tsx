@@ -1,19 +1,15 @@
-import DatabaseUsers from "@/Components/Indicators/DatabaseUsers";
-import NewUsers from "@/Components/Indicators/NewUsers";
-import Visitors from "@/Components/Indicators/Visitors";
-import DataTable from "@/Components/Table/Table";
+import DataTable from "@/Components/Table/Administration/Table";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { PageProps } from "@/types";
-import { Head } from "@inertiajs/react";
+import { IAdmin, IUser, PageProps } from "@/types";
+import { Head, usePage } from "@inertiajs/react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import Paper from "@mui/material/Paper";
-import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
 
-export default function Users({ auth, users }: PageProps) {
+export default function Users({ auth, admins, superuser }: PageProps) {
   return (
     <AuthenticatedLayout user={auth.user}>
       <Head title="Administração" />
@@ -26,7 +22,7 @@ export default function Users({ auth, users }: PageProps) {
             <Header />
           </Grid>
           <Grid item xs={12}>
-            <DataTable users={users} resource="/administracao" />
+            <DataTable admins={admins} resource="/administracao" />
           </Grid>
         </Grid>
       </Box>
@@ -35,13 +31,15 @@ export default function Users({ auth, users }: PageProps) {
 }
 
 function Header() {
+  const { superuser } = usePage<PageProps>().props;
+  //console.log(superuser);
   return (
     <Paper elevation={5} variant="indicator">
       <Box p={4}>
         <Grid container columns={14}>
           <Grid item xs={4}>
             <Box display={"flex"} height={40} alignItems={"center"}>
-              <Typography variant="body1">Nathan</Typography>
+              <Typography variant="body1">{superuser.name}</Typography>
             </Box>
           </Grid>
           <Grid item xs={4}>
@@ -51,7 +49,7 @@ function Header() {
           </Grid>
           <Grid item xs={4}>
             <Box display={"flex"} height={40} alignItems={"center"}>
-              <Typography variant="body1">nathan@example.com</Typography>
+              <Typography variant="body1">{superuser.email}</Typography>
             </Box>
           </Grid>
           <Grid item xs={2}>

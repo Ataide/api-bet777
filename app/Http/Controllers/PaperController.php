@@ -23,7 +23,7 @@ class PaperController extends Controller
             ->when(Request::input('status'), function (Builder $query, $status) {
                 $query->where('status', $status);
             })
-            ->with('bets')
+            ->with('bets', 'bets.game')
             ->where('user_id', $user->id)
             ->get();
 
@@ -52,6 +52,8 @@ class PaperController extends Controller
         }
 
         $request->user()->takeOutWallet($amount);
+        
+        $request->user()->updateWalletAmountInBets($amount);
         
         $new_paper = new Paper();
 

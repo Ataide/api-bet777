@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaction;
-use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Inertia\Inertia;
 use Request;
 
@@ -22,19 +22,23 @@ class TransactionController extends Controller
             ->paginate(5);
 
         $transactionDetails = Transaction::query()
-        ->when(Request::input('id'), function (Builder $query, $id) {
-            $query->where('user_id', $id);
+        ->when(Request::input('id'), function (Builder $query, $user_id) {
+            $query->where('user_id', $user_id);
         })
         ->when(Request::input('type'), function (Builder $query, $type) {
             $query->where('type', $type);
         })
-        ->paginate(100);
+        ->paginate(5);
+
+        $totals_groups = collect(
+            ['total_deposit' => 10, 'total_withdraw' => 10]
+        )->merge($transactionDetails);
 
         return Inertia::render(
             'Transactions',
             [
                 'transactions'       => $transactions,
-                'transactionDetails' => $transactionDetails,
+                'transactionDetails' => $totals_groups,
                 // 'withdraws'    => $withdraws
             ]
         );

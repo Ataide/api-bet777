@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdministrationController;
+use App\Http\Controllers\BetController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\GameController;
@@ -9,7 +10,6 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,21 +26,26 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
     /**
     * Home Routes
     */
-    Route::get('/', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
-    Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
-
-    Route::group(['middleware' => ['auth', 'permission']], function () {
+    
+    Route::group(['middleware' => ['auth']], function () {
+        Route::get('/', [DashboardController::class, 'index'])->middleware(['role:view dashboard|superadmin'])->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['role:view dashboard|superadmin'])->name('dashboard');
         /**
          * Usuarios Routes
          */
         Route::get('/usuarios', [UserController::class, 'index'])->name('users');
         Route::post('/usuarios/fromModal', [UserController::class, 'storeFromModal'])->name('users.storeFromModal');
+        Route::delete('/usuarios/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
         /**
          * Administraçao Routes
         */
         Route::get('/administracao', [AdministrationController::class, 'index'])->name('administration');
         Route::put('/administracao/{id}', [AdministrationController::class, 'update'])->name('administration.update');
-    
+        Route::put('/administracao/aprove/{id}', [AdministrationController::class, 'aproveAdminUser'])->name('administration.aprove');
+        Route::delete('/administracao/{user}', [AdministrationController::class, 'destroy'])->name('administration.destroy');
+        Route::post('/administracao/permission/{user}', [AdministrationController::class, 'addPermission'])->name('administration.permission.add');
+
         Route::get('/transacoes', [TransactionController::class, 'index'])->name('transactions');
         Route::get('/transacoes/{id}', [TransactionController::class, 'show'])->name('transactions.details');
     
@@ -50,10 +55,12 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         Route::delete('/eventos/{event}', [EventController::class, 'destroy'])->name('events.destroy');
        
         Route::post('/games/fromModal', [GameController::class, 'storeFromModal'])->name('games.storeFromModal');
-    
-        Route::get('/apostas', function () {
-            return Inertia::render('Bets');
-        })->name('bets');
+        Route::post('/games/finalizate/{game}', [GameController::class, 'finalizate'])->name('games.finalizate');
+        Route::post('/games/hot/{game}', [GameController::class, 'hot'])->name('games.hot');
+        
+        Route::delete('/games/{game}', [GameController::class, 'destroy'])->name('games.destroy');
+
+        Route::get('/apostas', [BetController::class, 'index'])->middleware(['role:view bets|superadmin'])->name('bets');
         
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

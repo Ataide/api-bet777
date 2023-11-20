@@ -60,8 +60,11 @@ export default function DataTable({ transactions, resource }: { transactions?: a
             },
           }}
           onPaginationModelChange={(model, details) => {
-            console.log(model, details);
-            router.get("/transacoes", { page: model.page + 1, per_page: model.pageSize }, { preserveState: true });
+            router.get(
+              "/transacoes",
+              { page: model.page + 1, per_page: model.pageSize },
+              { only: ["transactions"], preserveState: true }
+            );
           }}
           pageSizeOptions={[5, 10]}
           checkboxSelection
@@ -70,11 +73,20 @@ export default function DataTable({ transactions, resource }: { transactions?: a
             if (selection.length > 1) {
               const selectionSet = new Set(selectionModel);
               const result = selection.filter((s) => !selectionSet.has(s));
-              router.get(route("transactions", { id: result[0] }), {}, { preserveState: true });
+              router.visit(route("transactions", { id: result[0] }), {
+                method: "get",
+                only: ["transactionDetails"],
+                preserveState: true,
+              });
+              // router.get(route("transactions", { id: result[0] }), {}, { preserveState: true, replace: true });
               setSelectionModel(result);
             } else {
-              console.log(selection);
-              router.get(route("transactions", { id: selection[0] }), {}, { preserveState: true });
+              router.visit(route("transactions", { id: selection[0] }), {
+                method: "get",
+                only: ["transactionDetails"],
+                preserveState: true,
+              });
+              // router.get(route("transactions", { id: selection[0] }), {}, { preserveState: true, replace: true });
               setSelectionModel(selection);
             }
           }}

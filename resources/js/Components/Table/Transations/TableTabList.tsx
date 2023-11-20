@@ -35,7 +35,7 @@ export default function TableTabList({ resource }: ITabListProps) {
     router.get("", { search: event.target.value }, { preserveState: true });
   };
 
-  console.log(transactions);
+  //console.log(transactions);
   return (
     <Box display={"flex"} alignItems={"center"}>
       <TabContext value={selectedTab}>

@@ -28,4 +28,21 @@ class Paper extends Model
     {
         return $this->belongsToMany(Bet::class);
     }
+
+    public function closePaperWithLose()
+    {
+        $this->update(['status' => 1, 'result' => -1]);
+
+        $this->user->wallet->updateAmountInBets($this);
+    }
+    public function updatePaperWithBetWin()
+    {
+        $allBetsHasResults = ($this->bets()->where('game_result', 1)->count() === $this->bets()->count());
+
+        if ($allBetsHasResults) {
+            $this->update(['status' => 1, 'result' => 1]);
+            $this->user->wallet->updateAmountInBets($this);
+            $this->user->wallet->updateWalletAmount($this->profit);
+        }
+    }
 }

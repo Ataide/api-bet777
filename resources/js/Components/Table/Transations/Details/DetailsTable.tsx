@@ -17,7 +17,7 @@ export default function DataTableDetails({ transactions, resource }: { transacti
       sortable: false,
       flex: 1,
       valueGetter: (params: GridValueGetterParams) =>
-        "R$ " + format(new Date(params.row.created_at), "dd/MM/yyyy hh:mm"),
+        "ID: " + params.row.user_id + "    " + format(new Date(params.row.created_at), "dd/MM/yyyy hh:mm"),
     },
     {
       field: "amount",
@@ -57,8 +57,11 @@ export default function DataTableDetails({ transactions, resource }: { transacti
               },
             }}
             onPaginationModelChange={(model, details) => {
-              console.log(model, details);
-              router.get("/transacoes", { page: model.page + 1, per_page: model.pageSize }, { preserveState: true });
+              router.get(
+                "/transacoes",
+                { page: model.page + 1, per_page: model.pageSize },
+                { preserveState: true, only: ["transactionDetails"] }
+              );
             }}
             pageSizeOptions={[5, 10]}
             checkboxSelection={false}

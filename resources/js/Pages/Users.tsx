@@ -1,7 +1,7 @@
 import DatabaseUsers from "@/Components/Indicators/DatabaseUsers";
 import NewUsers from "@/Components/Indicators/NewUsers";
 import Visitors from "@/Components/Indicators/Visitors";
-import DataTable from "@/Components/Table/Table";
+import DataTable from "@/Components/Table/Users/Table";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { PageProps } from "@/types";
 import { Head } from "@inertiajs/react";
@@ -10,7 +10,7 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
 export default function Users({ auth, users }: PageProps) {
-  console.log(users);
+  //console.log(users);
   return (
     <AuthenticatedLayout user={auth.user}>
       <Head title="Usuários" />
@@ -32,7 +32,7 @@ export default function Users({ auth, users }: PageProps) {
           </Grid>
 
           <Grid item xs={12}>
-            <DataTable users={users} />
+            <DataTable users={users} resource="/usuarios" />
           </Grid>
         </Grid>
       </Box>

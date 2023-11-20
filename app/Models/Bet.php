@@ -9,9 +9,9 @@ class Bet extends Model
 {
     use HasFactory;
 
-    const HOME = 1;
-    const DRAW = 0;
-    const AWAY = -1;
+    const WIN = 1;
+    const OPEN = 0;
+    const LOSE = -1;
 
     protected $fillable = [
         'user_id',
@@ -20,7 +20,8 @@ class Bet extends Model
         'bet_choice',
         'quantity',
         'rate',
-        'profit'
+        'profit',
+        'game_result'
     ];
 
     public function user()

@@ -26,9 +26,9 @@ class GameFactory extends Factory
             'away_rate'      => fake()->randomFloat(2, 1, 6),
             'time_close_bet' => fake()->dateTimeThisMonth(),
             'time_start'     => fake()->dateTimeThisMonth(),
-            'time_end'       => fake()->dateTimeThisMonth(),
+            'time_end'       => null,
             'done'           => 0,
-            //
+            'hot'            => rand(0, 1)
             
         ];
     }

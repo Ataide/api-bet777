@@ -159,6 +159,7 @@ export default function Authenticated({
         >
           {drawer}
         </Drawer>
+        
         <Drawer
           variant="permanent"
           sx={{
@@ -173,6 +174,7 @@ export default function Authenticated({
         >
           {drawer}
         </Drawer>
+        
       </Box>
       <Box
         component="main"
