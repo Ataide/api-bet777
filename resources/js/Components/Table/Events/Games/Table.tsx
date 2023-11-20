@@ -23,6 +23,7 @@ import GameFinalizationDialog from "@/Components/Dialog/game.finalization";
 import { IGame } from "@/types";
 import { router } from "@inertiajs/react";
 import { toast } from "react-toastify";
+import GameUpdateDialog from "../../../Dialog/Games.update";
 
 export default function DataTable({ games, resource }: { games?: any; resource?: string }) {
   const columns: GridColDef[] = [
@@ -41,7 +42,7 @@ export default function DataTable({ games, resource }: { games?: any; resource?:
             {},
             {
               onSuccess: (page) => {
-                toast.success("asd");
+                toast.success("Eventos em destaques atualizados.");
               },
             }
           );
@@ -126,7 +127,7 @@ export default function DataTable({ games, resource }: { games?: any; resource?:
       renderCell: (params) => {
         return (
           <Stack direction="row">
-            <IconButton aria-label="edit" sx={{ mr: 1 }} onClick={handleClickOpen}>
+            <IconButton aria-label="edit" sx={{ mr: 1 }} onClick={() => handleClickEditOpen(params.row)}>
               <ModeEditOutlineIcon sx={{ color: "#ffffff" }} />
             </IconButton>
             <IconButton aria-label="edit" sx={{ mr: 1 }} onClick={() => handleClickOpenDelete(params.row)}>
@@ -140,7 +141,10 @@ export default function DataTable({ games, resource }: { games?: any; resource?:
   ];
 
   const [open, setOpen] = React.useState(false);
+  const [openEdit, setOpenEdit] = React.useState(false);
+
   const [openDelete, setOpenDelete] = React.useState(false);
+  const [itemSelected, setItemSelected] = useState<IGame | null>(null);
   const [selectionModel, setSelectionModel] = React.useState<GridRowId[]>([]);
   const [openFinalization, setOpenFinalization] = useState<boolean>(false);
   const [gameselected, setGameSelected] = useState<IGame | null>(null);
@@ -149,12 +153,24 @@ export default function DataTable({ games, resource }: { games?: any; resource?:
     setOpen(true);
   };
 
+  const handleClickEditOpen = (game?: IGame) => {
+    if (game) {
+      setItemSelected(() => game);
+    }
+    setOpenEdit(true);
+  };
+
   const handleCLickOpenFinalization = () => {
     setOpenFinalization(true);
   };
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleCloseEdit = () => {
+    setItemSelected(() => null);
+    setOpenEdit(false);
   };
 
   const handleClickOpenDelete = (game: IGame) => {
@@ -238,8 +254,12 @@ export default function DataTable({ games, resource }: { games?: any; resource?:
           />
         )}
       </Paper>
+      {itemSelected ? (
+        <GameUpdateDialog open={openEdit} handleClose={handleCloseEdit} selectedGame={itemSelected} />
+      ) : (
+        <GameAddDialog open={open} handleClose={handleClose} />
+      )}
 
-      <GameAddDialog open={open} handleClose={handleClose} />
       {gameselected && (
         <GameFinalizationDialog open={openFinalization} handleClose={handleCloseFinalization} game={gameselected} />
       )}

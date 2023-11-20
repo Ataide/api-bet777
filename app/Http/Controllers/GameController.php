@@ -43,9 +43,17 @@ class GameController extends Controller
     {
         $request->validated();
 
+        if ($request->id) {
+            $game = Game::find($request->id);
+            $game->fill($request->validated());
+            $game->save();
+
+            return Redirect::back()->with('success', 'Usuário atualizado com sucesso.');
+        }
+
         Game::create($request->validated());
 
-        return Redirect::back()->with('success', 'User created.');
+        return Redirect::back()->with('success', 'Usuário criado com sucesso.');
     }
 
     /**

@@ -64,17 +64,20 @@ export interface IGame {
   id?: number;
   event_id: number;
   home_name: string;
+  home_image: string;
   away_name: string;
-  home_rate: number;
-  draw_rate: number;
-  away_rate: number;
-  home_score: number;
-  away_score: number;
+  away_image: string;
+  home_rate: string;
+  draw_rate: string;
+  away_rate: string;
+  home_score?: number;
+  away_score?: number;
   time_close_bet: string;
-  time_start: string;
-  time_end: string;
-  done: boolean;
-  result: number;
+  time_game?: string;
+  time_start?: string;
+  time_end?: string;
+  done?: boolean;
+  result?: number;
 }
 
 export interface IPaper {
