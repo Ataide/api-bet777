@@ -48,12 +48,13 @@ export default function DataTable({ games, resource }: { games?: any; resource?:
         };
         return (
           <Box display={"flex"} gap={1} alignItems={"center"}>
+            <img src={params.row.home_image} width={32} height={32} />
             {params.row.home_name || "unknown"}
             <Typography variant="body1" color="primary">
               vs
             </Typography>
             {params.row.away_name || "unknown"}
-
+            <img src={params.row.away_image} width={32} height={32} />
             {!params.row.done && (
               <IconButton
                 onClick={() => {

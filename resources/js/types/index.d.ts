@@ -10,8 +10,9 @@ export interface User extends IUser {
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
   auth: {
     user: User;
+    roles: string[];
   };
-  flash: any;
+  flash: Flash;
   superuser: IAdmin;
   dashboard: any[];
   incomes: any[];
@@ -28,6 +29,11 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
   event?: any;
   games?: any;
 };
+
+export interface Flash {
+  message: string;
+  file: string;
+}
 
 export interface IUser {
   id: number;

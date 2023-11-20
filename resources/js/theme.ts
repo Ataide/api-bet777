@@ -74,9 +74,16 @@ const theme = createTheme({
           "& .MuiDataGrid-cell:focus-within": {
             outline: "none",
           },
-          // ".MuiDataGrid-row": {
-          //   height: "90px !important",
-          // },
+          "& .MuiDataGrid-row": {
+            "& .MuiIconButton-root": {
+              backgroundColor: "#2E2E2E",
+              "&.Mui-disabled ": {
+                "& svg": {
+                  fill: "gray",
+                },
+              },
+            },
+          },
         }),
       },
     },

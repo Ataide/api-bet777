@@ -21,7 +21,7 @@ interface ITabListProps {
   clickOpenNewEvent?: () => void;
 }
 export default function TableTabList({ resource, clickOpenNewEvent }: ITabListProps) {
-  const { events } = usePage<PageProps>().props;
+  const { events, auth } = usePage<PageProps>().props;
   const [selectedTab, setTabSelected] = useState("");
   const [search, setSearch] = useState<string>();
 
@@ -63,7 +63,12 @@ export default function TableTabList({ resource, clickOpenNewEvent }: ITabListPr
 
       <Box ml={2} flex={1} display={"flex"} flexDirection={"row"} justifyContent={"end"} alignItems={"center"} gap={2}>
         {clickOpenNewEvent && (
-          <Button variant={"contained"} color="primary" onClick={clickOpenNewEvent}>
+          <Button
+            variant={"contained"}
+            color="primary"
+            onClick={clickOpenNewEvent}
+            disabled={!auth?.roles?.some((role) => role === "create events")}
+          >
             Criar Evento
           </Button>
         )}

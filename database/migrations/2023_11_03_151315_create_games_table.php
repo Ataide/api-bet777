@@ -15,7 +15,9 @@ return new class extends Migration {
             $table->unsignedBigInteger('event_id');
 
             $table->string('home_name');
+            $table->string('home_image')->nullable();
             $table->string('away_name');
+            $table->string('away_image')->nullable();
             $table->float('home_rate', 5, 2);
             $table->float('draw_rate', 5, 2);
             $table->float('away_rate', 5, 2);

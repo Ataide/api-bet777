@@ -17,7 +17,7 @@ import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
-import { IAdmin, IAdminResource, IUser } from "@/types";
+import { IAdmin, IAdminResource, IUser, PageProps } from "@/types";
 import { checkIfUserIsActiveInactiveOrRecent } from "@/helper";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
@@ -82,10 +82,20 @@ export default function DataTable({ admins, resource }: { admins: IAdminResource
       renderCell: (params) => {
         return (
           <Stack direction="row">
-            <IconButton aria-label="edit" sx={{ mr: 1 }} onClick={() => handleClickOpen(params.row)}>
+            <IconButton
+              disabled={!auth.roles.includes("edit admins")}
+              aria-label="edit"
+              sx={{ mr: 1 }}
+              onClick={() => handleClickOpen(params.row)}
+            >
               <ModeEditOutlineIcon sx={{ color: "#ffffff" }} />
             </IconButton>
-            <IconButton aria-label="edit" sx={{ mr: 1 }} onClick={() => handleClickOpenDelete(params.row)}>
+            <IconButton
+              disabled={!auth.roles.includes("delete admins")}
+              aria-label="edit"
+              sx={{ mr: 1 }}
+              onClick={() => handleClickOpenDelete(params.row)}
+            >
               <DeleteIcon sx={{ color: "#ffffff" }} />
             </IconButton>
           </Stack>
@@ -103,16 +113,17 @@ export default function DataTable({ admins, resource }: { admins: IAdminResource
   const [itemSelected, setItemSelected] = React.useState<IAdmin | null>(null);
   const [isAproving, setIsAproving] = React.useState<boolean>(false);
   const [editing, setEditing] = React.useState(false);
-  const { errors } = usePage().props;
+  const { errors, auth } = usePage<PageProps>().props;
 
-  const handleClickOpen = (_user: any) => {
+  const handleClickOpen = (_admin: any) => {
     //? #TODO melhorar esse parte.
-    setData({ ..._user.profile, ..._user, roles: _user.roles.map((data: any) => data.name) });
+    setData({ ..._admin.profile, ..._admin, roles: _admin.roles.map((data: any) => data.name) });
+    setItemSelected(_admin);
     setOpen(true);
   };
 
-  const handleClickAproveUser = (_user: any) => {
-    setData({ ..._user.profile, ..._user });
+  const handleClickAproveUser = (_admin: any) => {
+    setData({ ..._admin.profile, ..._admin });
     setIsAproving(true);
     setOpen(true);
   };
@@ -146,7 +157,6 @@ export default function DataTable({ admins, resource }: { admins: IAdminResource
       setRoles(roles?.filter((role) => role !== e.target.name));
       return;
     }
-
     setRoles((old) => [...old, e.target.name]);
   };
 
@@ -154,7 +164,6 @@ export default function DataTable({ admins, resource }: { admins: IAdminResource
     if (itemSelected) {
       router.delete(route("administration.destroy", { user: itemSelected }), {
         onSuccess: (page) => {
-          //console.log(page);
           handleCloseDelete();
         },
       });
@@ -164,6 +173,14 @@ export default function DataTable({ admins, resource }: { admins: IAdminResource
   React.useEffect(() => {
     setData("roles", roles);
   }, [roles]);
+
+  React.useEffect(() => {
+    if (openPermission) {
+      if (itemSelected) {
+        setRoles(() => itemSelected.roles.map((data: any) => data.name));
+      }
+    }
+  }, [itemSelected, openPermission]);
 
   const addPermissionAction = () => {
     router.post(
@@ -199,10 +216,9 @@ export default function DataTable({ admins, resource }: { admins: IAdminResource
     router.put(route("administration.update", data.id), data, {
       preserveState: true,
       onSuccess: (page) => {
-        toast.success("Update Success");
+        toast.success("Usuário atualizado com sucesso!");
         setEditing(false);
         setOpen(false);
-        //console.log(page);
       },
       onError: (errors) => {
         // setSending(false);
@@ -239,7 +255,6 @@ export default function DataTable({ admins, resource }: { admins: IAdminResource
             onPaginationModelChange={(model, details) => {
               router.get("", { page: model.page + 1, per_page: model.pageSize }, { preserveState: true });
             }}
-            pageSizeOptions={[5, 10]}
             checkboxSelection
           />
         )}

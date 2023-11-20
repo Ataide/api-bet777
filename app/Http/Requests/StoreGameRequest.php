@@ -33,6 +33,8 @@ class StoreGameRequest extends FormRequest
             'time_start'     => 'after:time_close_bet',
             'time_end'       => 'after:time_start',
             'time_game'      => ['required', 'string'],
+            'home_image'     => ['string'],
+            'away_image'     => ['string']
           
         ];
     }

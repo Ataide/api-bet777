@@ -9,10 +9,10 @@ import Typography from "@mui/material/Typography";
 export default function Events({ auth, events }: PageProps) {
   return (
     <AuthenticatedLayout user={auth.user}>
-      <Head title="Eventos" />
+      <Head title="EVENTOS" />
       <Box>
         <Typography variant="h5" mb={2}>
-          Eventos
+          EVENTOS
         </Typography>
         <Grid container spacing={2}>
           <Grid item xs={12}>

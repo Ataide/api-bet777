@@ -71,7 +71,6 @@ export default function DataTable({ bets, resource }: { bets?: any; resource?: s
               { only: ["bets"], preserveState: true }
             );
           }}
-          pageSizeOptions={[5, 10]}
           checkboxSelection
           rowSelectionModel={selectionModel}
           onRowSelectionModelChange={(selection) => {

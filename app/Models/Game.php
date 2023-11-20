@@ -30,7 +30,9 @@ class Game extends Model
     protected $fillable = [
         'event_id',
         'home_name',
+        'home_image',
         'away_name',
+        'away_image',
         'home_rate',
         'draw_rate',
         'away_rate',
@@ -57,8 +59,6 @@ class Game extends Model
     protected $cast = [
         'hot' => 'boolean',
     ];
-
-    
 
     public function event()
     {

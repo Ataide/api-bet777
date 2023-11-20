@@ -66,7 +66,6 @@ export default function DataTable({ transactions, resource }: { transactions?: a
               { only: ["transactions"], preserveState: true }
             );
           }}
-          pageSizeOptions={[5, 10]}
           checkboxSelection
           rowSelectionModel={selectionModel}
           onRowSelectionModelChange={(selection) => {

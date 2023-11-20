@@ -134,7 +134,6 @@ export default function DetailsTableTabList() {
               backgroundColor: "inherit", // Or 'transparent' or whatever color you'd like
             },
           }}
-          pageSizeOptions={[5, 10]}
           checkboxSelection={false}
         />
       )}

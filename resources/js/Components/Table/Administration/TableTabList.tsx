@@ -29,7 +29,7 @@ interface ITabListProps {
   aproveHandle: (user: any) => void;
 }
 export default function TableTabList({ resource, aproveHandle }: ITabListProps) {
-  const { admins, pendings } = usePage<PageProps>().props;
+  const { admins, pendings, auth } = usePage<PageProps>().props;
   const [open, setOpen] = useState(false);
   const [selectedTab, setTabSelected] = useState("");
   const [search, setSearch] = useState<string>();
@@ -139,7 +139,12 @@ export default function TableTabList({ resource, aproveHandle }: ITabListProps) 
             value={search}
             onChange={handleSearchChange}
           />
-          <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
+          <Button
+            disabled={!auth.roles.includes("aprove admins")}
+            variant="contained"
+            color="primary"
+            onClick={() => setOpen(true)}
+          >
             Solicitações {pendings.length}
           </Button>
           <IconButton aria-label="delete" sx={{ mr: 2 }}>

@@ -19,10 +19,12 @@ import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
-import { IUser } from "@/types";
+import { IUser, PageProps } from "@/types";
 import { checkIfUserIsActiveInactiveOrRecent } from "@/helper";
 
 export default function DataTable({ users, resource }: { users?: any; resource?: string }) {
+  const { errors, auth } = usePage<PageProps>().props;
+
   const columns: GridColDef[] = [
     {
       field: "fullName",
@@ -82,7 +84,12 @@ export default function DataTable({ users, resource }: { users?: any; resource?:
             <IconButton aria-label="edit" sx={{ mr: 1 }} onClick={() => handleClickOpen(params.row)}>
               <ModeEditOutlineIcon sx={{ color: "#ffffff" }} />
             </IconButton>
-            <IconButton aria-label="edit" sx={{ mr: 1 }} onClick={() => handleClickOpenDelete(params.row)}>
+            <IconButton
+              disabled={!auth.roles.includes("delete users")}
+              aria-label="edit"
+              sx={{ mr: 1 }}
+              onClick={() => handleClickOpenDelete(params.row)}
+            >
               <DeleteIcon sx={{ color: "#ffffff" }} />
             </IconButton>
           </Stack>
@@ -96,7 +103,6 @@ export default function DataTable({ users, resource }: { users?: any; resource?:
   const [openDelete, setOpenDelete] = React.useState(false);
   const [itemSelected, setItemSelected] = React.useState<IUser | null>(null);
   const [editing, setEditing] = React.useState(false);
-  const { errors } = usePage().props;
 
   const handleClickOpen = (_user: any) => {
     //? #TODO melhorar esse parte.
@@ -110,6 +116,10 @@ export default function DataTable({ users, resource }: { users?: any; resource?:
   };
 
   const handleClickOpenDelete = (user: IUser) => {
+    if (!auth.roles.includes("delete users")) {
+      toast.error("Desculpa, você não tem autorização para realizar essa ação.");
+      return;
+    }
     setOpenDelete(true);
     setItemSelected(user);
   };
@@ -142,6 +152,11 @@ export default function DataTable({ users, resource }: { users?: any; resource?:
 
   const submit: React.FormEventHandler = (e) => {
     e.preventDefault();
+
+    if (!auth.roles.includes("edit users")) {
+      toast.error("Desculpa, você não tem autorização para realizar essa ação.");
+      return;
+    }
 
     router.put(route("administration.update", data.id), data, {
       preserveState: true,
@@ -187,7 +202,6 @@ export default function DataTable({ users, resource }: { users?: any; resource?:
               //console.log(model, details);
               router.get("", { page: model.page + 1, per_page: model.pageSize }, { preserveState: true });
             }}
-            pageSizeOptions={[5, 10]}
             checkboxSelection
           />
         )}
@@ -387,6 +401,7 @@ export default function DataTable({ users, resource }: { users?: any; resource?:
               </Box>
               <Button
                 variant="outlined"
+                disabled={!auth.roles.includes("edit users")}
                 onClick={() => {
                   setEditing(true);
                 }}

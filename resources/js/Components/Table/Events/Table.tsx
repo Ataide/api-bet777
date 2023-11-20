@@ -30,6 +30,8 @@ import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { PageProps } from "@/types";
 
 export default function DataTable({ events, resource }: { events?: any; resource?: string }) {
+  const { errors, sports, auth } = usePage<PageProps>().props;
+
   const columns: GridColDef[] = [
     {
       field: "title",
@@ -80,11 +82,6 @@ export default function DataTable({ events, resource }: { events?: any; resource
       sortable: false,
       filterable: false,
       renderCell: (params) => {
-        const onClick = (e: any) => {
-          const currentRow = params.row;
-          return alert(JSON.stringify(currentRow, null, 4));
-        };
-
         return (
           <Stack direction="row">
             <IconButton
@@ -99,19 +96,18 @@ export default function DataTable({ events, resource }: { events?: any; resource
             >
               <ModeEditOutlineIcon sx={{ color: "#ffffff" }} />
             </IconButton>
-            <IconButton
-              aria-label="edit"
-              sx={{ mr: 1 }}
-              onClick={() => {
-                setData(params.row);
-                handleClickOpenDelete();
-              }}
-            >
-              <DeleteIcon sx={{ color: "#ffffff" }} />
-            </IconButton>
-            <IconButton aria-label="more-options" sx={{ mr: 1 }} onClick={onClick}>
-              <MoreVertIcon sx={{ color: "#ffffff" }} />
-            </IconButton>
+            {auth?.roles?.includes("create events") && (
+              <IconButton
+                aria-label="delete"
+                sx={{ mr: 1 }}
+                onClick={() => {
+                  setData(params.row);
+                  handleClickOpenDelete();
+                }}
+              >
+                <DeleteIcon sx={{ color: "#ffffff" }} />
+              </IconButton>
+            )}
           </Stack>
         );
       },
@@ -122,8 +118,6 @@ export default function DataTable({ events, resource }: { events?: any; resource
   const [open, setOpen] = React.useState(false);
   const [openDelete, setOpenDelete] = React.useState(false);
   const [editing, setEditing] = React.useState(false);
-
-  const { errors, sports } = usePage<PageProps>().props;
 
   const handleClickOpen = () => {
     setOpen(true);

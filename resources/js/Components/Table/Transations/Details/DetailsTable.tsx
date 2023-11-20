@@ -63,7 +63,6 @@ export default function DataTableDetails({ transactions, resource }: { transacti
                 { preserveState: true, only: ["transactionDetails"] }
               );
             }}
-            pageSizeOptions={[5, 10]}
             checkboxSelection={false}
           />
         )}

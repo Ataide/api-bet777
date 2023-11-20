@@ -15,11 +15,26 @@ import { PageProps } from "@/types";
 import CloseIcon from "@mui/icons-material/Close";
 import { useEffect } from "react";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { styled } from "@mui/material";
+import { CloudUpload } from "@mui/icons-material";
+import { toast } from "react-toastify";
+
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
 
 export default function GameAddDialog({ open, handleClose }: { open: boolean; handleClose: () => void }) {
   const { event } = usePage<PageProps>().props;
 
-  const { data, setData, post, processing, reset, errors, clearErrors } = useForm({
+  const { data, setData, post, processing, progress, reset, errors, clearErrors } = useForm({
     event_id: event.id,
     home_name: "",
     away_name: "",
@@ -28,6 +43,8 @@ export default function GameAddDialog({ open, handleClose }: { open: boolean; ha
     away_rate: "",
     time_close_bet: "",
     time_game: "",
+    home_image: null,
+    away_image: "",
   });
 
   const submit: React.FormEventHandler = (e) => {
@@ -38,6 +55,38 @@ export default function GameAddDialog({ open, handleClose }: { open: boolean; ha
         handleClose();
       },
     });
+  };
+
+  const handleUploadFileHome = (file: any) => {
+    router.post(
+      route("files.store"),
+      { file: file },
+      {
+        onSuccess: (page: any) => {
+          const url = page.props.flash.file;
+          setData("home_image", url);
+        },
+        onError: (error) => {
+          toast.error(error.message);
+        },
+      }
+    );
+  };
+
+  const handleUploadFileAway = (file: any) => {
+    router.post(
+      route("files.store"),
+      { file: file },
+      {
+        onSuccess: (page: any) => {
+          const url = page.props.flash.file;
+          setData("away_image", url);
+        },
+        onError: (error) => {
+          toast.error(error.message);
+        },
+      }
+    );
   };
 
   useEffect(() => {
@@ -119,6 +168,21 @@ export default function GameAddDialog({ open, handleClose }: { open: boolean; ha
                   inputComponent: OddFloatMask as any,
                 }}
               />
+            </Box>
+            <Box width={"100%"} minHeight={"110px"}>
+              <Typography variant="subtitle2" color="white" fontWeight={600}>
+                IMAGE A
+              </Typography>
+              {data.home_image ? (
+                <Box display={"flex"} justifyContent={"center"}>
+                  <img src={data.home_image} width={150} height={150} alt="" />
+                </Box>
+              ) : (
+                <Button component="label" variant="contained" startIcon={<CloudUpload />}>
+                  Upload file
+                  <VisuallyHiddenInput type="file" onChange={(e) => handleUploadFileHome(e?.target?.files?.[0])} />
+                </Button>
+              )}
             </Box>
 
             <Box width={"100%"} minHeight={"110px"}>
@@ -238,6 +302,21 @@ export default function GameAddDialog({ open, handleClose }: { open: boolean; ha
                 InputLabelProps={{ shrink: false }}
               />
             </Box>
+            <Box width={"100%"} minHeight={"110px"}>
+              <Typography variant="subtitle2" color="white" fontWeight={600}>
+                IMAGE A
+              </Typography>
+              {data.away_image ? (
+                <Box display={"flex"} justifyContent={"center"}>
+                  <img src={data.away_image} width={150} height={150} alt="" />
+                </Box>
+              ) : (
+                <Button component="label" variant="contained" startIcon={<CloudUpload />}>
+                  Upload file
+                  <VisuallyHiddenInput type="file" onChange={(e) => handleUploadFileAway(e?.target?.files?.[0])} />
+                </Button>
+              )}
+            </Box>
           </Box>
         </Box>
       </DialogContent>
@@ -246,7 +325,7 @@ export default function GameAddDialog({ open, handleClose }: { open: boolean; ha
         <Button
           variant="contained"
           onClick={() => {
-            clearErrors();
+            console.log(data);
           }}
         >
           Reset
