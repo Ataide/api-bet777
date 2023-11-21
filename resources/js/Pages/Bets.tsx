@@ -12,7 +12,7 @@ import DetailsTableTabList from "@/Components/Table/Bets/Details/DetailsTableTab
 import ResumeDonutChar from "@/Components/Charts/Donut";
 
 export default function Bets({ auth, bets, userPapers }: PageProps) {
-  const userDetails = { name: "MEu Nome", total_bets: "10" };
+  const userDetails = { name: "Meu Nome", total_bets: "10" };
 
   return (
     <AuthenticatedLayout user={auth.user}>
@@ -29,8 +29,6 @@ export default function Bets({ auth, bets, userPapers }: PageProps) {
             <ResumeDonutChar />
           </Grid>
           <Grid item xs={5}></Grid>
-          {/* <DataTableDetails transactions={transactions} /> */}
-
           {userPapers.data && (
             <>
               <Grid item xs={12}>

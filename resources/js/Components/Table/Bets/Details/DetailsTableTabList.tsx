@@ -10,7 +10,6 @@ import { PageProps } from "@/types";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid/DataGrid";
 import { GridColDef } from "@mui/x-data-grid";
-import Stack from "@mui/material/Stack";
 import PaperInfo from "@/Components/PaperInfo";
 
 const columns: GridColDef[] = [
@@ -30,8 +29,6 @@ export default function DetailsTableTabList() {
   const { userPapers, data_donut } = usePage<PageProps>().props;
   const [selectedTab, setTabSelected] = useState("-1");
   const [search, setSearch] = useState<string>();
-
-  console.log(data_donut);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
     setTabSelected(newValue);
@@ -97,6 +94,7 @@ export default function DetailsTableTabList() {
           </Box>
         </TabContext>
       </Box>
+
       {userPapers && userPapers.data.length === 0 ? (
         <Box padding={10}>
           <Typography variant="body1" color="gray" textAlign={"center"}>
