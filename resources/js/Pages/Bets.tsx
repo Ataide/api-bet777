@@ -9,6 +9,7 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import { formatter } from "@/helper";
 import DetailsTableTabList from "@/Components/Table/Bets/Details/DetailsTableTabList";
+import ResumeDonutChar from "@/Components/Charts/Donut";
 
 export default function Bets({ auth, bets, userPapers }: PageProps) {
   const userDetails = { name: "MEu Nome", total_bets: "10" };
@@ -21,8 +22,11 @@ export default function Bets({ auth, bets, userPapers }: PageProps) {
           APOSTAS
         </Typography>
         <Grid container spacing={2}>
-          <Grid item xs={7}>
+          <Grid item xs={8}>
             <DataTable bets={bets} />
+          </Grid>
+          <Grid item xs={4}>
+            <ResumeDonutChar />
           </Grid>
           <Grid item xs={5}></Grid>
           {/* <DataTableDetails transactions={transactions} /> */}

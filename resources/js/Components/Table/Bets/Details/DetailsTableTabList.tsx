@@ -27,11 +27,11 @@ const columns: GridColDef[] = [
 ];
 
 export default function DetailsTableTabList() {
-  const { userPapers } = usePage<PageProps>().props;
+  const { userPapers, data_donut } = usePage<PageProps>().props;
   const [selectedTab, setTabSelected] = useState("-1");
   const [search, setSearch] = useState<string>();
 
-  //console.log(userPapers);
+  console.log(data_donut);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
     setTabSelected(newValue);
@@ -131,7 +131,7 @@ export default function DetailsTableTabList() {
               display: "none",
             },
             "& .MuiDataGrid-row:hover": {
-              backgroundColor: "inherit", // Or 'transparent' or whatever color you'd like
+              backgroundColor: "inherit",
             },
           }}
           checkboxSelection={false}

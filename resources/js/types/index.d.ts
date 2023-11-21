@@ -12,6 +12,7 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
     user: User;
     roles: string[];
   };
+  data_donut: any[];
   flash: Flash;
   superuser: IAdmin;
   dashboard: any[];
