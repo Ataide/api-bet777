@@ -27,7 +27,7 @@ export const PhoneTextMask = forwardRef<HTMLElement, IMaskProps>(function TextMa
   return (
     <IMaskInput
       {...other}
-      mask="(00) #000-0000"
+      mask="(00) #0000-0000"
       definitions={{
         "#": /[1-9]/,
       }}

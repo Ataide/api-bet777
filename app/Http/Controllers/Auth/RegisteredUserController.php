@@ -31,39 +31,32 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        try {
-            //code...
-            $request->validate([
-                'user_name'  => 'required|string|max:255',
-                'email'      => 'required|string|email|max:255|unique:' . User::class,
-                'password'   => ['required', 'confirmed', Rules\Password::defaults()],
-                'first_name' => ['required', 'string'],
-                'birthday'   => ['required', 'string'],
-                'last_name'  => ['required', 'string'],
-                'phone'      => ['required', 'string'],
-            ]);
+        $request->validate([
+            'user_name'  => 'required|string|max:255',
+            'email'      => 'required|string|email|max:255|unique:' . User::class,
+            'password'   => ['required', 'confirmed', Rules\Password::defaults()],
+            'first_name' => ['required', 'string'],
+            'birthday'   => ['required', 'string'],
+            'last_name'  => ['required', 'string'],
+            'phone'      => ['required', 'string'],
+        ]);
 
-            $user = User::create([
-                'name'     => $request->user_name,
-                'email'    => $request->email,
-                'status'   => User::PENDING,
-                'type'     => 'admin',
-                'password' => Hash::make($request->password),
-            ]);
+        $user = User::create([
+            'name'     => $request->user_name,
+            'email'    => $request->email,
+            'status'   => User::PENDING,
+            'type'     => 'admin',
+            'password' => Hash::make($request->password),
+        ]);
 
-            $user->profile()->create([
-                'phone' => $request->phone,
-            ]);
+        $user->profile()->create([
+            'phone' => $request->phone,
+        ]);
     
-            event(new Registered($user));
+        event(new Registered($user));
             
-            return redirect(RouteServiceProvider::LOGIN);
-        } catch (\Throwable $th) {
-            $user->delete();
-
-            return redirect(RouteServiceProvider::LOGIN);
-        }
-       
+        return redirect(RouteServiceProvider::LOGIN);
+        
         // Auth::login($user);
     }
 }

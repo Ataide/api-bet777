@@ -12,6 +12,7 @@ import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
 import EastIcon from "@mui/icons-material/East";
+import { DateTextMask, OddFloatMask, PhoneTextMask } from "@/Components/TextMasks/TextMasks";
 
 export default function Register() {
   const { data, setData, post, processing, errors, reset } = useForm({
@@ -19,7 +20,6 @@ export default function Register() {
     last_name: "",
     birthday: "",
     phone: "",
-
     user_name: "",
     email: "",
     password: "",
@@ -77,6 +77,19 @@ export default function Register() {
           onChange={(e) => setData("last_name", e.target.value)}
         />
         <Typography variant="body1">Data de Nascimento</Typography>
+        <TextField
+          fullWidth
+          id="birthday"
+          label="Data de nascimento"
+          name="birthday"
+          InputProps={{
+            inputComponent: DateTextMask as any,
+          }}
+          value={data.birthday}
+          error={errors.birthday ? true : false}
+          helperText={errors.birthday}
+          onChange={(e) => setData("birthday", e.target.value)}
+        />
 
         <Typography variant="body1">Informações para Contato</Typography>
         <TextField
@@ -95,6 +108,7 @@ export default function Register() {
           fullWidth
           required
           InputProps={{
+            inputComponent: PhoneTextMask as any,
             startAdornment: (
               <InputAdornment position="start">
                 <Typography variant="body1" fontWeight={400}>

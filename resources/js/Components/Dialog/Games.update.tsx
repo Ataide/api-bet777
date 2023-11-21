@@ -211,7 +211,7 @@ export default function GameUpdateDialog({
                 error={errors.draw_rate ? true : false}
                 helperText={errors.draw_rate}
                 InputProps={{
-                  inputComponent: OddFloatMask as any,
+                  inputComponent: PhoneTextMask as any,
                 }}
                 onChange={(e) => setData("draw_rate", e.target.value)}
                 InputLabelProps={{ shrink: false }}
