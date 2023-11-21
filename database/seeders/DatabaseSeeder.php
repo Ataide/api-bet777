@@ -16,8 +16,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([SportSeeder::class, EventSeeder::class, GameSeeder::class]);
+        $this->call(
+            [
+                SportSeeder::class,
+                // EventSeeder::class, // Atente para o caso de precisar usar esse recurso,
+                // GameSeeder::class   // pois no UserSeeder existe o uso de eventos e gmaes que são criados aqui.
+            ]
+        );
 
+        //Cria todas as roles necessárias para o funcionanmento do sistema.
         $role1 = Role::create(['name' => 'view dashboard']);
         $role2 = Role::create(['name' => 'edit users']);
         $role3 = Role::create(['name' => 'edit admins']);
@@ -27,19 +34,22 @@ class DatabaseSeeder extends Seeder
         $role7 = Role::create(['name' => 'view bets']);
         $role8 = Role::create(['name' => 'create events']);
         
+        // Cria a role para o superadmin.
         $superadminRole = Role::create(['name' => 'superadmin']);
 
-        User::factory(20)->has(Profile::factory())->has(Transaction::factory(1))->create();
+        // Cria 20 usuarios.
+        // User::factory(20)->has(Profile::factory())->has(Transactcion::factory(1))->create();
 
-        if (!User::where('email', '=', 'test@example.com')->first()) {
+        // Cria o superadmin
+        if (!User::where('email', '=', 'administrador@bet777.com.br')->first()) {
             $user = User::factory()
                             ->has(Profile::factory())
-                            ->has(Transaction::factory(1))->create([
-                                'name'  => 'Super Admin',
-                                'email' => 'administrador@bet777.com.br',
-                                'type'  => 'superadmin'
+                            ->has(Transaction::factory())->create([
+                                'name'   => 'Super Admin',
+                                'email'  => 'administrador@bet777.com.br',
+                                'type'   => 'superadmin',
+                                'status' => User::ACTIVE
                             ]);
-                        
             $user->assignRole($superadminRole);
             $user->assignRole([$role1, $role2, $role3, $role4, $role5, $role6, $role7, $role8]);
         }

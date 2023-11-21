@@ -12,7 +12,7 @@ class SportSeeder extends Seeder
      */
     public function run(): void
     {
-        Sport::factory()->count(7)->sequence(
+        Sport::factory()->count(8)->sequence(
             ['name' => 'Futebol'],
             ['name' => 'Vôlei'],
             ['name' => 'Basquete'],
@@ -20,6 +20,7 @@ class SportSeeder extends Seeder
             ['name' => 'Boxe'],
             ['name' => 'Fut. Americano'],
             ['name' => 'Tênis'],
+            ['name' => 'Outros']
         )->create();
     }
 }

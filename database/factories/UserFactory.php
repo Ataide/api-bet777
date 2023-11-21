@@ -55,15 +55,15 @@ class UserFactory extends Factory
         })->afterCreating(function (User $user) {
             Wallet::factory()->for($user)->create();
 
-            $game = Game::all()->random();
+            // $game = Game::all()->random();
                                 
-            $paperForBets = Paper::factory()->for($user)->create();
+            // $paperForBets = Paper::factory()->for($user)->create();
                             
-            $bets = Bet::factory()->count(5)->for($user)->for($game)->create();
+            // $bets = Bet::factory()->count(5)->for($user)->for($game)->create();
 
-            $paperForBets->bets()->attach($bets);
+            // $paperForBets->bets()->attach($bets);
             
-            $user->favorites()->attach([1]);
+            // $user->favorites()->attach([1]);
 
             // ...
         });

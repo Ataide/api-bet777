@@ -127,9 +127,14 @@ class UserController extends Controller
         $user = Auth::user();
 
         $transactions = Transaction::query()
-        ->when(Request::input('type'), function (Builder $query, $search) {
-            $query->where('type', $search);
-        })->where('user_id', $user->id)->orderBy('id', 'desc')
+        ->when(Request::input('type'), function (Builder $query, $type) {
+            $query->where('type', $type);
+        })
+        ->when(Request::input('date'), function (Builder $query, $date) {
+            $query->whereDate('created_at', '=', Carbon::parse($date));
+        })
+
+        ->where('user_id', $user->id)->orderBy('id', 'desc')
         // ->when(Request::input('status'), function (Builder $query, $status) {
         //     $query->whereRelation('profile', 'account_status', $status);
         // })

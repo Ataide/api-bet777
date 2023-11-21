@@ -15,9 +15,10 @@ import { IGame, PageProps } from "@/types";
 import CloseIcon from "@mui/icons-material/Close";
 import { useEffect } from "react";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { styled } from "@mui/material";
+import { Grid, Paper, styled } from "@mui/material";
 import { CloudUpload } from "@mui/icons-material";
 import { toast } from "react-toastify";
+import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -50,7 +51,6 @@ export default function GameUpdateDialog({
     draw_rate: "",
     away_rate: "",
     time_close_bet: "",
-    time_game: "",
     home_image: "",
     away_image: "",
   });
@@ -99,6 +99,7 @@ export default function GameUpdateDialog({
 
   useEffect(() => {
     if (selectedGame) {
+      console.log("oque vem de fora", selectedGame.time_close_bet);
       setData({
         ...selectedGame,
         home_rate: String(selectedGame.home_rate),
@@ -132,20 +133,9 @@ export default function GameUpdateDialog({
         <CloseIcon />
       </IconButton>
       <DialogContent>
-        <Box
-          component="form"
-          id="form"
-          onSubmit={submit}
-          noValidate
-          sx={{
-            mt: 1,
-            display: "flex",
-            flexDirection: "row",
-          }}
-          gap={2}
-        >
-          <Box display="flex" flexDirection="column" gap={2} width={"100%"}>
-            <Box width={"100%"} minHeight={"110px"}>
+        <Box component="form" id="form" onSubmit={submit} noValidate>
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
               <Typography variant="subtitle2" color="white" fontWeight={600}>
                 TIME A
               </Typography>
@@ -161,9 +151,34 @@ export default function GameUpdateDialog({
                 onChange={(e) => setData("home_name", e.target.value)}
                 InputLabelProps={{ shrink: false }}
               />
-            </Box>
-
-            <Box width={"100%"} minHeight={"110px"}>
+            </Grid>
+            <Grid item xs={4}>
+              <Typography variant="caption" color="white" fontWeight={600}>
+                EMPATE
+              </Typography>
+              <TextField fullWidth disabled={true} required value={"EMPATE"} />
+            </Grid>
+            <Grid item xs={4}>
+              <Typography variant="caption" color="white" fontWeight={600}>
+                TIME B
+              </Typography>
+              <TextField
+                fullWidth
+                required
+                id="away_name"
+                name="away_name"
+                placeholder="Time B"
+                value={data.away_name}
+                error={errors.away_name ? true : false}
+                helperText={errors.away_name}
+                onChange={(e) => setData("away_name", e.target.value)}
+                InputLabelProps={{ shrink: false }}
+              />
+            </Grid>
+          </Grid>
+          <br />
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
               <Typography variant="subtitle2" color="white" fontWeight={600}>
                 ODD TIME A
               </Typography>
@@ -182,24 +197,105 @@ export default function GameUpdateDialog({
                   inputComponent: OddFloatMask as any,
                 }}
               />
-            </Box>
-            <Box width={"100%"} minHeight={"110px"}>
+            </Grid>
+            <Grid item xs={4}>
               <Typography variant="subtitle2" color="white" fontWeight={600}>
-                IMAGE A
+                ODD EMPATE
               </Typography>
-              {data.home_image ? (
-                <Box display={"flex"} justifyContent={"center"}>
-                  <img src={data.home_image} width={150} height={150} alt="" />
+              <TextField
+                fullWidth
+                required
+                id="draw_rate"
+                name="draw_rate"
+                value={data.draw_rate}
+                error={errors.draw_rate ? true : false}
+                helperText={errors.draw_rate}
+                InputProps={{
+                  inputComponent: OddFloatMask as any,
+                }}
+                onChange={(e) => setData("draw_rate", e.target.value)}
+                InputLabelProps={{ shrink: false }}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <Typography variant="caption" color="white" fontWeight={600}>
+                ODD TIME B
+              </Typography>
+              <TextField
+                fullWidth
+                required
+                id="away_rate"
+                name="away_rate"
+                value={data.away_rate}
+                error={errors.away_rate ? true : false}
+                helperText={errors.away_rate}
+                InputProps={{
+                  inputComponent: OddFloatMask as any,
+                }}
+                onChange={(e) => setData("away_rate", e.target.value)}
+                InputLabelProps={{ shrink: false }}
+              />
+            </Grid>
+          </Grid>
+          <br />
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
+              <Typography variant="subtitle2" color="white" fontWeight={600}>
+                BRASÂO DO TIME A
+              </Typography>
+              <Paper>
+                <Box sx={{ minHeight: 250 }} display={"flex"} alignItems={"center"} justifyContent={"center"}>
+                  {data.home_image ? (
+                    <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} gap={2}>
+                      <img src={data.home_image} width={150} height={150} alt="" />
+                      <Button component="label" variant="outlined">
+                        +
+                        <VisuallyHiddenInput
+                          type="file"
+                          onChange={(e) => handleUploadFileHome(e?.target?.files?.[0])}
+                        />
+                      </Button>
+                    </Box>
+                  ) : (
+                    <Button component="label" variant="outlined">
+                      +
+                      <VisuallyHiddenInput type="file" onChange={(e) => handleUploadFileHome(e?.target?.files?.[0])} />
+                    </Button>
+                  )}
                 </Box>
-              ) : (
-                <Button component="label" variant="contained" startIcon={<CloudUpload />}>
-                  Upload file
-                  <VisuallyHiddenInput type="file" onChange={(e) => handleUploadFileHome(e?.target?.files?.[0])} />
-                </Button>
-              )}
-            </Box>
-
-            <Box width={"100%"} minHeight={"110px"}>
+              </Paper>
+            </Grid>
+            <Grid item xs={4}></Grid>
+            <Grid item xs={4}>
+              <Typography variant="subtitle2" color="white" fontWeight={600}>
+                BRASÂO DO TIME B
+              </Typography>
+              <Paper>
+                <Box sx={{ minHeight: 250 }} display={"flex"} alignItems={"center"} justifyContent={"center"}>
+                  {data.away_image ? (
+                    <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} gap={2}>
+                      <img src={data.away_image} width={150} height={150} alt="" />
+                      <Button component="label" variant="outlined">
+                        +
+                        <VisuallyHiddenInput
+                          type="file"
+                          onChange={(e) => handleUploadFileHome(e?.target?.files?.[0])}
+                        />
+                      </Button>
+                    </Box>
+                  ) : (
+                    <Button component="label" variant="outlined">
+                      +
+                      <VisuallyHiddenInput type="file" onChange={(e) => handleUploadFileAway(e?.target?.files?.[0])} />
+                    </Button>
+                  )}
+                </Box>
+              </Paper>
+            </Grid>
+          </Grid>
+          <br />
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
               <Typography variant="caption" color="white" fontWeight={600}>
                 Data do Jogo
               </Typography>
@@ -223,34 +319,8 @@ export default function GameUpdateDialog({
                   </Typography>
                 </Box>
               )}
-            </Box>
-          </Box>
-
-          <Box display="flex" flexDirection="column" gap={2} width={"100%"}>
-            <Box width={"100%"} minHeight={"110px"}>
-              <Typography variant="caption" color="white" fontWeight={600}>
-                <span>.</span>
-              </Typography>
-              <TextField fullWidth disabled={true} required value={"EMPATE"} />
-            </Box>
-            <Box width={"100%"} minHeight={"110px"}>
-              <Typography variant="subtitle2" color="white" fontWeight={600}>
-                ODD EMPATE
-              </Typography>
-              <TextField
-                fullWidth
-                required
-                type="number"
-                id="draw_rate"
-                name="draw_rate"
-                value={data.draw_rate}
-                error={errors.draw_rate ? true : false}
-                helperText={errors.draw_rate}
-                onChange={(e) => setData("draw_rate", e.target.value)}
-                InputLabelProps={{ shrink: false }}
-              />
-            </Box>
-            <Box width={"100%"} minHeight={"110px"}>
+            </Grid>
+            <Grid item xs={4}>
               <Typography variant="caption" color="white" fontWeight={600}>
                 Horário do Jogo
               </Typography>
@@ -264,74 +334,19 @@ export default function GameUpdateDialog({
                     color: "primary.main",
                   },
                 }}
-                value={data.time_game}
-                onChange={(newValue) => setData("time_game", moment(newValue).format("HH:mm:ss"))}
-                onAccept={(newValue) => {
-                  setData("time_close_bet", data.time_close_bet + " " + moment(newValue as any).format("HH:mm:ss"));
+                ampm={false}
+                viewRenderers={{
+                  hours: renderTimeViewClock,
+                  minutes: renderTimeViewClock,
+                  seconds: renderTimeViewClock,
                 }}
+                value={new Date(data.time_close_bet)}
+                onChange={(newValue) => setData("time_close_bet", moment(newValue).format("YYYY-MM-DD HH:mm:ss"))}
               />
-
-              {errors.time_game && (
-                <Box ml={2}>
-                  <Typography variant="caption" color="error" fontWeight={600}>
-                    {errors.time_game}
-                  </Typography>
-                </Box>
-              )}
-            </Box>
-          </Box>
-
-          <Box display="flex" flexDirection="column" gap={2} width={"100%"}>
-            <Box width={"100%"} minHeight={"110px"}>
-              <Typography variant="caption" color="white" fontWeight={600}>
-                TIME B
-              </Typography>
-              <TextField
-                fullWidth
-                required
-                id="away_name"
-                name="away_name"
-                placeholder="Time B"
-                value={data.away_name}
-                error={errors.away_name ? true : false}
-                helperText={errors.away_name}
-                onChange={(e) => setData("away_name", e.target.value)}
-                InputLabelProps={{ shrink: false }}
-              />
-            </Box>
-            <Box width={"100%"} minHeight={"110px"}>
-              <Typography variant="caption" color="white" fontWeight={600}>
-                ODD TIME B
-              </Typography>
-              <TextField
-                fullWidth
-                required
-                type="number"
-                id="away_rate"
-                name="away_rate"
-                value={data.away_rate}
-                error={errors.away_rate ? true : false}
-                helperText={errors.away_rate}
-                onChange={(e) => setData("away_rate", e.target.value)}
-                InputLabelProps={{ shrink: false }}
-              />
-            </Box>
-            <Box width={"100%"} minHeight={"110px"}>
-              <Typography variant="subtitle2" color="white" fontWeight={600}>
-                IMAGE A
-              </Typography>
-              {data.away_image ? (
-                <Box display={"flex"} justifyContent={"center"}>
-                  <img src={data.away_image} width={150} height={150} alt="" />
-                </Box>
-              ) : (
-                <Button component="label" variant="contained" startIcon={<CloudUpload />}>
-                  Upload file
-                  <VisuallyHiddenInput type="file" onChange={(e) => handleUploadFileAway(e?.target?.files?.[0])} />
-                </Button>
-              )}
-            </Box>
-          </Box>
+            </Grid>
+            <Grid item xs={4}></Grid>
+          </Grid>
+          <br />
         </Box>
       </DialogContent>
 

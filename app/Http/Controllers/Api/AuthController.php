@@ -33,49 +33,56 @@ class AuthController extends Controller
 
     public function register(Request $request): JsonResponse
     {
-        $request->validate([
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name'  => ['required', 'string', 'max:255'],
-            'cpf'        => ['required', 'string', 'max:255'],
-            'phone'      => ['required', 'string', 'max:255'],
-            'pix_key'    => ['required', 'string', 'max:255'],
-            'email'      => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
-            'password'   => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+        try {
+            //code...
+            $request->validate([
+                'first_name' => ['required', 'string', 'max:255'],
+                'last_name'  => ['required', 'string', 'max:255'],
+                'cpf'        => ['required', 'string', 'max:255'],
+                'phone'      => ['required', 'string', 'max:255'],
+                'birthday'   => ['required', 'string', 'max:255'],
+                'pix_key'    => ['required', 'string', 'max:255'],
+                'email'      => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
+                'password'   => ['required', 'confirmed', Rules\Password::defaults()],
+            ]);
 
-        $user = User::create([
-            'name'     => $request->first_name . ' ' . $request->last_name,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+            $user = User::create([
+                'name'     => $request->first_name . ' ' . $request->last_name,
+                'email'    => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
 
-        $profile = Profile::create([
-            'user_id'        => $user->id,
-            'cpf'            => $request->cpf,
-            'phone'          => $request->phone,
-            'pix_key'        => $request->pix_key,
-            'account_status' => "Ativo"
-        ]);
+            $profile = Profile::create([
+                'user_id'        => $user->id,
+                'cpf'            => $request->cpf,
+                'phone'          => $request->phone,
+                'pix_key'        => $request->pix_key,
+                'birthday'       => $request->birthday,
+                'account_status' => "Ativo"
+            ]);
 
-        $wallet = Wallet::create([
-            'user_id'    => $user->id,
-            'amount'     => 0,
-            'bet_total'  => 0 ,
-            'draw_total' => 0
-        ]);
+            $wallet = Wallet::create([
+                'user_id'    => $user->id,
+                'amount'     => 0,
+                'bet_total'  => 0 ,
+                'draw_total' => 0
+            ]);
 
-        // $this->initialize($user);
+            $token = $user->createToken('api-takker-token');
+            
+            Auth::login($user);
 
-        Auth::login($user);
-        
-        $token = $user->createToken('api-takker-token');
+            return response()->json([
+                'user'  => $user,
+                'token' => $token->plainTextToken,
+            ], 201);
+        } catch (\Throwable $th) {
+            $user->delete();
 
-        // $user->notify((new Register));
-
-        return response()->json([
-            'user'  => $user,
-            'token' => $token->plainTextToken,
-        ], 201);
+            return response()->json([
+                'message' => $th->getMessage(),
+            ], 500);
+        }
     }
 
     public function logout(Request $request)
@@ -92,11 +99,12 @@ class AuthController extends Controller
     public function updateProfile(Request $request)
     {
         $request->validate([
-            'name'    => ['required', 'string', 'max:255'],
-            'cpf'     => ['required', 'string', 'max:255'],
-            'phone'   => ['required', 'string', 'max:255'],
-            'pix_key' => ['required', 'string', 'max:255'],
-            'email'   => ['required', 'string'],
+            'name'     => ['required', 'string', 'max:255'],
+            'cpf'      => ['required', 'string', 'max:255'],
+            'birthday' => ['required', 'string', 'max:255'],
+            'phone'    => ['required', 'string', 'max:255'],
+            'pix_key'  => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'string'],
         ]);
         
         $user = Auth::user();
@@ -110,10 +118,11 @@ class AuthController extends Controller
             'cpf'     => $request->cpf,
             'phone'   => $request->phone,
             'pix_key' => $request->pix_key,
+            'birthday' => $request->birthday,
         ]);
 
         return response()->json([
             'message' => 'Atualizado com sucesso',
-        ], 201);
+        ], 200);
     }
 }

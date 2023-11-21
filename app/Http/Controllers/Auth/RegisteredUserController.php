@@ -31,31 +31,39 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
-            'user_name'  => 'required|string|max:255',
-            'email'      => 'required|string|email|max:255|unique:' . User::class,
-            'password'   => ['required', 'confirmed', Rules\Password::defaults()],
-            'first_name' => ['required', 'string'],
-            'last_name'  => ['required', 'string'],
-            'phone'      => ['required', 'string'],
-        ]);
+        try {
+            //code...
+            $request->validate([
+                'user_name'  => 'required|string|max:255',
+                'email'      => 'required|string|email|max:255|unique:' . User::class,
+                'password'   => ['required', 'confirmed', Rules\Password::defaults()],
+                'first_name' => ['required', 'string'],
+                'birthday'   => ['required', 'string'],
+                'last_name'  => ['required', 'string'],
+                'phone'      => ['required', 'string'],
+            ]);
+
+            $user = User::create([
+                'name'     => $request->user_name,
+                'email'    => $request->email,
+                'status'   => User::PENDING,
+                'type'     => 'admin',
+                'password' => Hash::make($request->password),
+            ]);
+
+            $user->profile()->create([
+                'phone' => $request->phone,
+            ]);
+    
+            event(new Registered($user));
+            
+            return redirect(RouteServiceProvider::LOGIN);
+        } catch (\Throwable $th) {
+            $user->delete();
+
+            return redirect(RouteServiceProvider::LOGIN);
+        }
        
-        $user = User::create([
-            'name'     => $request->user_name,
-            'email'    => $request->email,
-            'status'   => User::PENDING,
-            'type'     => 'admin',
-            'password' => Hash::make($request->password),
-        ]);
-
-        $user->profile()->create([
-            'phone' => $request->phone,
-        ]);
-
-        event(new Registered($user));
-
         // Auth::login($user);
-
-        return redirect(RouteServiceProvider::LOGIN);
     }
 }

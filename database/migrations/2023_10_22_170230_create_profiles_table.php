@@ -14,9 +14,10 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger("user_id");
             $table->string('birthday')->nullable();
-            $table->string('cpf')->unique()->nullable();
-            $table->string('phone')->unique();
+            $table->string('cpf')->nullable();
+            $table->string('phone')->nullable();
             $table->string('pix_key')->nullable();
+            $table->enum('pix_type', ['cpf', 'email', 'random', 'phone'])->nullable();
             $table->string("account_status")->default('active');
             
             $table->timestamps();

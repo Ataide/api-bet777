@@ -25,6 +25,7 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import FormHelperText from "@mui/material/FormHelperText";
+import NotFoundData from "../NotFoundData";
 
 export default function DataTable({ admins, resource }: { admins: IAdminResource; resource: string }) {
   const columns: GridColDef[] = [
@@ -231,11 +232,7 @@ export default function DataTable({ admins, resource }: { admins: IAdminResource
       <Paper elevation={5} variant="indicator" sx={{ maxWidth: "100%" }}>
         <TableTabList resource={resource} aproveHandle={handleClickAproveUser} />
         {admins.data.length === 0 ? (
-          <Box padding={10}>
-            <Typography variant="body1" color="gray" textAlign={"center"}>
-              Não há dados
-            </Typography>
-          </Box>
+          <NotFoundData />
         ) : (
           <DataGrid
             disableRowSelectionOnClick

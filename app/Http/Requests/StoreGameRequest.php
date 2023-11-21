@@ -30,9 +30,8 @@ class StoreGameRequest extends FormRequest
             'away_rate'      => ['required', 'numeric', 'min:0.25'],
             'draw_rate'      => ['required', 'numeric', 'min:0.25'],
             'time_close_bet' => ['after:' . Carbon::now()],
-            'time_game'      => ['required', 'string'],
-            'home_image'     => ['string'],
-            'away_image'     => ['string']
+            'home_image'     => ['nullable'],
+            'away_image'     => ['nullable']
           
         ];
     }

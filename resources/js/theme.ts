@@ -108,6 +108,22 @@ const theme = createTheme({
           },
         },
       ],
+      styleOverrides: {
+        root: ({ theme }) => ({
+          "& .MuiDayCalendar-weekDayLabel": {
+            color: theme.palette.primary.main,
+          },
+          "& .MuiPickersArrowSwitcher-button": {
+            color: theme.palette.primary.main,
+          },
+          "& .MuiPickersCalendarHeader-switchViewIcon": {
+            color: theme.palette.primary.main,
+          },
+          "& .MuiClockNumber-root": {
+            color: theme.palette.common.white,
+          },
+        }),
+      },
     },
     MuiListItemButton: {
       styleOverrides: {

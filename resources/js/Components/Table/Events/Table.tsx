@@ -28,6 +28,7 @@ import { formatRelative, format, subDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { PageProps } from "@/types";
+import NotFoundData from "../NotFoundData";
 
 export default function DataTable({ events, resource }: { events?: any; resource?: string }) {
   const { errors, sports, auth } = usePage<PageProps>().props;
@@ -185,35 +186,38 @@ export default function DataTable({ events, resource }: { events?: any; resource
     <>
       <Paper elevation={5} variant="indicator">
         <TableTabList resource={resource} clickOpenNewEvent={handleClickNewOpen} />
-
-        <DataGrid
-          disableRowSelectionOnClick
-          disableColumnMenu
-          onRowSelectionModelChange={(row) => {
-            //console.log(row);
-          }}
-          onRowClick={(e, event: any) => {
-            if (event.target.nodeName === "DIV") {
-              router.get("/eventos/" + e.row.id);
-            }
-          }}
-          disableColumnSelector
-          rows={events.data}
-          rowCount={events.total}
-          paginationMode="server"
-          columns={columns}
-          density={"comfortable"}
-          initialState={{
-            pagination: {
-              paginationModel: { page: events.current_page - 1, pageSize: events.per_page },
-            },
-          }}
-          onPaginationModelChange={(model, details) => {
-            router.get("/eventos", { page: model.page + 1, per_page: model.pageSize }, { preserveState: true });
-          }}
-          pageSizeOptions={[5, 10]}
-          checkboxSelection
-        />
+        {events.data.length === 0 ? (
+          <NotFoundData />
+        ) : (
+          <DataGrid
+            disableRowSelectionOnClick
+            disableColumnMenu
+            onRowSelectionModelChange={(row) => {
+              //console.log(row);
+            }}
+            onRowClick={(e, event: any) => {
+              if (event.target.nodeName === "DIV") {
+                router.get("/eventos/" + e.row.id);
+              }
+            }}
+            disableColumnSelector
+            rows={events.data}
+            rowCount={events.total}
+            paginationMode="server"
+            columns={columns}
+            density={"comfortable"}
+            initialState={{
+              pagination: {
+                paginationModel: { page: events.current_page - 1, pageSize: events.per_page },
+              },
+            }}
+            onPaginationModelChange={(model, details) => {
+              router.get("/eventos", { page: model.page + 1, per_page: model.pageSize }, { preserveState: true });
+            }}
+            pageSizeOptions={[5, 10]}
+            checkboxSelection
+          />
+        )}
       </Paper>
 
       <Dialog
