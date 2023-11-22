@@ -33,56 +33,48 @@ class AuthController extends Controller
 
     public function register(Request $request): JsonResponse
     {
-        try {
-            //code...
-            $request->validate([
-                'first_name' => ['required', 'string', 'max:255'],
-                'last_name'  => ['required', 'string', 'max:255'],
-                'cpf'        => ['required', 'string', 'max:255'],
-                'phone'      => ['required', 'string', 'max:255'],
-                'birthday'   => ['required', 'string', 'max:255'],
-                'pix_key'    => ['required', 'string', 'max:255'],
-                'email'      => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
-                'password'   => ['required', 'confirmed', Rules\Password::defaults()],
-            ]);
+        //code...
+        $request->validate([
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name'  => ['required', 'string', 'max:255'],
+            'cpf'        => ['required', 'string', 'max:255'],
+            'phone'      => ['required', 'string', 'max:255'],
+            'birthday'   => ['required', 'string', 'max:255'],
+            'pix_key'    => ['required', 'string', 'max:255'],
+            'email'      => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
+            'password'   => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
 
-            $user = User::create([
-                'name'     => $request->first_name . ' ' . $request->last_name,
-                'email'    => $request->email,
-                'password' => Hash::make($request->password),
-            ]);
+        $user = User::create([
+            'name'     => $request->first_name . ' ' . $request->last_name,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
 
-            $profile = Profile::create([
-                'user_id'        => $user->id,
-                'cpf'            => $request->cpf,
-                'phone'          => $request->phone,
-                'pix_key'        => $request->pix_key,
-                'birthday'       => $request->birthday,
-                'account_status' => "Ativo"
-            ]);
+        $profile = Profile::create([
+            'user_id'        => $user->id,
+            'cpf'            => $request->cpf,
+            'phone'          => $request->phone,
+            'pix_key'        => $request->pix_key,
+            'birthday'       => $request->birthday,
+            'account_status' => "Ativo"
+        ]);
 
-            $wallet = Wallet::create([
-                'user_id'    => $user->id,
-                'amount'     => 0,
-                'bet_total'  => 0 ,
-                'draw_total' => 0
-            ]);
+        $wallet = Wallet::create([
+            'user_id'    => $user->id,
+            'amount'     => 0,
+            'bet_total'  => 0 ,
+            'draw_total' => 0
+        ]);
 
-            $token = $user->createToken('api-takker-token');
+        $token = $user->createToken('api-takker-token');
             
-            Auth::login($user);
+        Auth::login($user);
 
-            return response()->json([
-                'user'  => $user,
-                'token' => $token->plainTextToken,
-            ], 201);
-        } catch (\Throwable $th) {
-            $user->delete();
-
-            return response()->json([
-                'message' => $th->getMessage(),
-            ], 500);
-        }
+        return response()->json([
+            'user'  => $user,
+            'token' => $token->plainTextToken,
+        ], 201);
     }
 
     public function logout(Request $request)
@@ -115,9 +107,9 @@ class AuthController extends Controller
         ]);
         
         $user->profile()->update([
-            'cpf'     => $request->cpf,
-            'phone'   => $request->phone,
-            'pix_key' => $request->pix_key,
+            'cpf'      => $request->cpf,
+            'phone'    => $request->phone,
+            'pix_key'  => $request->pix_key,
             'birthday' => $request->birthday,
         ]);
 

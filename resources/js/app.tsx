@@ -11,6 +11,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { ToastContainer } from "react-toastify";
 import { InertiaProgress } from "@inertiajs/progress";
+import ptBR from "date-fns/locale/pt-BR";
 
 const appName = import.meta.env.VITE_APP_NAME || "Bet Admin";
 
@@ -25,7 +26,7 @@ createInertiaApp({
     root.render(
       <>
         <ThemeProvider theme={theme}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
             <ToastContainer />
 
             <App {...props} />

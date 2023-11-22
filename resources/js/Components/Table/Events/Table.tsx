@@ -312,9 +312,6 @@ export default function DataTable({ events, resource }: { events?: any; resource
                           {sport.name}
                         </MenuItem>
                       ))}
-                    {/* <MenuItem value={"Selecione um esporte"}>Selecione um esporte</MenuItem>
-                    <MenuItem value={"Vôlei"}>Vôlei</MenuItem>
-                    <MenuItem value={"Basquete"}>Basquete</MenuItem> */}
                   </Select>
                 </FormControl>
               </Box>

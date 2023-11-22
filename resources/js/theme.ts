@@ -98,6 +98,15 @@ const theme = createTheme({
         },
       ],
     },
+    MuiSelect: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          "& svg": {
+            color: theme.palette.primary.main,
+          },
+        }),
+      },
+    },
 
     MuiPaper: {
       variants: [
