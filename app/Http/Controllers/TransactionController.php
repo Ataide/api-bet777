@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaction;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Inertia\Inertia;
 use Request;
@@ -28,10 +29,22 @@ class TransactionController extends Controller
         ->when(Request::input('type'), function (Builder $query, $type) {
             $query->where('type', $type);
         })
+        ->when(Request::input('date'), function (Builder $query, $date) {
+            $query->whereDate('created_at', '=', Carbon::parse($date));
+        })
+        ->orderBy('created_at', 'DESC')
         ->paginate(5);
 
+        $total_deposits = 0;
+        $total_withdraw = 0;
+        
+        if (Request::input('id')) {
+            $total_deposits = Transaction::where(['user_id' => Request::input('id'), 'type' => 'deposit'])->count();
+            $total_withdraw = Transaction::where(['user_id' => Request::input('id'), 'type' => 'withdraw'])->count();
+        }
+
         $totals_groups = collect(
-            ['total_deposit' => 10, 'total_withdraw' => 10]
+            ['total_deposit' => $total_deposits, 'total_withdraw' => $total_withdraw]
         )->merge($transactionDetails);
 
         return Inertia::render(
@@ -39,7 +52,6 @@ class TransactionController extends Controller
             [
                 'transactions'       => $transactions,
                 'transactionDetails' => $totals_groups,
-                // 'withdraws'    => $withdraws
             ]
         );
     }

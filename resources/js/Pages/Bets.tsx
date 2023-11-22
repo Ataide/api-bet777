@@ -3,13 +3,7 @@ import { PageProps } from "@/types";
 import Typography from "@mui/material/Typography";
 import { Head } from "@inertiajs/react";
 import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import DataTable from "@/Components/Table/Bets/Table";
-import Paper from "@mui/material/Paper";
-import Stack from "@mui/material/Stack";
-import { formatter } from "@/helper";
-import DetailsTableTabList from "@/Components/Table/Bets/Details/DetailsTableTabList";
-import ResumeDonutChar from "@/Components/Charts/Donut";
+import BetsComponent from "@/Components/BetComponent";
 
 export default function Bets({ auth, bets, userPapers }: PageProps) {
   const userDetails = { name: "Meu Nome", total_bets: "10" };
@@ -21,22 +15,7 @@ export default function Bets({ auth, bets, userPapers }: PageProps) {
         <Typography variant="h5" mb={2}>
           APOSTAS
         </Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={8}>
-            <DataTable bets={bets} />
-          </Grid>
-          <Grid item xs={4}>
-            <ResumeDonutChar />
-          </Grid>
-          <Grid item xs={5}></Grid>
-          {userPapers.data && (
-            <>
-              <Grid item xs={12}>
-                <DetailsTableTabList />
-              </Grid>
-            </>
-          )}
-        </Grid>
+        <BetsComponent />
       </Box>
     </AuthenticatedLayout>
   );

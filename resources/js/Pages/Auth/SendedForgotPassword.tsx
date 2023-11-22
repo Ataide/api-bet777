@@ -26,7 +26,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
           </Typography>
           <Button
             variant="contained"
-            href="/login"
+            href="/redirect-to-frontend"
             sx={{
               width: 316,
               margin: "0 auto",

@@ -58,7 +58,7 @@ export default function DataTableDetails({ transactions, resource }: { transacti
             }}
             onPaginationModelChange={(model, details) => {
               router.get(
-                "/transacoes",
+                "",
                 { page: model.page + 1, per_page: model.pageSize },
                 { preserveState: true, only: ["transactionDetails"] }
               );

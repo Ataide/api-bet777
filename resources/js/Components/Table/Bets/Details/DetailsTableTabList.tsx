@@ -27,30 +27,12 @@ const columns: GridColDef[] = [
 
 export default function DetailsTableTabList() {
   const { userPapers } = usePage<PageProps>().props;
-  const [selectedTab, setTabSelected] = useState("-1");
-  const [search, setSearch] = useState<string>();
+  const [selectedTab, setTabSelected] = useState("");
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
     setTabSelected(newValue);
-    router.get(
-      "",
-      { search: search, type: newValue },
-      { preserveState: true, only: ["userPapers"], preserveScroll: true }
-    );
+    router.get("", { type: newValue }, { preserveState: true, only: ["userPapers"], preserveScroll: true });
   };
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setSearch(event.target.value);
-
-    router.get(
-      route("bets"),
-      { search: event.target.value, status: selectedTab },
-      { preserveState: true, only: ["userPapers", "data_donut"] }
-    );
-  };
-  useEffect(() => {
-    setTabSelected("-1");
-  }, []);
 
   return (
     <Paper elevation={5} variant="indicator">
@@ -61,14 +43,26 @@ export default function DetailsTableTabList() {
               <Tab
                 label={
                   <div>
+                    {"Todas"}
+                    <Chip
+                      color="primary"
+                      sx={{ ml: 1, borderRadius: "5px" }}
+                      size="small"
+                      label={userPapers.total_open + userPapers.total_close}
+                    />
+                  </div>
+                }
+                value=""
+              />
+              <Tab
+                label={
+                  <div>
                     {"Apostas Abertas"}
                     <Chip
                       color="primary"
                       sx={{ ml: 1, borderRadius: "5px" }}
                       size="small"
-                      label={userPapers.data
-                        .filter((paper) => paper.status === -1)
-                        .reduce((n: any, { deposit }: any) => n + 1, 0)}
+                      label={userPapers.total_open}
                     />
                   </div>
                 }
@@ -82,9 +76,7 @@ export default function DetailsTableTabList() {
                       sx={{ ml: 1, borderRadius: "5px" }}
                       color="error"
                       size="small"
-                      label={userPapers.data
-                        .filter((paper) => paper.status === 1)
-                        .reduce((n: any, { deposit }: any) => n + 1, 0)}
+                      label={userPapers.total_close || 0}
                     />
                   </div>
                 }
@@ -119,9 +111,9 @@ export default function DetailsTableTabList() {
           }}
           onPaginationModelChange={(model, details) => {
             router.get(
-              "/transacoes",
+              "",
               { page: model.page + 1, per_page: model.pageSize },
-              { preserveState: true, only: ["userPapers"] }
+              { preserveState: true, only: ["userPapers"], preserveScroll: true }
             );
           }}
           sx={{

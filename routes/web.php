@@ -24,6 +24,9 @@ use Illuminate\Support\Facades\Storage;
 */
 
 Route::group(['namespace' => 'App\Http\Controllers'], function () {
+    Route::get('/redirect-to-frontend', function () {
+        return redirect()->intended(env('FRONTEND_URL'));
+    })->name('redirect-to-frontend');
     Route::group(['middleware' => ['auth']], function () {
         /**
         * Home Routes

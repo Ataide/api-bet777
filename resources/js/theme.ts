@@ -200,9 +200,14 @@ const theme = createTheme({
     },
     MuiToolbar: {
       styleOverrides: {
-        root: {
+        root: ({ theme }) => ({
+          "& .MuiTablePagination-actions": {
+            svg: {
+              color: theme.palette.primary.light,
+            },
+          },
           height: "90px",
-        },
+        }),
       },
     },
 

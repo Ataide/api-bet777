@@ -47,6 +47,7 @@ export interface IUser {
   last_login_at: string;
   email_verified_at: string;
   created_at: string;
+  wallet: IWallet;
 }
 
 export interface IProfile {}
@@ -127,6 +128,9 @@ export interface IBetResource extends IBet, IPaginatorResource {
 }
 export interface IPaperResource extends IPaginatorResource {
   data: IPaper[];
+  total_open: number;
+  total_close: number;
+  userDetails: IUser;
 }
 export interface IUserResource extends IPaginatorResource {
   total_users: number;

@@ -73,6 +73,9 @@ export default function DataTable({ bets, resource }: { bets?: any; resource?: s
           }}
           checkboxSelection
           rowSelectionModel={selectionModel}
+          sx={{
+            minHeight: "540px",
+          }}
           onRowSelectionModelChange={(selection) => {
             if (selection.length > 1) {
               const selectionSet = new Set(selectionModel);
@@ -140,6 +143,8 @@ export default function DataTable({ bets, resource }: { bets?: any; resource?: s
           </Box> */}
         </Paper>
       </Grid>
+
+      <Grid item xs={12}></Grid>
     </>
   );
 }

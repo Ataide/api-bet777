@@ -48,7 +48,7 @@ export default function ResumeDonutChar() {
   };
   return (
     <>
-      <Paper sx={{ maxHeight: "759px" }}>
+      <Paper sx={{ maxHeight: "759px" }} variant="indicator">
         <Box
           sx={{ maxHeight: "359px" }}
           padding={4}
@@ -60,7 +60,7 @@ export default function ResumeDonutChar() {
           <Typography variant="body1" color="initial" textAlign={"center"} my={2}>
             Apostas por esportes
           </Typography>
-          <Doughnut options={options} data={dataa} redraw />
+          <Doughnut options={options} data={dataa} />
         </Box>
       </Paper>
     </>

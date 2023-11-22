@@ -104,7 +104,7 @@ export default function Authenticated({
               <ListItemText primary={"Eventos"} />
             </ListItemButton>
           </ListItem>
-          <ListItem component={Link} href={route("bets")} disablePadding>
+          <ListItem component={Link} href={route("bets", {search: '', type: '-1'})} disablePadding>
             <ListItemButton selected={route().current("bets") ? true : false}>
               <ListItemText primary={"Apostas"} />
             </ListItemButton>
