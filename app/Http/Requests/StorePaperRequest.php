@@ -25,7 +25,7 @@ class StorePaperRequest extends FormRequest
         return [
             'user_id'           => ['required', 'numeric', 'exists:users,id'],
             'quantity'          => ['required', 'numeric'],
-            'amount'            => ['required', 'numeric'],
+            'amount'            => ['required', 'numeric', 'min:1'],
             'rate'              => ['required', 'numeric'],
             'profit'            => ['required', 'numeric'],
             'bets'              => ['required', 'array'],
