@@ -29,6 +29,7 @@ import { ptBR } from "date-fns/locale";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { PageProps } from "@/types";
 import NotFoundData from "../NotFoundData";
+import dayjs from "dayjs";
 
 export default function DataTable({ events, resource }: { events?: any; resource?: string }) {
   const { errors, sports, auth } = usePage<PageProps>().props;
@@ -61,17 +62,24 @@ export default function DataTable({ events, resource }: { events?: any; resource
     {
       field: "created_at",
       headerName: "Criado em",
-      headerAlign: "left",
-      align: "right",
+      headerAlign: "right",
+      align: "left",
       sortable: false,
       filterable: false,
       flex: 1,
-      valueGetter: (params: GridValueGetterParams) => params.row.games.length,
       renderCell: (params) => {
+        console.log(params.row.end_game);
         return (
-          <Typography variant="body1" color="error">
-            {formatDistanceToNow(new Date(2023, 10, 11), { locale: ptBR })}
-          </Typography>
+          <Box display={"flex"} flex={1} justifyContent={"space-between"}>
+            <Typography variant="body1" color="error" flex={1}>
+              Encerra em{" " + ""}
+              {formatDistanceToNow(new Date(dayjs(params.row.end_date).format("YYYY-MM-DDTHH:mm:ss")), {
+                locale: ptBR,
+              })}
+            </Typography>
+            <Typography variant="body1">asdasda</Typography>
+            <br />
+          </Box>
         );
       },
 
@@ -278,6 +286,7 @@ export default function DataTable({ events, resource }: { events?: any; resource
                 </Typography>
                 <DatePicker
                   value={new Date(data.end_date)}
+                  disabled={!editing}
                   onChange={(e) => setData("end_date", moment(e as any).format("YYYY-MM-DD H:mm:ss"))}
                   sx={{
                     width: "100%",
@@ -299,6 +308,7 @@ export default function DataTable({ events, resource }: { events?: any; resource
                 </Typography>
                 <FormControl fullWidth>
                   <Select
+                    disabled={!editing}
                     sx={{ backgroundColor: "#1B1C1B", color: "#fff" }}
                     value={data.sport_id}
                     placeholder="Selecione um esporte"

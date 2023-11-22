@@ -1,6 +1,19 @@
 import React from "react";
-import { Chart as ChartJS, CategoryScale, LinearScale, Title, Tooltip, Filler, Legend, PointElement, LineElement } from "chart.js";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  Title,
+  Tooltip,
+  Filler,
+  Legend,
+  PointElement,
+  LineElement,
+} from "chart.js";
 import { Line } from "react-chartjs-2";
+import { usePage } from "@inertiajs/react";
+import { PageProps } from "@/types";
+import Typography from "@mui/material/Typography";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
@@ -43,20 +56,38 @@ export const options = {
   },
 };
 
-const labels = [0, 10, 70, 20, 50, 60, 70, 30, 40, 20, 60, 50];
-
-export const data = {
-  labels,
-  datasets: [
-    {
-      label: "Dataset 1",
-      data: [0, 10, 70, 20, 50, 60, 70, 30, 40, 20, 60, 50],
-      borderColor: "#6FDE53",
-      backgroundColor: "#6FDE53",
-    },
-  ],
-};
-
 export function DatabaseUsersLineCharts() {
-  return <Line options={options} data={data} height={"76px"} width={"465px"} />;
+  const { last_users } = usePage<PageProps>().props;
+
+  const getLastDaysLabels = () => {
+    return Object.keys(last_users);
+  };
+
+  const getDataToDatasets = () => {
+    return Object.values(last_users).map((date: any) => date.length);
+  };
+
+  const labels = getLastDaysLabels();
+
+  const data = {
+    labels,
+    datasets: [
+      {
+        data: getDataToDatasets(),
+        borderColor: "#6FDE53",
+        backgroundColor: "#6FDE53",
+      },
+    ],
+  };
+
+  const total = getDataToDatasets().reduce((accumulator, currentValue) => {
+    return accumulator + currentValue;
+  }, 0);
+
+  return (
+    <>
+      <Typography variant="h5">{total}</Typography>
+      <Line options={options} data={data} height={"76px"} width={"465px"} />
+    </>
+  );
 }

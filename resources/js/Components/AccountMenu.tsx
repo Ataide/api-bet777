@@ -83,11 +83,11 @@ export default function AccountMenu({ name }: AccountMenuProps) {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={handleClose}>
+        {/* <MenuItem onClick={handleClose}>
           <Link href={route("profile.edit")} className="flex items-center">
             Conta
           </Link>
-        </MenuItem>
+        </MenuItem> */}
 
         <MenuItem onClick={handleClose}>
           <Link href={route("logout")} method="post" className="flex items-center">

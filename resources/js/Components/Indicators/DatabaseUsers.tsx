@@ -11,9 +11,9 @@ export default function DatabaseUsers() {
         <Box sx={{ padding: "16px 20px 0px 20px" }}>
           <Typography variant="body2">Todos usuários cadastrados</Typography>
           <Typography variant="body2" color={"primary"}>
-            +2.6%
+            Total
           </Typography>
-          <Typography variant="h5">1.200</Typography>
+
           <Box>
             <DatabaseUsersLineCharts />
           </Box>

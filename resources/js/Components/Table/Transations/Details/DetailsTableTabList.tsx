@@ -5,7 +5,7 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import Chip from "@mui/material/Chip";
 
-import { ReactEventHandler, useEffect, useState } from "react";
+import { ReactEventHandler, useCallback, useEffect, useState } from "react";
 
 import { router, usePage } from "@inertiajs/react";
 import { PageProps } from "@/types";
@@ -19,7 +19,7 @@ interface ITabListProps {
 export default function DetailsTableTabList({ resource }: ITabListProps) {
   const [date, setDate] = useState<Dayjs | null>(null);
   const { transactionDetails } = usePage<PageProps>().props;
-  const [selectedTab, setTabSelected] = useState("withdraw");
+  const [selectedTab, setTabSelected] = useState("");
   const [search, setSearch] = useState<string>();
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -35,15 +35,30 @@ export default function DetailsTableTabList({ resource }: ITabListProps) {
     );
   };
 
-  useEffect(() => {
-    setTabSelected("deposit");
-  }, []);
+  // useEffect(() => {
+  //   setTabSelected("");
+  // }, []);
 
   return (
     <Box display={"flex"} alignItems={"center"}>
       <TabContext value={selectedTab}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <TabList onChange={handleTabChange} aria-label="lab API tabs example">
+            <Tab
+              label={
+                <div>
+                  {"Todos"}
+                  <Chip
+                    color="primary"
+                    sx={{ ml: 1, borderRadius: "5px" }}
+                    size="small"
+                    label={transactionDetails.total_geral || 0}
+                  />
+                </div>
+              }
+              value=""
+            />
+
             <Tab
               label={
                 <div>
@@ -77,17 +92,6 @@ export default function DetailsTableTabList({ resource }: ITabListProps) {
       </TabContext>
       <Box mr={4} flex={1} display={"flex"} flexDirection={"row"} justifyContent={"end"} alignItems={"center"}>
         <DateField value={date} onChange={handleDateChange} />
-        {/* <DatePicker
-          sx={{
-            width: "207px",
-            backgroundColor: "#2E2E2E",
-            color: "#fff",
-            borderRadius: "10px !important",
-            "& .MuiIconButton-root": {
-              color: "primary.main",
-            },
-          }}
-        /> */}
       </Box>
     </Box>
   );

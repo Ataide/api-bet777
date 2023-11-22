@@ -61,8 +61,22 @@ class UserController extends Controller
         );
         
         $with_totals = $totals_groups->merge($users);
-            
-        return Inertia::render('Users', ['users' => $with_totals]);
+
+        $last_users = User::where('type', 'user')->whereBetween('created_at', [now()->subDays(30), now()])
+        ->orderBy('created_at')
+        ->get()
+        ->groupBy(function ($val) {
+            return $val->created_at->format('d/m/Y');
+        });
+
+        $news_users = User::where('type', 'user')->whereBetween('created_at', [now()->subDays(7), now()])
+        ->orderBy('created_at')
+        ->get()
+        ->groupBy(function ($val) {
+            return $val->created_at->format('d/m/Y');
+        });
+
+        return Inertia::render('Users', ['users' => $with_totals, 'last_users' => $last_users, 'news_users' => $news_users]);
     }
 
     public function storeFromModal(Request $request)

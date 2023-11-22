@@ -8,11 +8,10 @@ export default function NewUsers() {
     <>
       <Paper elevation={5} variant="indicator">
         <Box sx={{ padding: "16px 20px 0px 20px" }}>
-          <Typography variant="body2">Usuários Novos</Typography>
+          <Typography variant="body2">Usuários</Typography>
           <Typography variant="body2" color={"primary"}>
-            +2.6%
+            {"Novos"}
           </Typography>
-          <Typography variant="h5">300</Typography>
           <Box>
             <NewUsersBarChart />
           </Box>

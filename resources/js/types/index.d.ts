@@ -16,6 +16,8 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
   flash: Flash;
   superuser: IAdmin;
   dashboard: any[];
+  last_users: any[];
+  news_users: any[];
   incomes: any[];
   sports: any[];
   pendings: any[];

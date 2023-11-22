@@ -4,6 +4,9 @@ import { Bar } from "react-chartjs-2";
 import type { ChartData, ChartArea } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import Grow from "@mui/material/Grow";
+import { usePage } from "@inertiajs/react";
+import { PageProps } from "@/types";
+import Typography from "@mui/material/Typography";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -46,19 +49,6 @@ export const options = {
   },
 };
 
-const labels = [100, 10, 70, 20, 50, 60, 70, 30, 40, 20, 60, 50, 80, 40, 100, 40, 10, 70, 20, 50, 60, 70, 30, 40, 20, 60, 50, 80, 40, 100];
-
-export const data = {
-  labels,
-  datasets: [
-    {
-      label: "Dataset 1",
-      data: [100, 100, 70, 60, 50, 60, 70, 80, 40, 50, 60, 50, 80, 40, 100, 40, 90, 100, 20, 50, 60, 70, 30, 40, 20, 60, 50, 80, 40, 100],
-      borderRadius: 3,
-    },
-  ],
-};
-
 function createGradient(ctx: CanvasRenderingContext2D, area: ChartArea) {
   const gradient = ctx.createLinearGradient(0, area.bottom, 0, area.top);
 
@@ -70,6 +60,29 @@ function createGradient(ctx: CanvasRenderingContext2D, area: ChartArea) {
 }
 
 export function NewUsersBarChart() {
+  const { news_users } = usePage<PageProps>().props;
+
+  const getLastDaysLabels = () => {
+    return Object.keys(news_users);
+  };
+
+  const getDataToDatasets = () => {
+    return Object.values(news_users).map((date: any) => date.length);
+  };
+
+  const labels = getLastDaysLabels();
+
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: "Novatos",
+        data: getDataToDatasets(),
+        borderRadius: 3,
+      },
+    ],
+  };
+
   const chartRef = useRef<ChartJS<"bar">>(null);
 
   const [chartData, setChartData] = useState<ChartData<"bar">>({
@@ -95,8 +108,13 @@ export function NewUsersBarChart() {
     setChartData(chartData);
   }, []);
 
+  const total = getDataToDatasets().reduce((accumulator, currentValue) => {
+    return accumulator + currentValue;
+  }, 0);
+
   return (
     <>
+      <Typography variant="h5">{total}</Typography>
       <Bar ref={chartRef} options={options} data={chartData} height={"76px"} width={"465px"} redraw />
     </>
   );
