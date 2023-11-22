@@ -10,7 +10,7 @@ export default function TotalIncome() {
       <Paper elevation={5} variant="indicator">
         <Box sx={{ padding: "16px 20px 0px 20px" }}>
           <Typography variant="body1">Total Receita</Typography>
-          <Typography variant="h5">R$ 5.300</Typography>
+          {/* <Typography variant="h5">R$ 5.300</Typography> */}
           <Box>
             <TotalIncomeBarChart />
           </Box>

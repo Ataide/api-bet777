@@ -26,9 +26,9 @@ export default function Deposits() {
         <Paper elevation={5} variant="indicator">
           <Box sx={{ padding: "16px 20px 0px 20px" }}>
             <Typography variant="body2">Total de Depósitos</Typography>
-            <Typography variant="body2" color={"primary"}>
+            {/* <Typography variant="body2" color={"primary"}>
               +2.6%
-            </Typography>
+            </Typography> */}
             <Typography variant="h5">{getTotal(dashboard)}</Typography>
             <Box>
               <DepositsBarChart />

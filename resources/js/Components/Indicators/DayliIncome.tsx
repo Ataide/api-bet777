@@ -11,7 +11,7 @@ export default function DayliIncome() {
       <Paper elevation={5} variant="indicator">
         <Box sx={{ padding: "16px 20px 0px 20px" }}>
           <Typography variant="body1">Receita do dia</Typography>
-          <Typography variant="h5">R$ 1.000</Typography>
+          {/* <Typography variant="h5">R$ 1.000</Typography> */}
           <Box>
             <DailyIncomeBarChart />
           </Box>
