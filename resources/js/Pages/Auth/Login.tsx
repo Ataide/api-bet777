@@ -88,14 +88,14 @@ export default function Login({ status, canResetPassword }: { status?: string; c
           helperText={errors.password}
           onChange={(e) => setData("password", e.target.value)}
         />
-        <Box textAlign={"end"}>
+        {/* <Box textAlign={"end"}>
           <Link href={route("password.request")}>
             <Typography component={"span"} variant="body1" color="primary" fontWeight={400} ml={1}>
               Esqueci minha senha
             </Typography>
           </Link>
           <br />
-        </Box>
+        </Box> */}
         {errors.status && <Alert severity="warning">{errors.status}</Alert>}
         <Button
           variant="contained"

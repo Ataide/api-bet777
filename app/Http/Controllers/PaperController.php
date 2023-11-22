@@ -25,6 +25,7 @@ class PaperController extends Controller
             })
             ->with('bets', 'bets.game')
             ->where('user_id', $user->id)
+            ->orderBy('created_at', 'DESC')
             ->get();
 
         return $papers;
@@ -50,11 +51,11 @@ class PaperController extends Controller
         if (!$haveFunds) {
             return response()->json(['message' => "Você não possui fundos."], 422);
         }
-
+        
         $request->user()->takeOutWallet($amount);
         
         $request->user()->updateWalletAmountInBets($amount);
-        
+    
         $new_paper = new Paper();
 
         $new_paper->fill($request->validated());

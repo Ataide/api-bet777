@@ -71,7 +71,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
           </Button>
 
           <Box>
-            <Link href={route("login")}>
+            <Link href="#" onClick={() => window.history.back()}>
               <Typography component={"span"} variant="body1" color="primary" fontWeight={400} ml={1}>
                 Voltar ao login.
               </Typography>
