@@ -79,7 +79,7 @@ export default function DataTable({ bets, resource }: { bets?: any; resource?: s
               const result = selection.filter((s) => !selectionSet.has(s));
               router.visit(route("bets", { id: result[0] }), {
                 method: "get",
-                only: ["userPapers"],
+                only: ["userPapers", "data_donut"],
                 preserveState: true,
               });
               // router.get(route("be'ts", { id: result[0] }), {}, { preserveState: true, replace: true });
@@ -87,7 +87,7 @@ export default function DataTable({ bets, resource }: { bets?: any; resource?: s
             } else {
               router.visit(route("bets", { id: selection[0] }), {
                 method: "get",
-                only: ["userPapers"],
+                only: ["userPapers", "data_donut"],
                 preserveState: true,
               });
               // router.get(route("bets", { id: selection[0] }), {}, { preserveState: true, replace: true });

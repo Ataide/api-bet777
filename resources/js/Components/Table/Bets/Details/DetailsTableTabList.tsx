@@ -4,7 +4,7 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import Chip from "@mui/material/Chip";
 import Typography from "@mui/material/Typography";
-import { ReactEventHandler, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { router, usePage } from "@inertiajs/react";
 import { PageProps } from "@/types";
 import Paper from "@mui/material/Paper";
@@ -26,7 +26,7 @@ const columns: GridColDef[] = [
 ];
 
 export default function DetailsTableTabList() {
-  const { userPapers, data_donut } = usePage<PageProps>().props;
+  const { userPapers } = usePage<PageProps>().props;
   const [selectedTab, setTabSelected] = useState("-1");
   const [search, setSearch] = useState<string>();
 
@@ -45,7 +45,7 @@ export default function DetailsTableTabList() {
     router.get(
       route("bets"),
       { search: event.target.value, status: selectedTab },
-      { preserveState: true, only: ["userPapers"] }
+      { preserveState: true, only: ["userPapers", "data_donut"] }
     );
   };
   useEffect(() => {
