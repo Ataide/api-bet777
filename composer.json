@@ -57,7 +57,7 @@
             "@php artisan key:generate --ansi"
         ],
         "post-install-cmd": [
-            "php artisan migrate:refresh --no-interaction --force --seed"
+            "php artisan migrate --no-interaction"
         ]
     },
     "extra": {
