@@ -71,13 +71,13 @@ export default function DataTable({ events, resource }: { events?: any; resource
         console.log(params.row.end_game);
         return (
           <Box display={"flex"} flex={1} justifyContent={"space-between"}>
-            <Typography variant="body1" color="error" flex={1}>
+            <Typography variant="body1" color="error" flex={1} fontWeight={400}>
               Encerra em{" " + ""}
               {formatDistanceToNow(new Date(dayjs(params.row.end_date).format("YYYY-MM-DDTHH:mm:ss")), {
                 locale: ptBR,
               })}
             </Typography>
-            <Typography variant="body1">asdasda</Typography>
+            <Typography variant="body1">{dayjs(params.row.created_at).format("DD/MM/YYYY HH:mm")}</Typography>
             <br />
           </Box>
         );
@@ -88,6 +88,8 @@ export default function DataTable({ events, resource }: { events?: any; resource
     {
       field: "",
       headerName: "Ações",
+      headerAlign: "center",
+      align: "center",
       sortable: false,
       filterable: false,
       renderCell: (params) => {

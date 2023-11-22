@@ -17,6 +17,7 @@ import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import PaperInfo from "./PaperInfo";
 import Stack from "@mui/material/Stack";
+import NotFoundData from "./Table/NotFoundData";
 
 export default function BetsComponent() {
   const columns: GridColDef[] = [
@@ -81,62 +82,68 @@ export default function BetsComponent() {
     <>
       <Grid container spacing={2}>
         <Grid item xs={8}>
-          <Paper elevation={5} variant="indicator">
+          <Paper elevation={5} variant="indicator" sx={{ minHeight: "625px" }}>
             <TableTabList />
-            <DataGrid
-              getRowId={(row) => row.user_id}
-              disableRowSelectionOnClick
-              disableColumnSelector
-              rows={bets.data}
-              rowCount={bets.total}
-              paginationMode="server"
-              columns={columns}
-              density={"comfortable"}
-              initialState={{
-                pagination: {
-                  paginationModel: { page: bets.current_page - 1, pageSize: bets.per_page },
-                },
-              }}
-              onPaginationModelChange={(model, details) => {
-                router.get(
-                  "/apostas",
-                  { page: model.page + 1, per_page: model.pageSize },
-                  { only: ["bets"], preserveState: true }
-                );
-              }}
-              checkboxSelection
-              rowSelectionModel={selectionModel}
-              sx={{
-                minHeight: "540px",
-              }}
-              onRowSelectionModelChange={(selection) => {
-                if (selection.length > 1) {
-                  const selectionSet = new Set(selectionModel);
-                  const result = selection.filter((s) => !selectionSet.has(s));
-                  router.visit(route("bets", { id: result[0] }), {
-                    method: "get",
-                    only: ["userPapers", "data_donut"],
-                    preserveState: true,
-                    preserveScroll: true,
-                  });
-                  setSelectionModel(result);
-                } else {
-                  router.visit(route("bets", { id: selection[0] }), {
-                    method: "get",
-                    only: ["userPapers", "data_donut"],
-                    preserveState: true,
-                    preserveScroll: true,
-                  });
-                  setSelectionModel(selection);
-                }
-              }}
-            />
+
+            {bets.data.length > 0 ? (
+              <DataGrid
+                getRowId={(row) => row.user_id}
+                disableRowSelectionOnClick
+                disableColumnSelector
+                rows={bets.data}
+                rowCount={bets.total}
+                paginationMode="server"
+                columns={columns}
+                density={"comfortable"}
+                initialState={{
+                  pagination: {
+                    paginationModel: { page: bets.current_page - 1, pageSize: bets.per_page },
+                  },
+                }}
+                onPaginationModelChange={(model, details) => {
+                  router.get(
+                    "/apostas",
+                    { page: model.page + 1, per_page: model.pageSize },
+                    { only: ["bets"], preserveState: true }
+                  );
+                }}
+                checkboxSelection
+                rowSelectionModel={selectionModel}
+                sx={{
+                  minHeight: "540px",
+                }}
+                onRowSelectionModelChange={(selection) => {
+                  if (selection.length > 1) {
+                    const selectionSet = new Set(selectionModel);
+                    const result = selection.filter((s) => !selectionSet.has(s));
+                    router.visit(route("bets", { id: result[0] }), {
+                      method: "get",
+                      only: ["userPapers", "data_donut"],
+                      preserveState: true,
+                      preserveScroll: true,
+                    });
+                    setSelectionModel(result);
+                  } else {
+                    router.visit(route("bets", { id: selection[0] }), {
+                      method: "get",
+                      only: ["userPapers", "data_donut"],
+                      preserveState: true,
+                      preserveScroll: true,
+                    });
+                    setSelectionModel(selection);
+                  }
+                }}
+              />
+            ) : (
+              <NotFoundData />
+            )}
           </Paper>
         </Grid>
         <Grid item xs={4} spacing={2}>
           <ResumeDonutChar />
-          {userPapers.data.length > 0 && (
-            <Paper variant="indicator" sx={{ mt: 2 }}>
+
+          <Paper variant="indicator" sx={{ mt: 2 }}>
+            {userPapers.data.length > 0 ? (
               <Box p={2}>
                 <Typography variant="body1" color="initial">
                   Cliente:{" "}
@@ -175,8 +182,10 @@ export default function BetsComponent() {
                   </Stack>
                 </Stack>
               </Box>
-            </Paper>
-          )}
+            ) : (
+              <NotFoundData />
+            )}
+          </Paper>
         </Grid>
         <Grid></Grid>
 

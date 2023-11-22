@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Models\Event;
+use App\Models\Game;
 use App\Models\Sport;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Inertia\Inertia;
 use Redirect;
@@ -19,7 +21,13 @@ class EventController extends Controller
      */
     public function index()
     {
-        $events = Event::with('games')->paginate(5);
+        $events = Event::with('games')->when(
+            Request::input('search'),
+            function (Builder $query, $search) {
+                $query->whereRelation('games', 'home_name', 'like', '%' . $search . '%')
+                    ->orWhereRelation('games', 'away_name', 'like', '%' . $search . '%');
+            }
+        )->orderBy('created_at', 'desc')->paginate(5);
 
         $sports = Sport::all();
 
@@ -28,7 +36,6 @@ class EventController extends Controller
             [
                 'events' => $events,
                 'sports' => $sports,
-                // 'withdraws'    => $withdraws
             ]
         );
     }
@@ -116,11 +123,23 @@ class EventController extends Controller
     {
         $event = Event::find($event_id)->load('games');
 
+        $games = Game::where('event_id', $event_id)
+            ->when(
+                Request::input('search'),
+                function (Builder $query, $search) {
+                    $query->where('home_name', 'like', '%' . $search . '%')
+                        ->orWhere('away_name', 'like', '%' . $search . '%');
+                }
+            )->when(Request::input('date'), function (Builder $query, $date) {
+                $query->whereDate('time_close_bet', '=', Carbon::parse($date));
+            })
+        ->get();
+
         return Inertia::render(
             'Games',
             [
                 'event' => $event,
-                'games' => $event->games()->orderBy('time_close_bet')->get(),
+                'games' => $games,
                 // 'withdraws'    => $withdraws
             ]
         );

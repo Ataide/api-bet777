@@ -257,7 +257,7 @@ export default function GameAddDialog({ open, handleClose }: { open: boolean; ha
                         +
                         <VisuallyHiddenInput
                           type="file"
-                          onChange={(e) => handleUploadFileHome(e?.target?.files?.[0])}
+                          onChange={(e) => handleUploadFileAway(e?.target?.files?.[0])}
                         />
                       </Button>
                     </Box>
