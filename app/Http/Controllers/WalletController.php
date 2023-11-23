@@ -68,8 +68,9 @@ class WalletController extends Controller
             $type = $fields['type'];
 
             if ($type == 'deposit') {
-                $wallet->fill(['amount' => $wallet->amount + $amount]);
                 $user->createDepositTransaction($amount);
+                $user->addToWallet($amount);
+                // $wallet->fill(['amount' => $wallet->amount + $amount]);
             }
 
             if ($type == 'withdraw') {
@@ -77,10 +78,12 @@ class WalletController extends Controller
                 if (!$haveFunds) {
                     throw new Exception("Não há fundos disponível para a solicitação");
                 }
-                $wallet->fill(['amount' => $wallet->amount - $amount]);
                 $user->createWithdrawTransaction($amount);
+                $wallet->processWithdraw($amount);
+                // $user->takeOutWallet($amount);
+                // $wallet->fill(['amount' => $wallet->amount - $amount]);
             }
-            $wallet->save();
+            // $wallet->save();
             
             return response()->json(['message' => 'Operação realizada com sucesso, adicionado ' . $amount]);
         } catch (\Throwable $th) {

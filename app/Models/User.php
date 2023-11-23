@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Config;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -86,14 +88,33 @@ class User extends Authenticatable
 
     public function checkIfHaveFunds($amount)
     {
-        return $this->wallet->amount >= $amount;
+        return $this->wallet->draw_total >= $amount;
     }
 
     public function takeOutWallet($amount)
     {
+        $rate          = Config::get("services.gateway.draw_rate");
         $current_value = $this->wallet->amount;
+        $value_total   = $current_value - $amount;
 
-        $this->wallet->update(['amount' => $current_value - $amount]);
+        $this->wallet->update([
+            'amount'     => $value_total,
+            'draw_total' => $value_total - ($value_total * $rate)
+        ]);
+    }
+
+    public function addToWallet($amount)
+    {
+        $rate          = Config::get("services.gateway.draw_rate");
+        $current_value = $this->wallet->amount;
+        $value_total   = $current_value + $amount;
+
+        $this->wallet->update(
+            [
+                'amount'     => $current_value + $amount,
+                'draw_total' => $value_total - ($value_total * $rate)
+            ]
+        );
     }
 
     public function updateWalletAmountInBets($amount)
