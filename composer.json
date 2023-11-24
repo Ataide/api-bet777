@@ -13,6 +13,7 @@
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
         "laravelcollective/html": "^6.4",
+        "michael/laravelpagseguro": "dev-master",
         "spatie/laravel-permission": "^6.1",
         "tightenco/ziggy": "^1.0"
     },

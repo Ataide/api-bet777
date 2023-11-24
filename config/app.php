@@ -159,6 +159,7 @@ return [
         /*
          * Package Service Providers...
          */
+        laravel\pagseguro\Platform\Laravel5\ServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -182,6 +183,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
+        'PagSeguro' => laravel\pagseguro\Platform\Laravel5\PagSeguro::class
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 

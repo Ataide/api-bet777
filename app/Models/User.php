@@ -90,7 +90,7 @@ class User extends Authenticatable
     {
         return $this->wallet->draw_total >= $amount;
     }
-
+    
     public function takeOutWallet($amount)
     {
         $rate          = Config::get("services.gateway.draw_rate");
@@ -103,7 +103,15 @@ class User extends Authenticatable
         ]);
     }
 
-    public function addToWallet($amount)
+    /**
+     * [Adiciona um valor a carteria do usuario.]
+     *
+     * @param float $amount
+     *
+     * @return void
+     *
+     */
+    public function addToWallet(float $amount): void
     {
         $rate          = Config::get("services.gateway.draw_rate");
         $current_value = $this->wallet->amount;
@@ -123,7 +131,15 @@ class User extends Authenticatable
 
         $this->wallet->update(['bet_total' => $current_value + $amount]);
     }
-    public function createDepositTransaction($amount)
+    /**
+     * [Cria uma transação de depósito para o usuario]
+     *
+     * @param mixed $amount
+     *
+     * @return Transaction
+     *
+     */
+    public function createDepositTransaction($amount): Transaction
     {
         try {
             $transactions           = new Transaction();
@@ -132,6 +148,8 @@ class User extends Authenticatable
             $transactions->deposit  = $amount;
             $transactions->withdraw = 0;
             $transactions->save();
+
+            return $transactions;
         } catch (\Throwable $th) {
             throw $th;
         }

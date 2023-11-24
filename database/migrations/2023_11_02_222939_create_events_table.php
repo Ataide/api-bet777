@@ -18,6 +18,8 @@ return new class extends Migration {
             $table->dateTime('end_date');
             $table->timestamps();
 
+            $table->softDeletes();
+
             $table->foreign('sport_id')->references('id')->on('sports')->onDelete('cascade');
         });
     }

@@ -63,29 +63,33 @@ class WalletController extends Controller
         
             $fields = $request->validated();
 
+            //Valor a ser atualizado.
             $amount = $fields['amount'];
 
+            // Tipo de transação;
             $type = $fields['type'];
 
             if ($type == 'deposit') {
-                $user->createDepositTransaction($amount);
-                $user->addToWallet($amount);
-                // $wallet->fill(['amount' => $wallet->amount + $amount]);
+                $transaction = $user->createDepositTransaction($amount);
+                $qr_code     = $transaction->requestPixQrcodeAsPng();
+
+                return response()->json([
+                    'message' => 'Operação realizada com sucesso',
+                    "qr_code" => $qr_code
+                ], 200);
             }
 
             if ($type == 'withdraw') {
                 $haveFunds = $user->checkIfHaveFunds($amount);
+                
                 if (!$haveFunds) {
                     throw new Exception("Não há fundos disponível para a solicitação");
                 }
+
                 $user->createWithdrawTransaction($amount);
-                $wallet->processWithdraw($amount);
-                // $user->takeOutWallet($amount);
-                // $wallet->fill(['amount' => $wallet->amount - $amount]);
             }
-            // $wallet->save();
             
-            return response()->json(['message' => 'Operação realizada com sucesso, adicionado ' . $amount]);
+            return response()->json(['message' => 'Operação realizada com sucesso'], 200);
         } catch (\Throwable $th) {
             return response()->json(['message' => 'Operação não foi realizada.' . $th->getMessage()], 422);
         }

@@ -14,8 +14,11 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('type')->nullable();
+            $table->string('payment_id')->nullable();
+            $table->enum('status', ['pending', 'aproved', 'canceled'])->default('pending');
             $table->float('deposit', 8, 2)->nullable();
             $table->float('withdraw', 8, 2)->nullable();
+
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users') ->onDelete('cascade');
