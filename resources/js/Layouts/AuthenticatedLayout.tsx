@@ -1,25 +1,19 @@
-import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 
+import { User } from "@/types";
+import MenuIcon from "@mui/icons-material/Menu";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import MailIcon from "@mui/icons-material/Mail";
-import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { PropsWithChildren, ReactNode, useContext, useState } from "react";
-import { User } from "@/types";
-import Dropdown from "@/Components/Dropdown";
-import NavLink from "@/Components/NavLink";
+import { PropsWithChildren, ReactNode, useState } from "react";
 import AccountMenu from "../Components/AccountMenu";
-import BallotIcon from "@mui/icons-material/Ballot";
 // import NestedList from "@/Components/List/NestedList";
 // import { Pole } from "../Components/Icons/index";
 // import { FiberCable } from "../Components/Icons/index";
@@ -27,18 +21,8 @@ import logo from "../../assets/logo_vertical.png";
 // import "./index.css";
 // import Logo from "@/Components/Layout/Logo";
 // import NavigationItem from "../Components/Layout/NavigationItem";
-import MapIcon from "@mui/icons-material/Map";
-import PoleIcon from "@mui/icons-material/IndeterminateCheckBox";
-import CableIcon from "@mui/icons-material/Route";
-import HomeIcon from "@mui/icons-material/Home";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import PendenciaIcon from "@mui/icons-material/BusinessCenter";
-import ReportProblemIcon from "@mui/icons-material/ReportProblem";
-import UserIcon from "@mui/icons-material/Group";
-import RouterIcon from "@mui/icons-material/Router";
-import Container from "@mui/material/Container";
 import { Link } from "@inertiajs/react";
-import ListSubheader from "@mui/material/ListSubheader";
+import Container from "@mui/material/Container";
 
 // import { MapContext } from "../MapContext";
 
@@ -104,11 +88,19 @@ export default function Authenticated({
               <ListItemText primary={"Eventos"} />
             </ListItemButton>
           </ListItem>
-          <ListItem component={Link} href={route("bets", {search: '', type: '-1'})} disablePadding>
+          <ListItem component={Link} href={route("bets", { search: "", type: "-1" })} disablePadding>
             <ListItemButton selected={route().current("bets") ? true : false}>
               <ListItemText primary={"Apostas"} />
             </ListItemButton>
           </ListItem>
+          {/* <Typography variant="body1" fontWeight={400} py={2}>
+            Solicitações
+          </Typography>
+          <ListItem component={Link} href={route("requests", { search: "", type: "-1" })} disablePadding>
+            <ListItemButton selected={route().current("requests") ? true : false}>
+              <ListItemText primary={"Apostas"} />
+            </ListItemButton>
+          </ListItem> */}
         </List>
       </Container>
     </>
@@ -159,7 +151,7 @@ export default function Authenticated({
         >
           {drawer}
         </Drawer>
-        
+
         <Drawer
           variant="permanent"
           sx={{
@@ -174,7 +166,6 @@ export default function Authenticated({
         >
           {drawer}
         </Drawer>
-        
       </Box>
       <Box
         component="main"
