@@ -91,11 +91,11 @@ class User extends Authenticatable
         return $this->wallet->draw_total >= $amount;
     }
     
-    public function takeOutWallet($amount, $draw_total)
+    public function takeOutWallet($values)
     {
         $this->wallet->update([
-            'amount'     => $amount,
-            'draw_total' => $draw_total
+            'amount'     => $this->wallet->amount - floatval($values['amount']),
+            'draw_total' => $values['draw_total']
         ]);
     }
 
