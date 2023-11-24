@@ -3,6 +3,9 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use MercadoPago\Client\Common\RequestOptions;
+use MercadoPago\Client\Payment\PaymentClient;
+use MercadoPago\MercadoPagoConfig;
 
 class go extends Command
 {
@@ -25,64 +28,28 @@ class go extends Command
      */
     public function handle()
     {
-        $client = new \GuzzleHttp\Client();
+        MercadoPagoConfig::setAccessToken(env('MP_ACCESS_TOKEN'));
 
-        $data = [
-            "reference_id" => "ex-00001",
-            "customer"     => [
-                "name"   => "Jose da Silva",
-                "email"  => "email@test.com",
-                "tax_id" => "12345678909",
-                "phones" => [
-                    [
-                        "country" => "55",
-                        "area"    => "11",
-                        "number"  => "999999999",
-                        "type"    => "MOBILE"
-                    ]
+        $client          = new PaymentClient();
+        $request_options = new RequestOptions();
+        $request_options->setCustomHeaders(["X-Idempotency-Key: 123"]);
+
+        $payment = $client->create([
+            "transaction_amount" => 100,
+            "description"        => "description",
+            "payment_method_id"  => "pix",
+            "payer"              => [
+                "email"          => "user@test.com",
+                "first_name"     => 'Ataide',
+                "identification" => [
+                    "type"   => 'cpf',
+                    "number" => '22813495867'
                 ]
-            ],
-            "items" => [
-                [
-                    "name"        => "nome do item",
-                    "quantity"    => 1,
-                    "unit_amount" => 500
-                ]
-            ],
-            "qr_codes" => [
-                [
-                    "amount" => [
-                        "value" => 500
-                    ],
-                    "expiration_date" => "2023-11-29T20:15:59-03:00",
-                ]
-            ],
-            "shipping" => [
-                "address" => [
-                    "street"      => "Avenida Brigadeiro Faria Lima",
-                    "number"      => "1384",
-                    "complement"  => "apto 12",
-                    "locality"    => "Pinheiros",
-                    "city"        => "São Paulo",
-                    "region_code" => "SP",
-                    "country"     => "BRA",
-                    "postal_code" => "01452002"
-                ]
-            ],
-            "notification_urls" => [
-                "https://meusite.com/notificacoes"
             ]
-        ];
+        ], $request_options);
 
-        $response = $client->request('POST', 'https://sandbox.api.pagseguro.com/orders', [
-            'body'    => json_encode($data),
-            'headers' => [
-                'Authorization' => 'Bearer 72E9635253A44FB9AF5A6BBBA5CC704E',
-                'accept'        => 'application/json',
-                'content-type'  => 'application/json',
-            ],
-        ]);
-
-        dd(json_decode($response->getBody())->qr_codes[0]->links[0]->href);
+        $qr_code_link = $payment->point_of_interaction->transaction_data->qr_code_base64;
+        $text_link    = $payment->point_of_interaction->transaction_data->qr_code;
+        $value        = $payment->transaction_amount;
     }
 }

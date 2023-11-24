@@ -5,6 +5,9 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use MercadoPago\Client\Common\RequestOptions;
+use MercadoPago\Client\Payment\PaymentClient;
+use MercadoPago\MercadoPagoConfig;
 
 class Transaction extends Model
 {
@@ -90,7 +93,7 @@ class Transaction extends Model
                 ]
             ],
             "notification_urls" => [
-                "https://meusite.com/notificacoes"
+                env("PAGSEGURO_WEBHOOK_URL", "localhost"),
             ]
         ];
 
@@ -107,5 +110,34 @@ class Transaction extends Model
         $value        = json_decode($response->getBody())->qr_codes[0]->amount->value;
 
         return ['text' => $text_link, 'image' => $qr_code_link, 'amount' => $value];
+    }
+
+    public function requestMercadoPagoPix(): array
+    {
+        MercadoPagoConfig::setAccessToken(env('MP_ACCESS_TOKEN'));
+
+        $client          = new PaymentClient();
+        $request_options = new RequestOptions();
+        $request_options->setCustomHeaders(["X-Idempotency-Key: $this->id"]);
+
+        $payment = $client->create([
+            "transaction_amount" => (float) $this->deposit,
+            "description"        => "Pagamento de deposito.",
+            "payment_method_id"  => "pix",
+            "payer"              => [
+                "email"          => $this->user->email,
+                "first_name"     => $this->user->name,
+                "identification" => [
+                    "type"   => 'cpf',
+                    "number" => $this->user->profile->cpf
+                ]
+            ]
+        ], $request_options);
+
+        $qr_code_link = $payment->point_of_interaction->transaction_data->qr_code_base64;
+        $text_link    = $payment->point_of_interaction->transaction_data->qr_code;
+        $value        = $payment->transaction_amount;
+
+        return ['text' => $text_link, 'image' => "data:image/png;base64," . $qr_code_link, 'amount' => $value];
     }
 }

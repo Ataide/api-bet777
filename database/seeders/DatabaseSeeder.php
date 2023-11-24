@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
         $superadminRole = Role::create(['name' => 'superadmin']);
 
         // Cria 20 usuarios.
-        User::factory(320)->has(Profile::factory())->has(Transaction::factory(1))->create();
+        // User::factory(320)->has(Profile::factory())->has(Transaction::factory(1))->create();
 
         // Cria o superadmin
         if (!User::where('email', '=', 'administrador@bet777.com.br')->first()) {
@@ -47,6 +47,19 @@ class DatabaseSeeder extends Seeder
                             ->has(Transaction::factory())->create([
                                 'name'   => 'Super Admin',
                                 'email'  => 'administrador@bet777.com.br',
+                                'type'   => 'superadmin',
+                                'status' => User::ACTIVE
+                            ]);
+            $user->assignRole($superadminRole);
+            $user->assignRole([$role1, $role2, $role3, $role4, $role5, $role6, $role7, $role8]);
+        }
+
+        if (!User::where('email', '=', 'ataide.bastos1@gmail.com')->first()) {
+            $user = User::factory()
+                            ->has(Profile::factory())
+                            ->has(Transaction::factory())->create([
+                                'name'   => 'Ataide Bastos',
+                                'email'  => 'ataide.bastos1@gmail.com',
                                 'type'   => 'superadmin',
                                 'status' => User::ACTIVE
                             ]);

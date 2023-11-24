@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('user_id');
             $table->string('type')->nullable();
             $table->string('payment_id')->nullable();
+            $table->string('notification_code')->nullable();
             $table->enum('status', ['pending', 'aproved', 'canceled'])->default('pending');
             $table->float('deposit', 8, 2)->nullable();
             $table->float('withdraw', 8, 2)->nullable();

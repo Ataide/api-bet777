@@ -13,8 +13,10 @@
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
         "laravelcollective/html": "^6.4",
+        "mercadopago/dx-php": "3.0.0",
         "spatie/laravel-permission": "^6.1",
-        "tightenco/ziggy": "^1.0"
+        "tightenco/ziggy": "^1.0",
+        "wandesnet/mercadopago-laravel": "^1.0"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.13",

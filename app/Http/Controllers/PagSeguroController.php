@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Pagamentos\MetodoPagamentoService;
 use Illuminate\Http\Request;
 
 class PagSeguroController extends Controller
@@ -13,5 +14,10 @@ class PagSeguroController extends Controller
 
     public function pix()
     {
+    }
+
+    public function pagar($metodo)
+    {
+        return (new MetodoPagamentoService($metodo))->handle();
     }
 }

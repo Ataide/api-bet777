@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\MercadoPagoController;
 use App\Http\Controllers\PagSeguroController;
 use App\Http\Controllers\PaperController;
 use App\Http\Controllers\UserController;
@@ -31,6 +32,8 @@ Route::get('/events/hot', [EventController::class, 'apiHotEvents'])->name('event
 
 //Rota de notificação do webhook do pagseguro.
 Route::post('/pagseguro/notification', [PagSeguroController::class, 'notification'])->name('pagseguro.notification');
+
+Route::post('/mp/notification', [MercadoPagoController::class, 'notification'])->name('mercadopago.notification');
 
 Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
     // $paper = Paper::with('bets')->where('user_id', '=', $request->user()->id)->get();

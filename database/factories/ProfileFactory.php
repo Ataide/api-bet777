@@ -19,7 +19,7 @@ class ProfileFactory extends Factory
     {
         return [
             'user_id'        => User::factory(),
-            'cpf'            => fake()->unixTime(),
+            'cpf'            => '22813495867',
             'phone'          => fake()->phoneNumber(),
             'pix_key'        => fake()->swiftBicNumber(),
             'account_status' => fake()->randomElement(['Ativo' , 'Novo' , 'Inativo']),

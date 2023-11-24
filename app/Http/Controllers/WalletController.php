@@ -71,7 +71,7 @@ class WalletController extends Controller
 
             if ($type == 'deposit') {
                 $transaction = $user->createDepositTransaction($amount);
-                $qr_code     = $transaction->requestPixQrcodeAsPng();
+                $qr_code     = $transaction->requestMercadoPagoPix();
 
                 return response()->json([
                     'message' => 'Operação realizada com sucesso',
