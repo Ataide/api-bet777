@@ -118,10 +118,10 @@ class Transaction extends Model
 
         $client          = new PaymentClient();
         $request_options = new RequestOptions();
-        $request_options->setCustomHeaders(["X-Idempotency-Key: $this->id"]);
+        $request_options->setCustomHeaders(["X-Idempotency-Key:" . uniqid()]);
 
         $payment = $client->create([
-            "transaction_amount" => (float) $this->deposit,
+            "transaction_amount" => (float)$this->deposit,
             "description"        => "Pagamento de deposito.",
             "payment_method_id"  => "pix",
             "payer"              => [
