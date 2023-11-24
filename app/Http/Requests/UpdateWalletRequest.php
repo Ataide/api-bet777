@@ -23,7 +23,7 @@ class UpdateWalletRequest extends FormRequest
     {
         return [
             'type'   => ['required', 'string'],
-            'amount' => ['required', 'numeric', 'min:10']
+            'amount' => ['required', 'numeric', 'min:10', 'max:200']
         ];
     }
 }
