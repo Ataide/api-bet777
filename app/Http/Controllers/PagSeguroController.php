@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+
 class PagSeguroController extends Controller
 {
-    public static function notification($information)
+    public function notification(Request $request)
     {
-        \Log::debug(print_r($information->getStatus()->getCode(), 1));
+        \Log::debug(print_r($request->getContent(), 1));
     }
 
     public function pix()
