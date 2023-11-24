@@ -1,16 +1,17 @@
 <?php
 
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\EventController;
-use App\Http\Controllers\MercadoPagoController;
-use App\Http\Controllers\PagSeguroController;
-use App\Http\Controllers\PaperController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\WalletController;
 use App\Models\Bet;
 use App\Models\Paper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\PaperController;
+use App\Http\Controllers\WalletController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\PagSeguroController;
+use App\Http\Controllers\MercadoPagoController;
+use App\Http\Controllers\TransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +48,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/logout', [AuthController::class, 'logout'])->name('user.logout');
     Route::post('/update-profile', [AuthController::class, 'updateProfile'])->name('user.updateProfile');
     Route::get('/transactions', [UserController::class, 'transactions'])->name('user.transactions');
+    Route::get('/transactions/check/{payment_id}', [TransactionController::class, 'check'])->name('user.transactions.check');
+  
     Route::apiResource('/paper', PaperController::class);
     Route::apiResource('/wallet', WalletController::class);
 

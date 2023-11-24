@@ -44,7 +44,7 @@ class Transaction extends Model
     public function aprove(): void
     {
         $this->update(['status' => 'aproved']);
-        
+
         $this->user->addToWallet($this->deposit);
     }
 
@@ -141,7 +141,13 @@ class Transaction extends Model
         $qr_code_link = $payment->point_of_interaction->transaction_data->qr_code_base64;
         $text_link    = $payment->point_of_interaction->transaction_data->qr_code;
         $value        = $payment->transaction_amount;
+        $payment_id   = $payment->id;
 
-        return ['text' => $text_link, 'image' => "data:image/png;base64," . $qr_code_link, 'amount' => $value];
+        return [
+            'text'       => $text_link,
+            'image'      => "data:image/png;base64," . $qr_code_link,
+            'amount'     => $value,
+            'payment_id' => $payment_id
+        ];
     }
 }

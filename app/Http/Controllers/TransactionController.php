@@ -58,4 +58,15 @@ class TransactionController extends Controller
     public function show(Request $request)
     {
     }
+
+    public function check(Request $request, $payment_id)
+    {
+        $transactions = Transaction::where('payment_id', $payment_id)->first();
+
+        if ($transactions->status === Transaction::APROVED) {
+            return response()->json(['message' => 'Transação aprovada.', 'data' => $transactions, 'status' => "aproved"]);
+        }
+
+        return response()->json(['message' => 'Em processamento.', 'data' => $transactions, 'status' => $transactions->status]);
+    }
 }
