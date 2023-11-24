@@ -41,9 +41,11 @@ class Transaction extends Model
      * @return void
      *
      */
-    public function aprove(string $payment_id): void
+    public function aprove(): void
     {
-        $this->update(['status' => 'aproved', 'payment_id' => $payment_id]);
+        $this->update(['status' => 'aproved']);
+        
+        $this->user->addToWallet($this->deposit);
     }
 
     /**
@@ -133,6 +135,8 @@ class Transaction extends Model
                 ]
             ]
         ], $request_options);
+
+        $this->update(['payment_id' => $payment->id]);
 
         $qr_code_link = $payment->point_of_interaction->transaction_data->qr_code_base64;
         $text_link    = $payment->point_of_interaction->transaction_data->qr_code;
