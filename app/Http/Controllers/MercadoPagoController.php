@@ -13,10 +13,10 @@ class MercadoPagoController extends Controller
         MercadoPagoConfig::setAccessToken(env("MP_ACCESS_TOKEN"));
 
         $action = $request->input('action');
+        \Log::debug(print_r($request->all(), 1));
 
         switch($action) {
             case "state_FINISHED":
-                \Log::debug(print_r($request->all(), 1));
                 $payment = Payment::find_by_id($_POST["data"]["id"]);
                 \Log::debug(print_r($payment, 1));
 
