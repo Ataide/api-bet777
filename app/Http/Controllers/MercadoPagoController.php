@@ -18,14 +18,15 @@ class MercadoPagoController extends Controller
 
         switch($action) {
             case "state_FINISHED":
-                // $payment = Payment::find_by_id($_POST["data"]["id"]);
-                // \Log::debug(print_r($payment, 1));
-              
-            case "payment.created":
-
                 $transaction = Transaction::where('payment_id', $request->data_id)->first();
                 $transaction->aprove();
                 \Log::info("Transação aprovada: " . $transaction->payment_id . ". Adicionado " . $transaction->deposit);
+                // $payment = Payment::find_by_id($_POST["data"]["id"]);
+                // \Log::debug(print_r($payment, 1));
+              
+                // no break
+            case "payment.created":
+                \Log::info("Transação criada");
         }
 
         return response()->json(['status' => 200], 200);
