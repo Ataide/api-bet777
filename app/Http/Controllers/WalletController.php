@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateWalletRequest;
 use App\Models\Wallet;
 use Auth;
 use Exception;
+use MercadoPago\Exceptions\MPApiException;
 
 class WalletController extends Controller
 {
@@ -95,10 +96,10 @@ class WalletController extends Controller
             }
             
             return response()->json(['message' => 'Operação realizada com sucesso'], 200);
-        } catch (\Throwable $th) {
-            print_r($th->getTraceAsString(), 1);
+        } catch (MPApiException $th) {
+            print_r($th->getApiResponse(), 1);
 
-            return response()->json(['message' => $th->response], 422);
+            return response()->json(['message' => $th->getApiResponse()], 200);
               
             // \Log::debug(json_decode($th));
 
