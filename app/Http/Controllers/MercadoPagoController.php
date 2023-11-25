@@ -16,6 +16,8 @@ class MercadoPagoController extends Controller
   
         $action = $request->input('action');
 
+        \Log::info($action);
+
         switch($action) {
             case "state_FINISHED":
                 $transaction = Transaction::where('payment_id', $request->data_id)->first();
