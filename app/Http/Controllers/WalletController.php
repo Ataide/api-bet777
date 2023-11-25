@@ -70,13 +70,11 @@ class WalletController extends Controller
             $type = $fields['type'];
 
             if ($type == 'deposit') {
-
                 // Cria a transação interna;
                 $transaction = $user->createDepositTransaction($amount);
 
                 // Envia a transação para para gerar o qrcode de pagamento.
-                $qr_code     = $transaction->requestMercadoPagoPix();
-
+                $qr_code = $transaction->requestMercadoPagoPix();
 
                 return response()->json([
                     'message' => 'Operação realizada com sucesso',
@@ -94,12 +92,14 @@ class WalletController extends Controller
                 $user->createWithdrawTransaction($amount);
                 
                 $wallet->processWithdraw($amount);
-
-
             }
             
             return response()->json(['message' => 'Operação realizada com sucesso'], 200);
         } catch (\Throwable $th) {
+            \Log::debug(print_r($th, 1));
+              
+            // \Log::debug(json_decode($th));
+
             return response()->json(['message' => 'Operação não foi realizada.' . $th->getMessage()], 422);
         }
     }
