@@ -96,10 +96,9 @@ class WalletController extends Controller
             
             return response()->json(['message' => 'Operação realizada com sucesso'], 200);
         } catch (\Throwable $th) {
+            print_r($th->getTraceAsString(), 1);
 
-            return response()->json(['message' => $th], 422);
-
-            \Log::debug(print_r($th, 1));
+            return response()->json(['message' => $th->response], 422);
               
             // \Log::debug(json_decode($th));
 
