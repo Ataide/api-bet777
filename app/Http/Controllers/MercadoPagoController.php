@@ -16,16 +16,23 @@ class MercadoPagoController extends Controller
   
         $action = $request->input('action');
 
-        \Log::info($action);
+        \Log::info($request->all());
 
         switch($action) {
-            case "state_FINISHED":
-                $transaction = Transaction::where('payment_id', $request->data_id)->first();
-                $transaction->aprove();
-                \Log::info("Transação aprovada: " . $transaction->payment_id . ". Adicionado " . $transaction->deposit);
-                // $payment = Payment::find_by_id($_POST["data"]["id"]);
-                // \Log::debug(print_r($payment, 1));
-              
+            case "payment.update":
+                $status = $client->get($request->data_id)->status;
+
+                if ($status === 'approved') {
+                    $transaction = Transaction::where('payment_id', $request->data_id)->first();
+                    $transaction->aprove();
+                    \Log::info("Transação aprovada: " . $transaction->payment_id . ". Adicionado " . $transaction->deposit);
+                }
+
+                if ($status === 'cancelled') {
+                    $transaction = Transaction::where('payment_id', $request->data_id)->first();
+                    $transaction->cancel();
+                }
+            
                 // no break
             case "payment.created":
                 \Log::info("Transação criada");
