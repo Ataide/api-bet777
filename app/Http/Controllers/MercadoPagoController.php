@@ -19,7 +19,7 @@ class MercadoPagoController extends Controller
         \Log::info($request->all());
 
         switch($action) {
-            case "payment.update":
+            case "payment.updated":
                 $status = $client->get($request->data_id)->status;
 
                 if ($status === 'approved') {
