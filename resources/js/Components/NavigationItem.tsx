@@ -1,6 +1,9 @@
-import { IconProps, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import { ComponentType, ReactComponentElement, ReactElement } from "react";
 import NavLink from "./NavLink";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 
 interface NavItemsProps {
   label: string;

@@ -17,14 +17,10 @@ export default function ResumeDonutChar() {
 
   const options: any = {
     responsive: true,
-    cutout: 100,
+    cutout: 80,
     plugins: {
       legend: {
         position: "bottom",
-      },
-      title: {
-        display: true,
-        text: "Chart.js Doughnut Chart",
       },
     },
   };
@@ -39,10 +35,10 @@ export default function ResumeDonutChar() {
       {
         label: " Quantidade",
         data: data,
-        borderRadius: 3,
+        borderRadius: 0,
         backgroundColor: ["#59FFA3", "#59C3FF", "#597DFF", "#9159FF", "#FF59E5", "#FF5959", "#7AFF59", "#59ff30"],
         borderColor: ["#59FFA3", "#59C3FF", "#597DFF", "#9159FF", "#FF59E5", "#FF5959", "#7AFF59", "#59ff30"],
-        borderWidth: 2,
+        borderWidth: 1,
       },
     ],
   };

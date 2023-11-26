@@ -21,8 +21,9 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import { ListItemButton, ListItemText } from "@mui/material";
 import { ChevronRight } from "@mui/icons-material";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
 
 interface ITabListProps {
   resource?: string;
