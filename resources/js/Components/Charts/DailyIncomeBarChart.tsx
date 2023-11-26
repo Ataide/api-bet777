@@ -1,11 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
-import { Bar } from "react-chartjs-2";
-import type { ChartData, ChartArea } from "chart.js";
-import { Chart } from "react-chartjs-2";
-import Grow from "@mui/material/Grow";
-import { usePage } from "@inertiajs/react";
 import { PageProps } from "@/types";
+import { usePage } from "@inertiajs/react";
+import type { ChartArea, ChartData } from "chart.js";
+import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from "chart.js";
+import { useEffect, useRef, useState } from "react";
+import { Bar } from "react-chartjs-2";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -135,12 +133,6 @@ export function DailyIncomeBarChart() {
           borderColor: createGradient(chart.ctx, chart.chartArea, color),
         };
       }),
-
-      // ({
-      //   ...dataset,
-      //   backgroundColor: createGradient(chart.ctx, chart.chartArea),
-      //   borderColor: createGradient(chart.ctx, chart.chartArea),
-      // })),
     };
 
     setChartData(chartData);

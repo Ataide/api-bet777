@@ -14,15 +14,17 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $transactions = Transaction::all();
+        // $transactions = Transaction::where('status', Transaction::APROVED);
 
         $transactionsDayGroup = Transaction::whereBetween('created_at', [now()->subDays(30), now()])
+        ->where('status', Transaction::APROVED)
              ->orderBy('created_at')
              ->get()
              ->groupBy(function ($val) {
                  return $val->created_at->format('Y-m-d');
              });
         $transactionsDayMonth = Transaction::whereBetween('created_at', [now()->subMonths(13), now()])
+        ->where('status', Transaction::APROVED)
         ->orderBy('created_at')
         ->get()
         ->groupBy(function ($val) {
@@ -30,6 +32,7 @@ class DashboardController extends Controller
         });
 
         $transactionsToDay = Transaction::whereBetween('created_at', [now()->subHours(24), now()])
+        ->where('status', Transaction::APROVED)
         ->orderBy('created_at')
         ->get()
         ->groupBy(function ($val) {
@@ -39,10 +42,10 @@ class DashboardController extends Controller
         return Inertia::render(
             'Dashboard',
             [
-                'dashboard'    => $transactionsDayGroup,
-                'incomes'      => $transactionsDayMonth,
-                'today'        => $transactionsToDay,
-                'transactions' => $transactions
+                'dashboard' => $transactionsDayGroup,
+                'incomes'   => $transactionsDayMonth,
+                'today'     => $transactionsToDay,
+                // 'transactions' => $transactions
             ]
         );
     }

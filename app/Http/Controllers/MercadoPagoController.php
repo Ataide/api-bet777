@@ -12,6 +12,7 @@ class MercadoPagoController extends Controller
     public function notification(Request $request)
     {
         MercadoPagoConfig::setAccessToken(env("MP_ACCESS_TOKEN"));
+
         $client = new PaymentClient();
   
         $action = $request->input('action');

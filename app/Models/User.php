@@ -91,11 +91,20 @@ class User extends Authenticatable
         return $this->wallet->draw_total >= $amount;
     }
     
-    public function takeOutWallet($values)
+    public function takeOutWallet($amount_to_draw)
     {
+        $rate                  = Config::get("services.gateway.draw_rate");
+        $value_to_gateway      = $amount_to_draw * $rate;
+        $updated_wallet_amount = $this->wallet->amount  - $amount_to_draw;
+        $updated_draw_total    = $updated_wallet_amount - $value_to_gateway;
+
+        \Log::info([$rate,
+            $value_to_gateway,
+            $updated_wallet_amount,
+            $updated_draw_total]);
         $this->wallet->update([
-            'amount'     => $this->wallet->amount - floatval($values['amount']),
-            'draw_total' => $values['draw_total']
+            'amount'     => $updated_wallet_amount,
+            'draw_total' => $updated_draw_total
         ]);
     }
 

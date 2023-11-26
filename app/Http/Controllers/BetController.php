@@ -36,7 +36,10 @@ class BetController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(5);
 
-        $futebol = $volei = Bet::when(Request::input('id'), function (Builder $query, $id) {
+        $futebol = Bet::when(Request::input('id'), function (Builder $query, $id) {
+            $query->where('user_id', $id);
+        })->whereRelation('game.event.sport', 'id', '=', 1)->count();
+        $volei = Bet::when(Request::input('id'), function (Builder $query, $id) {
             $query->where('user_id', $id);
         })->whereRelation('game.event.sport', 'id', '=', 2)->count();
         $basquete = Bet::when(Request::input('id'), function (Builder $query, $id) {

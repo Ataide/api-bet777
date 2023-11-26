@@ -32,13 +32,7 @@ class Wallet extends Model
 
     public function processWithdraw($amount_to_draw)
     {
-        $rate                        = Config::get("services.gateway.draw_rate");
-        $valorTotalMenosValorDoSaque = ((float)$this->amount) - $amount_to_draw;
-        $value_to_gateway            = $amount_to_draw * $rate;
-
-        $disponivelPraSaque = $valorTotalMenosValorDoSaque - $value_to_gateway;
-
-        $this->user->takeOutWallet(['amount' => $amount_to_draw, 'draw_total' => $disponivelPraSaque]);
+        $this->user->takeOutWallet($amount_to_draw);
     }
 
     public function updateWalletAmount($amount)

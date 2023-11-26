@@ -15,6 +15,7 @@ class TransactionController extends Controller
         $transactions = Transaction::when(Request::input('search'), function (Builder $query, $search) {
             $query->whereRelation('user', 'name', 'like', '%' . $search . '%');
         })
+        ->where('status', Transaction::APROVED)
             ->selectRaw("(select name from users u where u.id = user_id) as name")
             ->selectRaw("SUM(deposit) as total_deposits")
             ->selectRaw("SUM(withdraw) as total_withdraws")
@@ -23,6 +24,7 @@ class TransactionController extends Controller
             ->paginate(5);
 
         $transactionDetails = Transaction::where('user_id', Request::input('id'))
+        ->where('status', Transaction::APROVED)
         ->when(Request::input('type'), function (Builder $query, $type) {
             $query->where('type', $type);
         })
@@ -37,9 +39,22 @@ class TransactionController extends Controller
         $total_geral    = 0;
         
         if (Request::input('id')) {
-            $total_deposits = Transaction::where(['user_id' => Request::input('id'), 'type' => 'deposit'])->count();
-            $total_withdraw = Transaction::where(['user_id' => Request::input('id'), 'type' => 'withdraw'])->count();
-            $total_geral    = Transaction::where(['user_id' => Request::input('id')])->count();
+            $total_deposits = Transaction::where([
+                'user_id' => Request::input('id'),
+                'status'  => Transaction::APROVED,
+                'type'    => 'deposit'
+            ])->count();
+
+            $total_withdraw = Transaction::where([
+                'user_id' => Request::input('id'),
+                'status'  => Transaction::APROVED,
+                'type'    => 'withdraw'
+            ])->count();
+
+            $total_geral = Transaction::where([
+                'user_id' => Request::input('id'),
+                'status'  => Transaction::APROVED,
+            ])->count();
         }
 
         $totals_groups = collect(

@@ -1,1 +1,0 @@
-import{j as o}from"./app-fd8e2e86.js";import{B as r}from"./Box-3e33bae7.js";import{T as t}from"./Typography-df94f013.js";function s(){return o.jsx(r,{padding:10,sx:{height:"100%"},children:o.jsx(t,{variant:"body1",color:"gray",textAlign:"center",children:"Não há dados"})})}export{s as N};

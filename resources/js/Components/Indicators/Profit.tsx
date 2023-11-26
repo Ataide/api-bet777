@@ -21,9 +21,6 @@ export default function Profit() {
       <Paper elevation={5} variant="indicator">
         <Box sx={{ padding: "16px 20px 0px 20px" }}>
           <Typography variant="body2">Lucro Total</Typography>
-          {/* <Typography variant="body2" color={"primary"}>
-            +2.6%
-          </Typography> */}
           <Typography variant="h5" color={getTotal().includes("-") ? "error" : "primary"}>
             {getTotal()}
           </Typography>

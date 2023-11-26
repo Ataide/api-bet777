@@ -93,14 +93,14 @@ export default function Authenticated({
               <ListItemText primary={"Apostas"} />
             </ListItemButton>
           </ListItem>
-          {/* <Typography variant="body1" fontWeight={400} py={2}>
+          <Typography variant="body1" fontWeight={400} py={2}>
             Solicitações
           </Typography>
-          <ListItem component={Link} href={route("requests", { search: "", type: "-1" })} disablePadding>
-            <ListItemButton selected={route().current("requests") ? true : false}>
-              <ListItemText primary={"Apostas"} />
+          <ListItem component={Link} href={route("bets", { search: "", type: "-1" })} disablePadding>
+            <ListItemButton selected={route().current("bets") ? true : false}>
+              <ListItemText primary={"Solicitações de Saques"} />
             </ListItemButton>
-          </ListItem> */}
+          </ListItem>
         </List>
       </Container>
     </>
