@@ -1,0 +1,1 @@
+import{j as o}from"./app-f8b9ab11.js";import{B as r}from"./Box-7f40d207.js";import{T as t}from"./ButtonBase-321d2179.js";function s(){return o.jsx(r,{padding:10,sx:{height:"100%"},children:o.jsx(t,{variant:"body1",color:"gray",textAlign:"center",children:"Não há dados"})})}export{s as N};

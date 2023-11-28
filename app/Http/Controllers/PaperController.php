@@ -52,7 +52,7 @@ class PaperController extends Controller
             return response()->json(['message' => "Você não possui fundos."], 422);
         }
         
-        $request->user()->takeOutWallet($amount);
+        $request->user()->takeOutPaperAmountFromWallet($amount);
         
         $request->user()->updateWalletAmountInBets($amount);
     

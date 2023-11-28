@@ -21,6 +21,7 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
   incomes: any[];
   sports: any[];
   pendings: any[];
+  withdraws: IWithdrawsResource;
   today: { deposit: any[]; withdraw: any[] };
   transactions: any;
   transactionDetails?: any;
@@ -52,7 +53,9 @@ export interface IUser {
   wallet: IWallet;
 }
 
-export interface IProfile {}
+export interface IProfile {
+  pix_key: string;
+}
 
 export interface IAdmin extends IUser {}
 export interface IEvent {
@@ -123,6 +126,26 @@ export interface IBet {
   bet_choice: number;
   bet_choice_name: string;
   rate: number;
+}
+
+export interface IWithdraw {
+  id: number;
+  user_id: number;
+  user: IUser;
+  transaction_id: number;
+  transaction: ITransaction;
+  reason: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface IWithdrawsResource extends IPaginatorResource {
+  pending: number;
+  aproved: number;
+  canceled: number;
+  total_withdraws: number;
+  data: IWithdraw[];
 }
 
 export interface IBetResource extends IBet, IPaginatorResource {

@@ -83,20 +83,18 @@ class WalletController extends Controller
             }
 
             if ($type == 'withdraw') {
-                $haveFunds = $user->checkIfHaveFunds($amount);
+                $haveFunds = $user->checkIfHaveFundsToDraw($amount);
                 
                 if (!$haveFunds) {
                     throw new Exception("Não há fundos disponível para a solicitação");
                 }
 
                 $user->createWithdrawTransaction($amount);
-
-                $wallet->processWithdraw($amount);
             }
             
             return response()->json(['message' => 'Operação realizada com sucesso'], 200);
         } catch (\Throwable $th) {
-            return response()->json(['message' => 'Operação não foi realizada.'], 422);
+            return response()->json(['message' => 'Operação não foi realizada. ' . $th->getMessage()], 422);
         }
     }
 

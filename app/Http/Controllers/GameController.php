@@ -45,6 +45,10 @@ class GameController extends Controller
 
         if ($request->id) {
             $game = Game::find($request->id);
+            
+            if ($game->gameIsDone()) {
+                Redirect::back()->withErrors(['message' => 'Operação não foi realizada. O Jogo já foi finalizado.']);
+            }
             $game->fill($request->validated());
             $game->save();
 

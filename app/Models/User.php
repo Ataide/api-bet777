@@ -88,7 +88,17 @@ class User extends Authenticatable
 
     public function checkIfHaveFunds($amount)
     {
+        return $this->wallet->amount >= $amount;
+    }
+
+    public function checkIfHaveFundsToDraw($amount)
+    {
         return $this->wallet->draw_total >= $amount;
+    }
+
+    public function withdraw()
+    {
+        return $this->hasMany(Withdraw::class);
     }
     
     public function takeOutWallet($amount_to_draw)
@@ -98,16 +108,23 @@ class User extends Authenticatable
         $updated_wallet_amount = $this->wallet->amount  - $amount_to_draw;
         $updated_draw_total    = $updated_wallet_amount - $value_to_gateway;
 
-        \Log::info([$rate,
-            $value_to_gateway,
-            $updated_wallet_amount,
-            $updated_draw_total]);
         $this->wallet->update([
             'amount'     => $updated_wallet_amount,
             'draw_total' => $updated_draw_total
         ]);
     }
+    public function takeOutPaperAmountFromWallet($amount_to_draw)
+    {
+        $rate                  = Config::get("services.gateway.draw_rate");
+        $updated_wallet_amount = $this->wallet->amount - $amount_to_draw;
+        $value_to_gateway      = $updated_wallet_amount * $rate;
+        $updated_draw_total    = $updated_wallet_amount - $value_to_gateway;
 
+        $this->wallet->update([
+            'amount'     => $updated_wallet_amount,
+            'draw_total' => $updated_draw_total
+        ]);
+    }
     /**
      * [Adiciona um valor a carteria do usuario.]
      *
@@ -169,6 +186,13 @@ class User extends Authenticatable
             $transactions->deposit  = 0;
             $transactions->withdraw = $amount;
             $transactions->save();
+
+            $withdraw = new Withdraw();
+
+            $withdraw->user_id        = $this->id;
+            $withdraw->transaction_id = $transactions->id;
+            $withdraw->amount         = $amount;
+            $withdraw->save();
         } catch (\Throwable $th) {
             throw $th;
         }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, ChartOptions } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import { usePage } from "@inertiajs/react";
 import { PageProps } from "@/types";
@@ -15,11 +15,12 @@ export default function ResumeDonutChar() {
 
   const labels = ["Futebol", "Volei", "Basquete", "Baisebol", "Boxe", "Fut. Americano", "Tênis", "Outros"];
 
-  const options: any = {
+  const options: ChartOptions<"doughnut"> = {
     responsive: true,
     cutout: 80,
     plugins: {
       legend: {
+        align: "start",
         position: "bottom",
       },
     },
@@ -33,7 +34,7 @@ export default function ResumeDonutChar() {
     labels,
     datasets: [
       {
-        label: " Quantidade",
+        label: "Quantidade",
         data: data,
         borderRadius: 0,
         backgroundColor: ["#59FFA3", "#59C3FF", "#597DFF", "#9159FF", "#FF59E5", "#FF5959", "#7AFF59", "#59ff30"],

@@ -37,11 +37,10 @@ class AdministrationController extends Controller
         $total = User::where(['status' => User::ACTIVE, 'type' => 'admin'])->count();
 
         $users = User::query()->where(['type' => 'admin', 'status' => User::ACTIVE])
-            ->when(Request::input('search'), function (Builder $query, $search) {
+            ->when(Request::input('search'), function (Builder $query, string $search) {
                 $query->where('name', 'like', '%' . $search . '%')
                     ->OrWhere('email', 'like', '%' . $search . '%');
-            })
-            ->when(Request::input('status'), function (Builder $query, $status) {
+            })->when(Request::input('status'), function (Builder $query, $status) {
                 $activesWheres   = ['last_login_at', '>=', Carbon::now()->subDays(7)->toDateString()];
                 $recentsWheres   = ['created_at', '>=', Carbon::now()->subDays(7)->toDateString()];
                 $inactivesWheres = ['last_login_at', '<=', Carbon::now()->subDays(7)->toDateString()];

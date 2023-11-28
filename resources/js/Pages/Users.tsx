@@ -27,10 +27,6 @@ export default function Users({ auth, users }: PageProps) {
             <NewUsers />
           </Grid>
 
-          {/* <Grid item xs={12} md={4}>
-            <Visitors />
-          </Grid> */}
-
           <Grid item xs={12}>
             <DataTable users={users} resource="/usuarios" />
           </Grid>

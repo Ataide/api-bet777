@@ -8,6 +8,7 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WithdrawController;
 use ErlandMuchasaj\LaravelFileUploader\FileUploader;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -77,6 +78,12 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         */
         Route::get('/apostas', [BetController::class, 'index'])->middleware(['role:view bets|superadmin'])->name('bets');
         
+        /**
+         * Rotas de solicitação de apostas.
+        */
+        Route::get('/saques', [WithdrawController::class, 'index'])->middleware(['role:view bets|superadmin'])->name('withdraws');
+        Route::put('/saques/{withdraw}', [WithdrawController::class, 'update'])->middleware(['role:view bets|superadmin'])->name('withdraws.update');
+
         /**
          * Rotas de Profile.
         */

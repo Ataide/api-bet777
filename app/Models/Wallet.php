@@ -35,13 +35,16 @@ class Wallet extends Model
         $this->user->takeOutWallet($amount_to_draw);
     }
 
-    public function updateWalletAmount($amount)
+    public function updateWalletAmount($amount_to_add)
     {
-        $rate          = Config::get("services.gateway.draw_rate");
-        $currentAmount = $this->amount;
+        $rate                  = Config::get("services.gateway.draw_rate");
+        $updated_wallet_amount = $this->amount + $amount_to_add;
+        $value_to_gateway      = $updated_wallet_amount * $rate;
+        $updated_draw_total    = $updated_wallet_amount - $value_to_gateway;
+
         $this->update([
-            'amount'     => $currentAmount + $amount,
-            'draw_total' => ($currentAmount + $amount) * $rate
+            'amount'     => $updated_wallet_amount,
+            'draw_total' => $updated_draw_total
         ]);
     }
 }

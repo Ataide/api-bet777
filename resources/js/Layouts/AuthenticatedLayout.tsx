@@ -96,8 +96,8 @@ export default function Authenticated({
           <Typography variant="body1" fontWeight={400} py={2}>
             Solicitações
           </Typography>
-          <ListItem component={Link} href={route("bets", { search: "", type: "-1" })} disablePadding>
-            <ListItemButton selected={route().current("bets") ? true : false}>
+          <ListItem component={Link} href={route("withdraws", { search: "", status: "pending" })} disablePadding>
+            <ListItemButton selected={route().current("withdraws") ? true : false}>
               <ListItemText primary={"Solicitações de Saques"} />
             </ListItemButton>
           </ListItem>

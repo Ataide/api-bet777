@@ -62,6 +62,9 @@ export default function GameUpdateDialog({
         reset();
         handleClose();
       },
+      onError: (err) => {
+        toast.error(err.message);
+      },
     });
   };
 
@@ -351,14 +354,6 @@ export default function GameUpdateDialog({
       </DialogContent>
 
       <DialogActions sx={{ display: "flex", p: 3 }}>
-        <Button
-          variant="contained"
-          onClick={() => {
-            console.log(data);
-          }}
-        >
-          Reset
-        </Button>
         <Button variant="contained" type="submit" form="form">
           Salvar
         </Button>
