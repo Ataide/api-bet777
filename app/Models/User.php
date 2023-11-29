@@ -104,8 +104,8 @@ class User extends Authenticatable
     public function takeOutWallet($amount_to_draw)
     {
         $rate                  = Config::get("services.gateway.draw_rate");
-        $value_to_gateway      = $amount_to_draw * $rate;
-        $updated_wallet_amount = $this->wallet->amount  - $amount_to_draw;
+        $updated_wallet_amount = $this->wallet->amount - $amount_to_draw;
+        $value_to_gateway      = $updated_wallet_amount * $rate;
         $updated_draw_total    = $updated_wallet_amount - $value_to_gateway;
 
         $this->wallet->update([
