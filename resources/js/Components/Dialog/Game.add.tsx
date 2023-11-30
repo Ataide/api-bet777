@@ -279,7 +279,10 @@ export default function GameAddDialog({ open, handleClose }: { open: boolean; ha
               </Typography>
               <DatePicker
                 value={new Date(data.time_close_bet)}
-                onChange={(e) => setData("time_close_bet", moment(e as any).format("YYYY-MM-DD"))}
+                onChange={(e) => {
+                  console.log(e);
+                  setData("time_close_bet", moment(e as any).format("YYYY-MM-DD HH:mm:ss"));
+                }}
                 sx={{
                   width: "100%",
                   backgroundColor: "#1B1C1B",
@@ -319,7 +322,10 @@ export default function GameAddDialog({ open, handleClose }: { open: boolean; ha
                   seconds: renderTimeViewClock,
                 }}
                 value={new Date(data.time_close_bet)}
-                onChange={(newValue) => setData("time_close_bet", moment(newValue).format("YYYY-MM-DD HH:mm:ss"))}
+                onChange={(newValue) => {
+                  console.log(newValue);
+                  setData("time_close_bet", moment(newValue).format("YYYY-MM-DD HH:mm:ss"));
+                }}
               />
             </Grid>
             <Grid item xs={4}></Grid>

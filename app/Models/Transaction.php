@@ -48,13 +48,13 @@ class Transaction extends Model
     public function aprove(): void
     {
         if ($this->type === 'deposit') {
-            $this->update(['status' => 'aproved']);
             $this->user->addToWallet($this->deposit);
+            $this->update(['status' => 'aproved']);
         }
 
         if ($this->type === 'withdraw') {
-            $this->update(['status' => 'aproved']);
             $this->user->wallet->processWithdraw($this->withdraw);
+            $this->update(['status' => 'aproved']);
         }
     }
 

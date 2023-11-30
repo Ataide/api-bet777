@@ -105,43 +105,7 @@ export default function DataTable({ bets, resource }: { bets?: any; resource?: s
           sx={({ palette }) => ({
             backgroundColor: palette.background.default,
           })}
-        >
-          {/* <Box p={2} display={"flex"} alignItems={"center"} justifyContent={"space-between"}>
-            <Typography variant="body1" color="initial">
-              Usuário: {userDetails.name}
-            </Typography>
-            <Stack direction={"row"} spacing={4}>
-              <Stack direction={"column"}>
-                <Typography variant="body2" display={"inline"}>
-                  Todas as apostas:
-                  <Typography component="span" variant="body1" color="primary" ml={1}>
-                    {userDetails.total_bets}
-                  </Typography>
-                </Typography>
-                <Typography variant="body2" display={"inline"}>
-                  Saldo total:
-                  <Typography component="span" variant="body1" color="primary" ml={1}>
-                    {userDetails.total_bets}
-                  </Typography>
-                </Typography>
-              </Stack>
-              <Stack direction={"column"}>
-                <Typography variant="body2" display={"inline"}>
-                  Saldo apostas:
-                  <Typography component="span" variant="body1" color="primary" ml={1}>
-                    {userDetails.total_bets}
-                  </Typography>
-                </Typography>
-                <Typography variant="body2" display={"inline"}>
-                  Saldo livre pra saque:
-                  <Typography component="span" variant="body1" color="primary" ml={1}>
-                    {formatter.format(+userDetails.total_bets)}
-                  </Typography>
-                </Typography>
-              </Stack>
-            </Stack>
-          </Box> */}
-        </Paper>
+        ></Paper>
       </Grid>
 
       <Grid item xs={12}></Grid>

@@ -54,7 +54,7 @@ export default function ResumeDonutChar() {
           alignItems={"center"}
           flexDirection={"column"}
         >
-          <Typography variant="body1" color="initial" textAlign={"center"} my={2}>
+          <Typography variant="body1" textAlign={"center"} my={2}>
             Apostas por esportes
           </Typography>
           <Doughnut options={options} data={dataa} />

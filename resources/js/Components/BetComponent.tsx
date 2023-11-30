@@ -145,9 +145,9 @@ export default function BetsComponent() {
           <Paper variant="indicator" sx={{ mt: 2 }}>
             {userPapers.data.length > 0 ? (
               <Box p={2}>
-                <Typography variant="body1" color="initial">
+                <Typography variant="body1">
                   Cliente:{" "}
-                  <Typography variant="body1" component={"span"} color="initial" fontWeight={400}>
+                  <Typography variant="body1" component={"span"} fontWeight={400}>
                     {userPapers.userDetails.name}
                   </Typography>
                 </Typography>
